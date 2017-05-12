@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Count It</string>
+    <string name="reset_title">Reset Counter</string>
+    <string name="reset_question">Are you sure you want to reset the counter?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="change_count">Change Count</string>
+    <string name="max_num">Max Number Reached</string>
+    <string name="min_num">Minimum Number Reacher</string>
+    <string name="too_high_message">Number entered is too high!</string>
+    <string name="too_low_message">Number entered is too low!</string>
+    <string name="no_input_message">Nothing was entered!</string>
+    <string name="make_negative_num">Make Negative</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="title_activity_drawer">DrawerActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="home">Home</string>
+    <string name="multi_counter">Multi-Counter</string>
+    <string name="settings">Settings</string>
+    <string name="share">Share this app</string>
+    <string name="rate">Rate this app</string>
+    <string name="contact">Contact Us</string>
+
+
+
+</resources>
