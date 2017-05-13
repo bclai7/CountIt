@@ -240,13 +240,13 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
             // Go to home/main activity
-            Log.d("test", "Nav Pressed");
-            //startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+
         } else if (id == R.id.nav_multicounter) {
             //go to multicounter
 
         } else if (id == R.id.nav_settings) {
             //go to settings
+            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
 
         } else if (id == R.id.nav_share) {
             //let users share app
