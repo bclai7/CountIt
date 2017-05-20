@@ -48,7 +48,7 @@
         android:name="com.takezeroapps.countit.OperatorFragment"
         android:id="@+id/fragment"
         tools:layout="@layout/counter_fragment"
-        android:layout_alignBottom="@+id/plusButton"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 

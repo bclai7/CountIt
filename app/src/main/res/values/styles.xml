@@ -8,19 +8,49 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="CounterTheme1" parent="AppTheme">
+    <style name="DefaultTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/switch_thumb_disabled_material_dark</item>
         <item name="colorAccent">@android:color/black</item>
         <item name="colorPrimaryDark">@android:color/black</item>
     </style>
 
-    <style name="CounterTheme1.NoActionBar">
+    <style name="DefaultThemeNA" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/switch_thumb_disabled_material_dark</item>
+        <item name="colorAccent">@android:color/black</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
+    </style>
+
+    <style name="DefaultTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="CounterTheme1.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="DefaultTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="CounterTheme1.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="DefaultTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="NightMode" parent="DefaultTheme" >
+        <item name="android:colorBackground">@android:color/black</item>
+        <item name="android:textColorPrimaryInverse">@android:color/darker_gray</item>
+        <item name="colorAccent">@android:color/darker_gray</item>
+        <item name="android:textColorSecondary">@android:color/darker_gray</item>
+        <item name="android:textColorSecondaryInverse">@android:color/darker_gray</item>
+        <item name="android:textColorPrimary">@android:color/darker_gray</item>
+        <item name="colorPrimary">@android:color/black</item>
+        <item name="colorPrimaryDark">@android:color/darker_gray</item>
+        <item name="android:colorForeground">@android:color/black</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+
+    </style>
+
+    <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@android:color/black</item>
+        <item name="android:titleTextStyle">@style/GrayTitleText</item>
+    </style>
+    <style name="GrayTitleText"
+        parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@android:color/darker_gray</item>
+    </style>
 
 </resources>
