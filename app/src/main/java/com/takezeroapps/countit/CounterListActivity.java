@@ -18,6 +18,11 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,26 +32,28 @@ public class CounterListActivity extends AppCompatActivity {
     private ListView listView;
     private String[] multicounterNames;
     private ArrayList<String> multicounterNameList = new ArrayList<String>();
+    int[] c = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_counter_list);
 
-        //load shared preference storing file name
-        SharedPreferences pref = getSharedPreferences("MulticounterList", Context.MODE_PRIVATE);
-        SharedPreferences.Editor e = pref.edit();
-        Set<String> set = pref.getStringSet("MulticounterList", null);
-        if(set != null) {
-            for (String str : set) {
-                multicounterNameList.add(str);
-                Log.d("test", "adding..."+str);
-            }
+        if(getCounterList() == null)
+        {
+            Log.d("test", "counterlist null");
+            saveCounterList(multicounterNameList);
         }
 
-        multicounterNames = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+        //load text file storing the multicounter names
+        multicounterNameList=getCounterList();
+        Log.d("test", "Size: "+multicounterNameList.size());
 
+        //convert to array so it can be read by adapter
+        multicounterNames = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+        //initialize listView to the listview object in the xml file
         listView = (ListView)findViewById(R.id.counter_list);
+        //add array of counter names to adapter
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.mcounters, multicounterNames);
 
         for(int i=0; i<adapter.getCount(); i++)
@@ -55,7 +62,9 @@ public class CounterListActivity extends AppCompatActivity {
             Log.d("test", "Array item "+i+": "+multicounterNames[i]);
         }
 
+        //set adapter to list view
         listView.setAdapter(adapter);
+
         //LISTENER
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -85,7 +94,6 @@ public class CounterListActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.multicounter_add) { //add counter button
-            Log.d("test", "add counter");
             AlertDialog.Builder builder = new AlertDialog.Builder(CounterListActivity.this);
             builder.setTitle("Name this counter");
             builder.setCancelable(false);
@@ -98,7 +106,9 @@ public class CounterListActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     String it = input.getText().toString(); //input text
-                    createCounter(it);
+                    //createCounter(it);
+                    multicounterNameList.add(it);
+                    saveCounterList(multicounterNameList);
                     finish();
                     startActivity(getIntent());
                 }
@@ -115,6 +125,37 @@ public class CounterListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private ArrayList<String> getCounterList() {
+        ArrayList<String> counterList = null;
+
+        try {
+            FileInputStream inputStream = openFileInput("MultiCounterNames.txt");
+            ObjectInputStream in = new ObjectInputStream(inputStream);
+            counterList = (ArrayList<String>) in.readObject();
+            in.close();
+            inputStream.close();
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return counterList;
+    }
+
+    private void saveCounterList(ArrayList<String> counterList) {
+        try {
+            FileOutputStream fileOutputStream = openFileOutput("MultiCounterNames.txt", Context.MODE_PRIVATE);
+            ObjectOutputStream out = new ObjectOutputStream(fileOutputStream);
+            out.writeObject(counterList);
+            out.close();
+            fileOutputStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
     public void createCounter(String counterName)
     {
         //save file name
@@ -128,7 +169,7 @@ public class CounterListActivity extends AppCompatActivity {
 
 
         //for the actual counter activity, for each count in the counter
-        /*
+
         //save move list
         SharedPreferences sharedPref = getSharedPreferences(filename, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -138,7 +179,8 @@ public class CounterListActivity extends AppCompatActivity {
 
         editor.putString(filename, jsonMoves);
         editor.commit();
-        */
+
 
     }
+    */
 }
