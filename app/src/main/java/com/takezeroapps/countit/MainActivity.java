@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         final Vibrator vib = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
         final long[] pattern = {0, 20, 150, 20}; //double vibration pattern for errors
-        
+
         addButton = (Button) findViewById(R.id.plusButton);
         subButton = (Button) findViewById(R.id.minusButton);
         resetButton = (ImageButton) findViewById(R.id.resetButton);
