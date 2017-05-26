@@ -14,8 +14,12 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="title_activity_drawer">DrawerActivity</string>
-    <string name="title_activity_counterlist">Multi-Counter</string>
+    <string name="title_activity_counterlist">Your Multi-Counters</string>
     <string name="action_add">Add Counter</string>
+    <string name="set_counter_name">Counter Name:</string>
+    <string name="name_hint">Name</string>
+    <string name="init_num_counters">Initial number of counters:</string>
+    <string name="create_counter_title">Create New Multi-Counter</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

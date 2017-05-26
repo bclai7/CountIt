@@ -10,13 +10,19 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -27,12 +33,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import static android.graphics.Color.BLACK;
+
 public class CounterListActivity extends AppCompatActivity {
 
     private ListView listView;
     private String[] multicounterNames;
     private ArrayList<String> multicounterNameList = new ArrayList<String>();
-    int[] c = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    TextView tx;
+    String[] c = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,26 +103,63 @@ public class CounterListActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.multicounter_add) { //add counter button
+
             AlertDialog.Builder builder = new AlertDialog.Builder(CounterListActivity.this);
-            builder.setTitle("Name this counter");
-            builder.setCancelable(false);
+            builder.setTitle(R.string.create_counter_title);
+            Context context = CounterListActivity.this; //store context in a variable
+            LinearLayout layout = new LinearLayout(context);
+            layout.setOrientation(LinearLayout.VERTICAL);
 
-            final EditText input = new EditText(CounterListActivity.this);
-            input.setInputType(InputType.TYPE_CLASS_TEXT);
-            builder.setView(input);
+            //textview telling user to enter counter name
+            final TextView name = new TextView(context);
+            name.setText(R.string.set_counter_name);
+            name.setTextSize(16);
+            name.setTextColor(BLACK);
+            layout.addView(name);
 
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            //Text input for counter name
+            final EditText input = new EditText(context);
+            input.setHint(R.string.name_hint);
+            layout.addView(input);
+
+            //textview to create a space in between fields
+            final TextView space = new TextView(context);
+            space.setText("");
+            space.setTextSize(16);
+            layout.addView(space);
+
+            //textview telling user to select initial count
+            final TextView countTv = new TextView(context);
+            countTv.setText(R.string.init_num_counters);
+            countTv.setTextSize(16);
+            countTv.setTextColor(BLACK);
+            layout.addView(countTv);
+
+            //dropdown for initial number of counters
+            final ArrayAdapter<String> adp = new ArrayAdapter<String>(CounterListActivity.this,
+                    R.layout.spinner_item_custom, c);
+            final Spinner sp = new Spinner(CounterListActivity.this);
+            sp.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            sp.setAdapter(adp);
+            layout.addView(sp);
+            layout.setPadding(60,50,60,10);
+
+            builder.setView(layout);
+
+            builder.create();
+
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     String it = input.getText().toString(); //input text
-                    //createCounter(it);
                     multicounterNameList.add(it);
                     saveCounterList(multicounterNameList);
                     finish();
                     startActivity(getIntent());
+
                 }
             });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
@@ -121,6 +167,7 @@ public class CounterListActivity extends AppCompatActivity {
             });
 
             builder.show();
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -155,19 +202,8 @@ public class CounterListActivity extends AppCompatActivity {
         }
     }
 
-    /*
-    public void createCounter(String counterName)
-    {
-        //save file name
-        SharedPreferences sp = getSharedPreferences("MulticounterList", Context.MODE_PRIVATE);
-        SharedPreferences.Editor ed = sp.edit();
-        multicounterNameList.add(counterName);
-        Set<String> set = new HashSet<String>();
-        set.addAll(multicounterNameList);
-        ed.putStringSet("MulticounterList", set);
-        ed.commit();
 
-
+   /*
         //for the actual counter activity, for each count in the counter
 
         //save move list
@@ -179,8 +215,22 @@ public class CounterListActivity extends AppCompatActivity {
 
         editor.putString(filename, jsonMoves);
         editor.commit();
-
-
-    }
     */
+
+    public class OnSpinnerItemClicked implements AdapterView.OnItemSelectedListener {
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent,
+                                   View view, int pos, long id) {
+            Toast.makeText(parent.getContext(), "Clicked : " +
+                    parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
+
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView parent) {
+            // Do nothing.
+        }
+    }
 }
