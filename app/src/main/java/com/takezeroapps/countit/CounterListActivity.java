@@ -66,12 +66,6 @@ public class CounterListActivity extends AppCompatActivity {
         //add array of counter names to adapter
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.mcounters, multicounterNames);
 
-        for(int i=0; i<adapter.getCount(); i++)
-        {
-            Log.d("test", "Adapter item "+i+": "+adapter.getItem(i));
-            Log.d("test", "Array item "+i+": "+multicounterNames[i]);
-        }
-
         //set adapter to list view
         listView.setAdapter(adapter);
 
@@ -79,7 +73,6 @@ public class CounterListActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("test","Tapped:  " + ((TextView) view).getText());
             }
         });
 
@@ -88,7 +81,6 @@ public class CounterListActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 //on long click
 
-                Log.d("test","Long clicked:  " + ((TextView) view).getText());
                 final String item = (String) ((TextView) view).getText();
 
                 //create popup dialog
@@ -106,7 +98,7 @@ public class CounterListActivity extends AppCompatActivity {
                 lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View viewIn, int position, long id) {
-                        Log.d("test","Item "+ item +": " + ((TextView) viewIn).getText());
+                        //Log.d("test","Item "+ item +": " + ((TextView) viewIn).getText());
                         if(position == 0) //open button
                         {
 
@@ -144,7 +136,7 @@ public class CounterListActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    // handle button activities
+    // plus sign button (to add multi-counter)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -199,21 +191,22 @@ public class CounterListActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
-                    String it = input.getText().toString(); //input text
+                    String mcName = input.getText().toString(); //input text - the user defined multi-counter name
+                    int initCount = Integer.parseInt(sp.getSelectedItem().toString()); // initial count entered by user
 
-                    if(it.equals(""))
+                    if(mcName.equals(""))
                     {
                         Snackbar.make(getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                         dialog.cancel();
                     }
-                    else if(inCounterList(it))
+                    else if(inCounterList(mcName))
                     {
                         Snackbar.make(getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                         dialog.cancel();
                     }
                     else
                     {
-                        multicounterNameList.add(it);
+                        multicounterNameList.add(mcName);
                         saveCounterList(multicounterNameList);
                         finish();
                         startActivity(getIntent());
@@ -298,6 +291,7 @@ public class CounterListActivity extends AppCompatActivity {
                                    View view, int pos, long id) {
             Toast.makeText(parent.getContext(), "Clicked : " +
                     parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
+            Log.d("test", "option: "+parent.getItemAtPosition(pos).toString());
 
 
         }
