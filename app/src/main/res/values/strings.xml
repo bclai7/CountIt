@@ -24,6 +24,8 @@
     <string name="no_counter_name">No counter name was entered!</string>
     <string name="counter_colon">Counter: </string>
     <string name="multicounter_activity_title">Counter Name</string>
+    <string name="mc_title_length_error">Please enter a title name less than 40 characters</string>
+    <string name="max_number_of_multicounters_error">You have reached the maximum number of multicounters</string>
 
     <string name="open_counter">Open</string>
     <string name="rename_counter">Rename</string>

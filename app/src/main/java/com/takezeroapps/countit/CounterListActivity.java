@@ -119,13 +119,6 @@ public class CounterListActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume()
-    {
-        super.onResume();
-
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.multicounter_drawer, menu);
         return super.onCreateOptionsMenu(menu);
@@ -138,87 +131,110 @@ public class CounterListActivity extends AppCompatActivity {
 
         if (id == R.id.multicounter_add) { //add counter button
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(CounterListActivity.this);
-            builder.setTitle(R.string.create_counter_title);
-            Context context = CounterListActivity.this; //store context in a variable
-            LinearLayout layout = new LinearLayout(context);
-            layout.setOrientation(LinearLayout.VERTICAL);
+            if(multicounterNameList.size() + 1 > 50) //maximum number of multicounters set to 50
+            {
+                Snackbar.make(getWindow().getDecorView().getRootView(), R.string.max_number_of_multicounters_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
+            else {
+                //create dialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(CounterListActivity.this);
+                builder.setTitle(R.string.create_counter_title);
+                Context context = CounterListActivity.this; //store context in a variable
+                LinearLayout layout = new LinearLayout(context);
+                layout.setOrientation(LinearLayout.VERTICAL);
 
-            //textview telling user to enter counter name
-            final TextView name = new TextView(context);
-            name.setText(R.string.set_counter_name);
-            name.setTextSize(16);
-            name.setTextColor(BLACK);
-            layout.addView(name);
+                //textview telling user to enter counter name
+                final TextView name = new TextView(context);
+                name.setText(R.string.set_counter_name);
+                name.setTextSize(16);
+                name.setTextColor(BLACK);
+                layout.addView(name);
 
-            //Text input for counter name
-            final EditText input = new EditText(context);
-            input.setHint(R.string.name_hint);
-            layout.addView(input);
+                //Text input for counter name
+                final EditText input = new EditText(context);
+                input.setHint(R.string.name_hint);
+                layout.addView(input);
+                //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
+                input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
-            //textview to create a space in between fields
-            final TextView space = new TextView(context);
-            space.setText("");
-            space.setTextSize(16);
-            layout.addView(space);
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        // TODO Auto-generated method stub
+                        if (hasFocus) {
+                            input.setSingleLine(true);
+                            input.setMaxLines(1);
+                            input.setLines(1);
+                        }
+                    }
+                });
 
-            //textview telling user to select initial count
-            final TextView countTv = new TextView(context);
-            countTv.setText(R.string.init_num_counters);
-            countTv.setTextSize(16);
-            countTv.setTextColor(BLACK);
-            layout.addView(countTv);
+                //textview to create a space in between fields
+                final TextView space = new TextView(context);
+                space.setText("");
+                space.setTextSize(16);
+                layout.addView(space);
 
-            //dropdown for initial number of counters
-            final ArrayAdapter<String> adp = new ArrayAdapter<String>(CounterListActivity.this,
-                    R.layout.spinner_item_custom, c);
-            final Spinner sp = new Spinner(CounterListActivity.this);
-            sp.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            sp.setAdapter(adp);
-            layout.addView(sp);
-            layout.setPadding(60,50,60,10);
+                //textview telling user to select initial count
+                final TextView countTv = new TextView(context);
+                countTv.setText(R.string.init_num_counters);
+                countTv.setTextSize(16);
+                countTv.setTextColor(BLACK);
+                layout.addView(countTv);
 
-            builder.setView(layout);
+                //dropdown for initial number of counters
+                final ArrayAdapter<String> adp = new ArrayAdapter<String>(CounterListActivity.this,
+                        R.layout.spinner_item_custom, c);
+                final Spinner sp = new Spinner(CounterListActivity.this);
+                sp.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                sp.setAdapter(adp);
+                layout.addView(sp);
+                layout.setPadding(60, 50, 60, 10);
 
-            builder.create();
+                builder.setView(layout);
 
-            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
+                builder.create();
 
-                    String mcName = input.getText().toString(); //input text - the user defined multi-counter name
-                    int initCount = Integer.parseInt(sp.getSelectedItem().toString()); // initial count entered by user
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-                    if(mcName.equals(""))
-                    {
-                        Snackbar.make(getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                        String mcName = input.getText().toString(); //input text - the user defined multi-counter name
+                        int initCount = Integer.parseInt(sp.getSelectedItem().toString()); // initial count entered by user
+
+                        if (mcName.equals("")) {
+                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            dialog.cancel();
+                        } else if (inCounterList(mcName)) {
+                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            dialog.cancel();
+                        } else if (mcName.length() > 40) {
+                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.mc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            dialog.cancel();
+                        } else {
+                            multicounterNameList.add(mcName);
+                            saveCounterList(multicounterNameList);
+                            finish();
+                            startActivity(getIntent());
+                        }
+
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }
-                    else if(inCounterList(mcName))
-                    {
-                        Snackbar.make(getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                        dialog.cancel();
-                    }
-                    else
-                    {
-                        multicounterNameList.add(mcName);
-                        saveCounterList(multicounterNameList);
-                        finish();
-                        startActivity(getIntent());
-                    }
+                });
 
-                }
-            });
-            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-
-            builder.show();
+                builder.show();
+            }
 
         }
+        else if (id == R.id.multicounter_search)
+        {
+
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

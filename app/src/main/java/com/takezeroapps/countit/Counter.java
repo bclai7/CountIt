@@ -9,17 +9,21 @@ import android.app.Fragment;
 public class Counter {
     int count; //where the count is at
     String label; //name of count
-    Fragment fragment;
+    String multicounterName; //name of the multicounter it belongs to
+    public Fragment fragment;
+    String counterId; //id of counter for when there is two counters from different multicounters that have the same label name. The ID will consist of the Multicounter Name + the counter label
 
-    public Counter(String label, int count)
+    public Counter(String multicounterName, String label, int count)
     {
         this.label=label;
         this.count=count;
+        this.multicounterName=multicounterName;
     }
 
     public void setLabel(String label)
     {
         this.label=label;
+        setCounterId();
     }
 
     public String getLabel()
@@ -52,14 +56,14 @@ public class Counter {
         return count;
     }
 
-    public void setFragment(Fragment fragment)
+    public String getMulticounterName()
     {
-        this.fragment=fragment;
+        return multicounterName;
     }
 
-    public Fragment getFragment()
+    public void setCounterId()
     {
-        return fragment;
+        counterId = multicounterName+label;
     }
 
 }

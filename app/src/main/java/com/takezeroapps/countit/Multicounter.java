@@ -17,10 +17,11 @@ public class Multicounter {
     //eraseAllCounters() method ???
     //renameCounter() method??? or have it in regular Counter object?
 
-    public Multicounter(String name, int count)
+    public Multicounter(String name, int count, int numOfCounters)
     {
         this.name=name;
         this.count=count;
+        //initialize number of counters to start with using numOfCounters variable. Use a loop?
     }
 
     public void setName(String name)

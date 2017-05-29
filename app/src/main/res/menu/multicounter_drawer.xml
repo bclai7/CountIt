@@ -2,9 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/multicounter_search"
+        android:title=""
+        app:showAsAction="always"
+        android:icon="@drawable/ic_action_search"
+        />
+    <item
         android:id="@+id/multicounter_add"
         android:title=""
         app:showAsAction="always"
         android:icon="@drawable/ic_action_add"
         />
+
 </menu>
