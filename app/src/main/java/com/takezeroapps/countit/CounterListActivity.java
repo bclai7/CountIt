@@ -39,7 +39,7 @@ import static android.graphics.Color.BLACK;
 public class CounterListActivity extends AppCompatActivity {
 
     private ListView listView;
-    private String[] multicounterNames;
+    private String[] multicounterNamesArray;
     private ArrayList<String> multicounterNameList = new ArrayList<String>();
     private ArrayList<Multicounter> multicounterList = new ArrayList<Multicounter>();
     TextView tx;
@@ -61,11 +61,11 @@ public class CounterListActivity extends AppCompatActivity {
         Log.d("test", "Size: "+multicounterNameList.size());
 
         //convert to array so it can be read by adapter
-        multicounterNames = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+        multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
         //initialize listView to the listview object in the xml file
         listView = (ListView)findViewById(R.id.counter_list);
         //add array of counter names to adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.mcounters_text_format, multicounterNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.mcounters_text_format, multicounterNamesArray);
 
         //set adapter to list view
         listView.setAdapter(adapter);
@@ -256,7 +256,6 @@ public class CounterListActivity extends AppCompatActivity {
                             String jsonMC = gson.toJson(multicounterList);
                             editor.putString("MultiCounterList", jsonMC);
                             editor.commit();
-
 
                             multicounterNameList.add(mcName);
                             saveCounterList(multicounterNameList);
