@@ -15,9 +15,9 @@ public class Counter {
 
     public Counter(String multicounterName, String label, int count)
     {
+        this.multicounterName=multicounterName;
         this.label=label;
         this.count=count;
-        this.multicounterName=multicounterName;
     }
 
     public void setLabel(String label)
@@ -64,6 +64,17 @@ public class Counter {
     public void setCounterId()
     {
         counterId = multicounterName+label;
+    }
+
+    public void setMulticounterName(String multicounterName)
+    {
+        this.multicounterName=multicounterName;
+        setCounterId();
+    }
+
+    public String getMultiCounterName()
+    {
+        return multicounterName;
     }
 
 }

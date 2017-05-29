@@ -21,53 +21,14 @@
         android:id="@+id/scounter_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="2147483646"
-        android:textColor="@android:color/black"
-        android:textSize="40sp"
-        android:layout_marginTop="11dp"
-        android:layout_below="@+id/scounter_name"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:id="@+id/scounter_plus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="+"
-        android:paddingTop="7dp"
-        android:textSize="30sp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/scounter_name"
+        android:gravity="center"
+        android:text="0"
         android:textColor="@android:color/black"
-        android:layout_marginLeft="46dp"
-        android:layout_marginStart="46dp"
-        android:layout_alignBottom="@+id/sc_reset_button"
-        android:layout_toRightOf="@+id/sc_reset_button"
-        android:layout_toEndOf="@+id/sc_reset_button" />
+        android:textSize="40sp" />
 
-    <TextView
-        android:id="@+id/scounter_minus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="1dp"
-        android:paddingBottom="1dp"
-        android:text="-"
-        android:textSize="40sp"
-        android:textColor="@android:color/black"
-        android:layout_marginRight="46dp"
-        android:layout_marginEnd="46dp"
-        android:layout_alignTop="@+id/scounter_plus"
-        android:layout_toLeftOf="@+id/sc_reset_button"
-        android:layout_toStartOf="@+id/sc_reset_button" />
-
-    <ImageButton
-        android:id="@+id/sc_reset_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:duplicateParentState="false"
-        app:srcCompat="@drawable/ic_reset"
-        android:layout_below="@+id/scounter_count"
-        android:layout_centerHorizontal="true" />
 
     <ImageView
         android:id="@+id/horizontal_separator"
@@ -77,5 +38,44 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <ImageButton
+        android:id="@+id/scounter_reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:duplicateParentState="false"
+        app:srcCompat="@drawable/ic_reset"
+        android:layout_below="@+id/scounter_count"
+        android:layout_centerHorizontal="true"
+        android:layout_alignBottom="@+id/scounter_minus" />
+
+    <Button
+        android:id="@+id/scounter_minus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_below="@+id/scounter_count"
+        android:layout_toLeftOf="@+id/scounter_reset"
+        android:layout_toStartOf="@+id/scounter_reset"
+        android:layout_marginRight="11dp"
+        android:layout_marginEnd="11dp" />
+
+    <Button
+        android:id="@+id/scounter_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_below="@+id/scounter_count"
+        android:layout_toRightOf="@+id/scounter_reset"
+        android:layout_toEndOf="@+id/scounter_reset"
+        android:layout_marginLeft="11dp"
+        android:layout_marginStart="11dp" />
 
 </RelativeLayout>

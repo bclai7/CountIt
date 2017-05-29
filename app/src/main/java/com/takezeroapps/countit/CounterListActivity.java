@@ -3,6 +3,7 @@ package com.takezeroapps.countit;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,11 +22,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import static android.graphics.Color.BLACK;
@@ -35,6 +41,7 @@ public class CounterListActivity extends AppCompatActivity {
     private ListView listView;
     private String[] multicounterNames;
     private ArrayList<String> multicounterNameList = new ArrayList<String>();
+    private ArrayList<Multicounter> multicounterList = new ArrayList<Multicounter>();
     TextView tx;
     String[] c = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 
@@ -119,8 +126,35 @@ public class CounterListActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onResume()
+    {
+        super.onResume();
+        File f = new File("/data/data/com.takezeroapps.countit/shared_prefs/MultiCounterList.xml");
+        if (f.exists())
+        {
+            SharedPreferences pref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
+            SharedPreferences.Editor e = pref.edit();
+            String jsonMC = pref.getString("MultiCounterList", null);
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<Multicounter>>(){}.getType();
+            multicounterList = gson.fromJson(jsonMC, type);
+        }
+        else
+        {
+            Log.d("test", "sharedpref doesn't exist");
+        }
+
+
+
+        for(Multicounter m: multicounterList)
+        {
+            Log.d("test", "MC Name: "+m.getName());
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.multicounter_drawer, menu);
+        getMenuInflater().inflate(R.menu.multicounter_list_drawer, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -211,6 +245,21 @@ public class CounterListActivity extends AppCompatActivity {
                             Snackbar.make(getWindow().getDecorView().getRootView(), R.string.mc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             dialog.cancel();
                         } else {
+
+                            //create new multicounter and add to list
+                            multicounterList.add(new Multicounter(mcName, initCount));
+
+                            //save multicounter list
+                            SharedPreferences sharedPref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            Gson gson = new Gson();
+                            String jsonMC = gson.toJson(multicounterList);
+                            Log.d("test", "got here 3");
+                            editor.putString("MultiCounterList", jsonMC);
+                            editor.commit();
+                            Log.d("test", "got here 4");
+
+
                             multicounterNameList.add(mcName);
                             saveCounterList(multicounterNameList);
                             finish();
@@ -230,7 +279,7 @@ public class CounterListActivity extends AppCompatActivity {
             }
 
         }
-        else if (id == R.id.multicounter_search)
+        else if (id == R.id.multicounter_search) //search button
         {
 
         }
@@ -312,4 +361,8 @@ public class CounterListActivity extends AppCompatActivity {
             // Do nothing.
         }
     }
+
+    //SEARCH FUNCTIONS
+
+
 }

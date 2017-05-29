@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onResume()
     {
+        //get saved settings from stored preferences
         super.onResume();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 

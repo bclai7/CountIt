@@ -11,13 +11,14 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/mc_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <fragment
                 android:id="@+id/fragment2"
-                android:name="com.takezeroapps.countit.CounterFragment"
+                android:name="com.takezeroapps.countit.SingleCounterFragment"
                 android:layout_width="match_parent"
                 android:layout_height="135dp"
                 tools:layout="@layout/sc_counter_fragment" />
