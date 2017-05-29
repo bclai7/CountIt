@@ -36,6 +36,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.takezeroapps.countit.MainActivity" />
         </activity>
+        <activity
+            android:name=".MultiCounterActivity"
+            android:label="@string/multicounter_activity_title"
+            android:parentActivityName=".CounterListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.takezeroapps.countit.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

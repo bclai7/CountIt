@@ -3,13 +3,10 @@ package com.takezeroapps.countit;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -31,8 +27,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import static android.graphics.Color.BLACK;
 
@@ -64,15 +58,16 @@ public class CounterListActivity extends AppCompatActivity {
         //initialize listView to the listview object in the xml file
         listView = (ListView)findViewById(R.id.counter_list);
         //add array of counter names to adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.mcounters, multicounterNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.mcounters_text_format, multicounterNames);
 
         //set adapter to list view
         listView.setAdapter(adapter);
 
-        //LISTENER
+        //LISTENER for each item in ListView (Each multicounter)
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startActivity(new Intent(CounterListActivity.this, MultiCounterActivity.class));
             }
         });
 

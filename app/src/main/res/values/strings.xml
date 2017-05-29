@@ -23,6 +23,7 @@
     <string name="counter_already_exists">Counter Name already exists!</string>
     <string name="no_counter_name">No counter name was entered!</string>
     <string name="counter_colon">Counter: </string>
+    <string name="multicounter_activity_title">Counter Name</string>
 
     <string name="open_counter">Open</string>
     <string name="rename_counter">Rename</string>
