@@ -254,10 +254,8 @@ public class CounterListActivity extends AppCompatActivity {
                             SharedPreferences.Editor editor = sharedPref.edit();
                             Gson gson = new Gson();
                             String jsonMC = gson.toJson(multicounterList);
-                            Log.d("test", "got here 3");
                             editor.putString("MultiCounterList", jsonMC);
                             editor.commit();
-                            Log.d("test", "got here 4");
 
 
                             multicounterNameList.add(mcName);

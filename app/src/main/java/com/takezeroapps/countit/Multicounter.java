@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Multicounter {
     String name; //name of multicounter
     int count; //number of counters
-    ArrayList<Counter> counters;
+    transient ArrayList<Counter> counters;
 
     //initialize starting counters with generic label names and a starting count of 0 (in the constructor). Also set fragments to the correct fragments.
     //addCounter() method
@@ -20,7 +20,7 @@ public class Multicounter {
     {
         this.name=name;
         this.count=count;
-        counters = new ArrayList<Counter>()
+        counters = new ArrayList<Counter>();
         //initialize number of counters to start with using numOfCounters variable. Use a loop?
         for(int i=0; i<count;i++)
         {
