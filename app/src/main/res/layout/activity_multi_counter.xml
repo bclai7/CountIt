@@ -16,11 +16,46 @@
             android:orientation="vertical" >
 
             <fragment
+                android:id="@+id/fragment11"
+                android:name="com.takezeroapps.countit.CounterFragment"
+                android:layout_width="match_parent"
+                android:layout_height="135dp"
+                tools:layout="@layout/sc_counter_fragment" />
+
+            <fragment
+                android:id="@+id/fragment10"
+                android:name="com.takezeroapps.countit.CounterFragment"
+                android:layout_width="match_parent"
+                android:layout_height="135dp"
+                tools:layout="@layout/sc_counter_fragment" />
+
+            <fragment
+                android:id="@+id/fragment9"
+                android:name="com.takezeroapps.countit.CounterFragment"
+                android:layout_width="match_parent"
+                android:layout_height="135dp"
+                tools:layout="@layout/sc_counter_fragment" />
+
+            <fragment
+                android:id="@+id/fragment8"
+                android:name="com.takezeroapps.countit.CounterFragment"
+                android:layout_width="match_parent"
+                android:layout_height="135dp"
+                tools:layout="@layout/sc_counter_fragment" />
+
+            <fragment
+                android:id="@+id/fragment7"
+                android:name="com.takezeroapps.countit.CounterFragment"
+                android:layout_width="match_parent"
+                android:layout_height="135dp"
+                tools:layout="@layout/sc_counter_fragment" />
+
+            <fragment
                 android:id="@+id/fragment2"
                 android:name="com.takezeroapps.countit.CounterFragment"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                tools:layout="@layout/mc_counter_fragment" />
+                android:layout_height="135dp"
+                tools:layout="@layout/sc_counter_fragment" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
