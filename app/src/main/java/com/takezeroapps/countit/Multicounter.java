@@ -11,11 +11,11 @@ public class Multicounter {
     int count;
     ArrayList<Counter> counters = new ArrayList<Counter>();
 
-    //initialize starting counters with generic label names and a starting count of 0
+    //initialize starting counters with generic label names and a starting count of 0 (in the constructor). Also set fragments to the correct fragments.
     //addCounter() method
     //removeCounter() method
-    //eraseAllCounters() method
-    //renameCounter() method??? or have it in regular Counter object
+    //eraseAllCounters() method ???
+    //renameCounter() method??? or have it in regular Counter object?
 
     public Multicounter(String name, int count)
     {
