@@ -44,6 +44,7 @@ public class CounterListActivity extends AppCompatActivity {
     private ArrayList<Multicounter> multicounterList = new ArrayList<Multicounter>();
     TextView tx;
     String[] c = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+    public static final String MULTICOUNTER_NAME_KEY = "multicounter_name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +75,15 @@ public class CounterListActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(CounterListActivity.this, MultiCounterActivity.class));
+                String selected = (String) (listView.getItemAtPosition(position));
+                Bundle bundle = new Bundle();
+                bundle.putString(MULTICOUNTER_NAME_KEY, selected);
+                Intent intent = new Intent(CounterListActivity.this, MultiCounterActivity.class);
+                intent.putExtras(bundle);
+                Log.d("test", "Selected: "+selected);
+                startActivity(intent);
+
+                //startActivity(new Intent(CounterListActivity.this, MultiCounterActivity.class));
             }
         });
 

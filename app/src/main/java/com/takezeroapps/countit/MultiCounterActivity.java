@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -20,15 +21,51 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.File;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+
 import static android.graphics.Color.BLACK;
 
 public class MultiCounterActivity extends AppCompatActivity {
-
+    private ArrayList<Multicounter> multicounterList = new ArrayList<Multicounter>();
+    private Multicounter current;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_counter);
+        Bundle bundle = getIntent().getExtras();
+        String counterName = bundle.getString(CounterListActivity.MULTICOUNTER_NAME_KEY);
+        setTitle(counterName);
 
+        for(Multicounter mc: multicounterList)
+        {
+            if(mc.getName().equals(counterName))
+            {
+                current=mc;
+                break;
+            }
+        }
+
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        File f = new File("/data/data/com.takezeroapps.countit/shared_prefs/MultiCounterList.xml");
+        if (f.exists())
+        {
+            SharedPreferences pref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
+            SharedPreferences.Editor e = pref.edit();
+            String jsonMC = pref.getString("MultiCounterList", null);
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<Multicounter>>(){}.getType();
+            multicounterList = gson.fromJson(jsonMC, type);
+        }
     }
 
     @Override

@@ -10,7 +10,7 @@ public class Counter {
     int count; //where the count is at
     String label; //name of count
     String multicounterName; //name of the multicounter it belongs to
-    public Fragment fragment;
+    //public Fragment fragment;
     String counterId; //id of counter for when there is two counters from different multicounters that have the same label name. The ID will consist of the Multicounter Name + the counter label
 
     public Counter(String multicounterName, String label, int count)
