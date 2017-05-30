@@ -23,6 +23,7 @@ public class SingleCounterFragment extends Fragment{
     TextView counterName, counterCount;
     Button plusButton, minusButton;
     ImageButton resetButton;
+    Fragment testFragment;
 
     @Nullable
     @Override
@@ -126,7 +127,7 @@ public class SingleCounterFragment extends Fragment{
     {
         return Integer.parseInt(counterCount.getText().toString());
     }
-    public void changeCount(int num)
+    public void setCount(int num)
     {
         counterCount.setText(Integer.toString(num));
     }
@@ -145,15 +146,12 @@ public class SingleCounterFragment extends Fragment{
     }
     public void resetCount()
     {
-        changeCount(0);
+        setCount(0);
     }
 
-    public static SingleCounterFragment newInstance(int type) {
-        SingleCounterFragment fragment = new SingleCounterFragment();
-        Bundle args = new Bundle();
-        args.putInt("type", type);
-        fragment.setArguments(args);
-        return fragment;
+    public void setLabel(String name)
+    {
+        counterName.setText(name);
     }
 
 }

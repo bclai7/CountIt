@@ -33,6 +33,7 @@ import static android.graphics.Color.BLACK;
 public class MultiCounterActivity extends AppCompatActivity {
     private ArrayList<Multicounter> multicounterList = new ArrayList<Multicounter>();
     private Multicounter current;
+    SingleCounterFragment testFragment = new SingleCounterFragment();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +41,18 @@ public class MultiCounterActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         String counterName = bundle.getString(CounterListActivity.MULTICOUNTER_NAME_KEY);
         setTitle(counterName);
+
+        //load data into multi counter list
+        File f = new File("/data/data/com.takezeroapps.countit/shared_prefs/MultiCounterList.xml");
+        if (f.exists()) {
+            SharedPreferences pref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
+            SharedPreferences.Editor e = pref.edit();
+            String jsonMC = pref.getString("MultiCounterList", null);
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<Multicounter>>() {
+            }.getType();
+            multicounterList = gson.fromJson(jsonMC, type);
+        }
 
         for(Multicounter mc: multicounterList)
         {
@@ -50,22 +63,27 @@ public class MultiCounterActivity extends AppCompatActivity {
             }
         }
 
+        //load counter fragments
+        for(Counter c: current.counters)
+        {
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            SingleCounterFragment sc_fragment = new SingleCounterFragment();
+            //SingleCounterFragment sc_fragment = (SingleCounterFragment) getFragmentManager().findFragmentById(R.id.default_fragment);
+            Log.d("test", "new 1");
+            //sc_fragment.setLabel(c.getLabel());
+            //sc_fragment.setCount(c.getCount());
+            Log.d("test", "new 2");
+            fragmentTransaction.add(R.id.mc_linear_layout, sc_fragment);
+            fragmentTransaction.commit();
+        }
+
     }
 
     @Override
     public void onResume()
     {
         super.onResume();
-        File f = new File("/data/data/com.takezeroapps.countit/shared_prefs/MultiCounterList.xml");
-        if (f.exists())
-        {
-            SharedPreferences pref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
-            SharedPreferences.Editor e = pref.edit();
-            String jsonMC = pref.getString("MultiCounterList", null);
-            Gson gson = new Gson();
-            Type type = new TypeToken<ArrayList<Multicounter>>(){}.getType();
-            multicounterList = gson.fromJson(jsonMC, type);
-        }
     }
 
     @Override

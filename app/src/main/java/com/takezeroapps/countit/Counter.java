@@ -18,6 +18,7 @@ public class Counter {
         this.multicounterName=multicounterName;
         this.label=label;
         this.count=count;
+        counterId = this.multicounterName+this.label;
     }
 
     public void setLabel(String label)

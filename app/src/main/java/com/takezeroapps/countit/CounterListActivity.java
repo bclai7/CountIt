@@ -152,9 +152,7 @@ public class CounterListActivity extends AppCompatActivity {
         {
             Log.d("test", "sharedpref doesn't exist");
         }
-
-
-
+        
         for(Multicounter m: multicounterList)
         {
             Log.d("test", "MC Name: "+m.getName());
