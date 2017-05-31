@@ -204,9 +204,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                             SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(counterName, startCount);
                             fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, newCounter.getCounterId());
                             fragmentTransaction.commit();
-
-                            finish();
-                            startActivity(getIntent());
+                            
                         }
 
                     }
