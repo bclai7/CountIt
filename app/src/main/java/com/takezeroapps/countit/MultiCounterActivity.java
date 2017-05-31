@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -71,7 +72,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(c.getLabel(), c.getCount());
-                fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, c.getLabel());
+                fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, c.getCounterId());
                 fragmentTransaction.commit();
                 fragmentManager.executePendingTransactions();
             }
@@ -101,15 +102,179 @@ public class MultiCounterActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.multicounter_add) { //add counter button
+            if(current.counters.size() + 1 > 10) //maximum number of multicounters set to 50
+            {
+                Snackbar.make(getWindow().getDecorView().getRootView(), R.string.max_number_of_counters_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
+            else {
+                //create dialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(MultiCounterActivity.this);
+                builder.setTitle(R.string.create_single_counter_title);
+                Context context = MultiCounterActivity.this; //store context in a variable
+                LinearLayout layout = new LinearLayout(context);
+                layout.setOrientation(LinearLayout.VERTICAL);
 
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            SingleCounterFragment fragment = new SingleCounterFragment();
-            fragmentTransaction.add(R.id.mc_linear_scroll_layout, fragment);
-            fragmentTransaction.commit();
+                //textview telling user to enter counter name
+                final TextView name = new TextView(context);
+                name.setText(R.string.set_counter_name);
+                name.setTextSize(16);
+                name.setTextColor(BLACK);
+                layout.addView(name);
+
+                //Text input for counter name
+                final EditText cName = new EditText(context);
+                cName.setHint(R.string.name_hint);
+                layout.addView(cName);
+                //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
+                cName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        // TODO Auto-generated method stub
+                        if (hasFocus) {
+                            cName.setSingleLine(true);
+                            cName.setMaxLines(1);
+                            cName.setLines(1);
+                        }
+                    }
+                });
+
+                //textview to create a space in between fields
+                final TextView space = new TextView(context);
+                space.setText("");
+                space.setTextSize(16);
+                layout.addView(space);
+
+                //textview telling user to enter counter starting count
+                final TextView sCount = new TextView(context);
+                sCount.setText(R.string.set_starting_count);
+                sCount.setTextSize(16);
+                sCount.setTextColor(BLACK);
+                layout.addView(sCount);
+
+                //Text input for counter name
+                final EditText cCount = new EditText(context);
+                cCount.setHint(R.string.count_hint);
+                layout.addView(cCount);
+
+                //bring up number pad
+                cCount.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+
+                builder.setView(layout);
+
+                builder.create();
+
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        String counterName = cName.getText().toString(); //input text - the user defined counter name
+                        int startCount = Integer.parseInt(cCount.getText().toString()); // starting count entered by user
+
+                        if (counterName.equals("")) {
+                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            dialog.cancel();
+                        } else if (inSingleCounterList(counterName)) {
+                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            dialog.cancel();
+                        } else if (counterName.length() > 25) {
+                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.sc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            dialog.cancel();
+                        }
+                        else if(numberInvalid(startCount))
+                        {
+                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.invalid_number_entered, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            dialog.cancel();
+                        }
+                        else {
+                            //create new counter and add to multicounter
+                            Counter newCounter = new Counter(current.getName(), counterName, startCount);
+                            current.counters.add(newCounter);
+                            saveCountersToMulticounter(current.counters);
+                            //save multicounter list
+                            SharedPreferences sharedPref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            Gson gson = new Gson();
+                            String jsonMC = gson.toJson(multicounterList);
+                            editor.putString("MultiCounterList", jsonMC);
+                            editor.commit();
+
+                            FragmentManager fragmentManager = getFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(counterName, startCount);
+                            fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, newCounter.getCounterId());
+                            fragmentTransaction.commit();
+
+                            finish();
+                            startActivity(getIntent());
+                        }
+
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
 
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        /*
+        LinearLayout lay = (LinearLayout)findViewById(R.id.mc_linear_scroll_layout);
+        for(Counter c: current.counters)
+        {
+            //for each counter, find the fragment it belongs to and use the fragment to get the label name and count name and store it in the counter object using the setter methods
+            //after you've done this for each counter, save current.counters to the "counters" arrayList variable using the "saveCountersToMulticounter()" method
+            for(int i=0; i<lay.getChildCount(); i++)
+            {
+                if(lay.getChildAt(i).getTag().equals(c.getCounterId()))
+                {
+                    //((SingleCounterFragment)lay.getChildAt(i)).get
+                }
+            }
+        }
+        */
+    }
+
+    public boolean inSingleCounterList(String counterName)
+    {
+        for(Counter co: current.counters)
+        {
+            if(co.getLabel().equals(counterName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //check method
+    public void saveCountersToMulticounter(ArrayList<Counter> counterList) {
+        for(Multicounter m: multicounterList)
+        {
+            if(current.getName().equals(m.getName()))
+            {
+                m.counters=counterList;
+                break;
+            }
+        }
+    }
+
+    public boolean numberInvalid(int num)
+    {
+        if(num > 2147483646)
+            return true;
+        if(num < -2147483646)
+            return true;
+        return false;
     }
 }

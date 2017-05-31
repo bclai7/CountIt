@@ -57,6 +57,12 @@ public class Counter {
         return count;
     }
 
+    public void setMulticounterName(String multicounterName)
+    {
+        this.multicounterName=multicounterName;
+        setCounterId();
+    }
+
     public String getMulticounterName()
     {
         return multicounterName;
@@ -67,10 +73,9 @@ public class Counter {
         counterId = multicounterName+label;
     }
 
-    public void setMulticounterName(String multicounterName)
+    public String getCounterId()
     {
-        this.multicounterName=multicounterName;
-        setCounterId();
+        return counterId;
     }
 
     public String getMultiCounterName()
