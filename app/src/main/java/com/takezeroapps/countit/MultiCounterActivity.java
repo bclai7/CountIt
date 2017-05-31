@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import static android.graphics.Color.BLACK;
 
 public class MultiCounterActivity extends AppCompatActivity {
-    private ArrayList<Multicounter> multicounterList = new ArrayList<Multicounter>();
+    //private ArrayList<Multicounter> multicounterList = new ArrayList<Multicounter>();
     private Multicounter current;
     SingleCounterFragment testFragment = new SingleCounterFragment();
     @Override
@@ -52,10 +52,10 @@ public class MultiCounterActivity extends AppCompatActivity {
             Gson gson = new Gson();
             Type type = new TypeToken<ArrayList<Multicounter>>() {
             }.getType();
-            multicounterList = gson.fromJson(jsonMC, type);
+            CounterListActivity.multicounterList = gson.fromJson(jsonMC, type);
         }
 
-        for(Multicounter mc: multicounterList)
+        for(Multicounter mc: CounterListActivity.multicounterList)
         {
             if(mc.getName().equals(counterName))
             {
@@ -71,7 +71,7 @@ public class MultiCounterActivity extends AppCompatActivity {
             for (Counter c : current.counters) {
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(c.getLabel(), c.getCount());
+                SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(current.getName(), c.getLabel(), c.getCount());
                 fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, c.getCounterId());
                 fragmentTransaction.commit();
                 fragmentManager.executePendingTransactions();
@@ -159,6 +159,8 @@ public class MultiCounterActivity extends AppCompatActivity {
 
                 //bring up number pad
                 cCount.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                
+                layout.setPadding(60, 50, 60, 10);
 
                 builder.setView(layout);
 
@@ -195,16 +197,16 @@ public class MultiCounterActivity extends AppCompatActivity {
                             SharedPreferences sharedPref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
                             Gson gson = new Gson();
-                            String jsonMC = gson.toJson(multicounterList);
+                            String jsonMC = gson.toJson(CounterListActivity.multicounterList);
                             editor.putString("MultiCounterList", jsonMC);
                             editor.commit();
 
                             FragmentManager fragmentManager = getFragmentManager();
                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(counterName, startCount);
+                            SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(current.getName(), counterName, startCount);
                             fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, newCounter.getCounterId());
                             fragmentTransaction.commit();
-                            
+
                         }
 
                     }
@@ -257,7 +259,7 @@ public class MultiCounterActivity extends AppCompatActivity {
 
     //check method
     public void saveCountersToMulticounter(ArrayList<Counter> counterList) {
-        for(Multicounter m: multicounterList)
+        for(Multicounter m: CounterListActivity.multicounterList)
         {
             if(current.getName().equals(m.getName()))
             {

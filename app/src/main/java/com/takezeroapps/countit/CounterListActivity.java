@@ -41,7 +41,7 @@ public class CounterListActivity extends AppCompatActivity {
     private ListView listView;
     private String[] multicounterNamesArray;
     private ArrayList<String> multicounterNameList = new ArrayList<String>();
-    private ArrayList<Multicounter> multicounterList = new ArrayList<Multicounter>();
+    public static ArrayList<Multicounter> multicounterList = new ArrayList<Multicounter>();
     TextView tx;
     String[] c = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
     public static final String MULTICOUNTER_NAME_KEY = "multicounter_name";

@@ -2,6 +2,7 @@ package com.takezeroapps.countit;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -16,6 +17,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 /**
  * Created by scoob on 1/7/2017.
  */
@@ -24,10 +27,13 @@ public class SingleCounterFragment extends Fragment{
     TextView counterName, counterCount;
     Button plusButton, minusButton;
     ImageButton resetButton;
+    String mcName, cName;
+    int cCount;
 
-    public static SingleCounterFragment newInstance(String cName, int cCount) {
+    public static SingleCounterFragment newInstance(String mcName, String cName, int cCount) {
         SingleCounterFragment myFragment = new SingleCounterFragment();
         Bundle args = new Bundle();
+        args.putString("mcName", mcName);
         args.putString("cName", cName);
         args.putInt("cCount", cCount);
         myFragment.setArguments(args);
@@ -40,8 +46,9 @@ public class SingleCounterFragment extends Fragment{
         super.onViewCreated(view, savedInstanceState);
         try
         {
-            String cName = getArguments().getString("cName");
-            int cCount = getArguments().getInt("cCount");
+            mcName=getArguments().getString("mcName");
+            cName = getArguments().getString("cName");
+            cCount = getArguments().getInt("cCount");
             counterName.setText(cName);
             counterCount.setText(Integer.toString(cCount));
         }
@@ -147,6 +154,33 @@ public class SingleCounterFragment extends Fragment{
         );
 
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        for(Multicounter m: CounterListActivity.multicounterList)
+        {
+            if(m.getName().equals(mcName))
+            {
+                for(Counter c: m.counters)
+                {
+                    if(c.getLabel().equals(cName))
+                    {
+                        c.setCount(getCount());
+                        break;
+                    }
+                }
+            }
+        }
+
+        //save multicounter list
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        Gson gson = new Gson();
+        String jsonMC = gson.toJson(CounterListActivity.multicounterList);
+        editor.putString("MultiCounterList", jsonMC);
+        editor.commit();
     }
 
     public int getCount()
