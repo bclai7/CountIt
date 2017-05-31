@@ -21,10 +21,35 @@ import android.widget.TextView;
  */
 public class SingleCounterFragment extends Fragment{
 
-    private static TextView counterName, counterCount;
-    private static Button plusButton, minusButton;
-    private static ImageButton resetButton;
-    private static Fragment testFragment;
+    TextView counterName, counterCount;
+    Button plusButton, minusButton;
+    ImageButton resetButton;
+
+    public static SingleCounterFragment newInstance(String cName, int cCount) {
+        SingleCounterFragment myFragment = new SingleCounterFragment();
+        Bundle args = new Bundle();
+        args.putString("cName", cName);
+        args.putInt("cCount", cCount);
+        myFragment.setArguments(args);
+
+        return myFragment;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        try
+        {
+            String cName = getArguments().getString("cName");
+            int cCount = getArguments().getInt("cCount");
+            counterName.setText(cName);
+            counterCount.setText(Integer.toString(cCount));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     @Nullable
     @Override
