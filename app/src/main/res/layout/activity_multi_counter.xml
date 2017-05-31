@@ -2,26 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mc_lin_lay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.takezeroapps.countit.MultiCounterActivity">
 
     <ScrollView
+        android:id="@+id/mc_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/mc_linear_layout"
+            android:id="@+id/mc_linear_scroll_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <fragment
-                android:id="@+id/default_fragment"
-                android:name="com.takezeroapps.countit.SingleCounterFragment"
-                android:layout_width="match_parent"
-                android:layout_height="135dp"
-                tools:layout="@layout/sc_counter_fragment" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

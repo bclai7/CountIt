@@ -1,5 +1,6 @@
 package com.takezeroapps.countit;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,10 +21,10 @@ import android.widget.TextView;
  */
 public class SingleCounterFragment extends Fragment{
 
-    TextView counterName, counterCount;
-    Button plusButton, minusButton;
-    ImageButton resetButton;
-    Fragment testFragment;
+    private static TextView counterName, counterCount;
+    private static Button plusButton, minusButton;
+    private static ImageButton resetButton;
+    private static Fragment testFragment;
 
     @Nullable
     @Override

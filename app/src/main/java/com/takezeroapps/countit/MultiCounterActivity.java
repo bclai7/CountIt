@@ -63,19 +63,24 @@ public class MultiCounterActivity extends AppCompatActivity {
             }
         }
 
+        int cc = 0;
         //load counter fragments
-        for(Counter c: current.counters)
+        try
         {
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            SingleCounterFragment sc_fragment = new SingleCounterFragment();
-            //SingleCounterFragment sc_fragment = (SingleCounterFragment) getFragmentManager().findFragmentById(R.id.default_fragment);
-            Log.d("test", "new 1");
-            //sc_fragment.setLabel(c.getLabel());
-            //sc_fragment.setCount(c.getCount());
-            Log.d("test", "new 2");
-            fragmentTransaction.add(R.id.mc_linear_layout, sc_fragment);
-            fragmentTransaction.commit();
+            for (Counter c : current.counters) {
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                SingleCounterFragment sc_fragment = new SingleCounterFragment();
+                sc_fragment.setLabel(c.getLabel());
+                sc_fragment.setCount(c.getCount());
+                fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, c.getLabel());
+                fragmentTransaction.commit();
+                fragmentManager.executePendingTransactions();
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
         }
 
     }
@@ -102,7 +107,7 @@ public class MultiCounterActivity extends AppCompatActivity {
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             SingleCounterFragment fragment = new SingleCounterFragment();
-            fragmentTransaction.add(R.id.mc_linear_layout, fragment);
+            fragmentTransaction.add(R.id.mc_linear_scroll_layout, fragment);
             fragmentTransaction.commit();
 
         }
