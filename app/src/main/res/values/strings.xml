@@ -23,6 +23,7 @@
     <string name="create_single_counter_title">Create New Counter</string>
     <string name="counter_already_exists">Counter Name already exists!</string>
     <string name="no_counter_name">No counter name was entered!</string>
+    <string name="no_counter_count">No count was entered!</string>
     <string name="counter_colon">Counter: </string>
     <string name="multicounter_activity_title">Counter Name</string>
     <string name="mc_title_length_error">Please enter a title name less than 40 characters</string>

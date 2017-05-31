@@ -159,7 +159,7 @@ public class MultiCounterActivity extends AppCompatActivity {
 
                 //bring up number pad
                 cCount.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
-                
+
                 layout.setPadding(60, 50, 60, 10);
 
                 builder.setView(layout);
@@ -169,46 +169,52 @@ public class MultiCounterActivity extends AppCompatActivity {
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            String counterName = cName.getText().toString(); //input text - the user defined counter name
 
-                        String counterName = cName.getText().toString(); //input text - the user defined counter name
-                        int startCount = Integer.parseInt(cCount.getText().toString()); // starting count entered by user
+                            if(cCount.getText().toString().equals("")) throw new IllegalArgumentException();
 
-                        if (counterName.equals("")) {
-                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                            dialog.cancel();
-                        } else if (inSingleCounterList(counterName)) {
-                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                            dialog.cancel();
-                        } else if (counterName.length() > 25) {
-                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.sc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                            dialog.cancel();
+                            int startCount = Integer.parseInt(cCount.getText().toString()); // starting count entered by user
+
+                            if (counterName.equals("")) {
+                                Snackbar.make(getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                dialog.cancel();
+                            } else if (inSingleCounterList(counterName)) {
+                                Snackbar.make(getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                dialog.cancel();
+                            } else if (counterName.length() > 25) {
+                                Snackbar.make(getWindow().getDecorView().getRootView(), R.string.sc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                dialog.cancel();
+                            } else if (numberInvalid(startCount)) {
+                                Snackbar.make(getWindow().getDecorView().getRootView(), R.string.invalid_number_entered, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                dialog.cancel();
+                            } else {
+                                //create new counter and add to multicounter
+                                Counter newCounter = new Counter(current.getName(), counterName, startCount);
+                                current.counters.add(newCounter);
+                                saveCountersToMulticounter(current.counters);
+                                //save multicounter list
+                                SharedPreferences sharedPref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                Gson gson = new Gson();
+                                String jsonMC = gson.toJson(CounterListActivity.multicounterList);
+                                editor.putString("MultiCounterList", jsonMC);
+                                editor.commit();
+
+                                FragmentManager fragmentManager = getFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(current.getName(), counterName, startCount);
+                                fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, newCounter.getCounterId());
+                                fragmentTransaction.commit();
+
+                            }
+
                         }
-                        else if(numberInvalid(startCount))
+                        catch (IllegalArgumentException e)
                         {
-                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.invalid_number_entered, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.no_counter_count, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             dialog.cancel();
                         }
-                        else {
-                            //create new counter and add to multicounter
-                            Counter newCounter = new Counter(current.getName(), counterName, startCount);
-                            current.counters.add(newCounter);
-                            saveCountersToMulticounter(current.counters);
-                            //save multicounter list
-                            SharedPreferences sharedPref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPref.edit();
-                            Gson gson = new Gson();
-                            String jsonMC = gson.toJson(CounterListActivity.multicounterList);
-                            editor.putString("MultiCounterList", jsonMC);
-                            editor.commit();
-
-                            FragmentManager fragmentManager = getFragmentManager();
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(current.getName(), counterName, startCount);
-                            fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, newCounter.getCounterId());
-                            fragmentTransaction.commit();
-
-                        }
-
                     }
                 });
                 builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
