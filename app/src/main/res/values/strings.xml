@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">Count It</string>
     <string name="reset_title">Reset Counter</string>
+    <string name="delete_title">Delete Counter</string>
     <string name="reset_question">Are you sure you want to reset the counter?</string>
+    <string name="delete_question">Are you sure you want to delete the counter?</string>
     <string name="yes">Yes</string>
-    <string name="no">No</string>
+    <string name="no">No</string>m
     <string name="change_count">Change Count</string>
     <string name="max_num">Max Number Reached</string>
     <string name="min_num">Minimum Number Reacher</string>

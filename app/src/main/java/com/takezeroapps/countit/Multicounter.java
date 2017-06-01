@@ -1,6 +1,7 @@
 package com.takezeroapps.countit;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by BDC on 5/25/2017.
@@ -45,14 +46,26 @@ public class Multicounter {
         return count;
     }
 
-    public void deleteCounter(Counter counter)
+    public void deleteCounter(String counter)
     {
+        /*
         for(Counter c: new ArrayList<Counter>(counters)){
             if(c.getLabel().equals(counter.getLabel()))
             {
                 counters.remove(c);
             }
             break;
+        }
+        */
+        Iterator<Counter> i = counters.iterator();
+        while (i.hasNext()) {
+            Counter c = i.next(); // must be called before you can call i.remove()
+            // Do something
+            if(c.getLabel().equals(counter))
+            {
+                i.remove();
+                break;
+            }
         }
     }
 

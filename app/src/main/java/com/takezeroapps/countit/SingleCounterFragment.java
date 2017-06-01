@@ -229,13 +229,7 @@ public class SingleCounterFragment extends Fragment{
                                             setNewCounterName(counterName); //sets new countername in the counter object as well as the textview
 
                                             //save multicounter list
-                                            SharedPreferences sharedPref = getActivity().getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
-                                            SharedPreferences.Editor editor = sharedPref.edit();
-                                            Gson gson = new Gson();
-                                            String jsonMC = gson.toJson(CounterListActivity.multicounterList);
-                                            editor.putString("MultiCounterList", jsonMC);
-                                            editor.commit();
-
+                                            saveMultiCounterList();
                                         }
 
                                     }
@@ -260,7 +254,27 @@ public class SingleCounterFragment extends Fragment{
         deleteCounter.setOnClickListener(
                 new ImageButton.OnClickListener(){
                     public void onClick(View v){
-                        
+                        AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
+
+                        deleteDialog.setMessage(R.string.delete_question)
+                                .setTitle(R.string.delete_title);
+                        deleteDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // delete counter if "yes" is clicked
+                                deleteCounterFromMC();
+                                saveMultiCounterList();
+                                deleteFragment();
+                            }
+                        });
+                        deleteDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //cancel dialog if "no" is clicked
+                                dialog.cancel();
+                            }
+                        });
+
+                        AlertDialog dialog = deleteDialog.create();
+                        deleteDialog.show();
                     }
                 }
         );
@@ -290,12 +304,7 @@ public class SingleCounterFragment extends Fragment{
         }
 
         //save multicounter list
-        SharedPreferences sharedPref = getActivity().getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        Gson gson = new Gson();
-        String jsonMC = gson.toJson(CounterListActivity.multicounterList);
-        editor.putString("MultiCounterList", jsonMC);
-        editor.commit();
+        saveMultiCounterList();
     }
 
     @Override
@@ -354,6 +363,19 @@ public class SingleCounterFragment extends Fragment{
         return false;
     }
 
+    public void deleteCounterFromMC()
+    {
+        for(Multicounter m: CounterListActivity.multicounterList)
+        {
+            if(m.getName().equals(mcName))
+            {
+
+                m.deleteCounter(cName);
+                break;
+            }
+        }
+    }
+
     public int getCount()
     {
         return Integer.parseInt(counterCount.getText().toString());
@@ -383,6 +405,22 @@ public class SingleCounterFragment extends Fragment{
     public void setLabel(String name)
     {
         counterName.setText(name);
+    }
+
+    public void deleteFragment() //fragment self-destructs
+    {
+        getActivity().getFragmentManager().beginTransaction().remove(SingleCounterFragment.this).commit();
+    }
+
+    public void saveMultiCounterList()
+    {
+        //save multicounter list
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        Gson gson = new Gson();
+        String jsonMC = gson.toJson(CounterListActivity.multicounterList);
+        editor.putString("MultiCounterList", jsonMC);
+        editor.commit();
     }
 
 }
