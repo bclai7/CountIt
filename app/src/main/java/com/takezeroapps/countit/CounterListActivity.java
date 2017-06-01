@@ -200,7 +200,7 @@ public class CounterListActivity extends AppCompatActivity {
                                             saveCounterList(multicounterNameList);
 
                                             //set the new name in the actual counter object
-                                            for(Multicounter m: CounterListActivity.multicounterList)
+                                            for(Multicounter m: multicounterList)
                                             {
                                                 if(m.getName().equals(item))
                                                 {
@@ -236,21 +236,20 @@ public class CounterListActivity extends AppCompatActivity {
                         }
                         else if(position==2) //delete button
                         {
+                            //dismiss the previous dialog with the list of options
+                            alert.dismiss();
                             AlertDialog.Builder deleteDialog = new AlertDialog.Builder(CounterListActivity.this);
 
                             deleteDialog.setMessage(R.string.delete_mc_question)
                                     .setTitle(R.string.delete_mc_title);
                             deleteDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    //dismiss the previous dialog with the list of options
-                                    alert.dismiss();
-
                                     //find multicounter and delete from list
                                     //first find multicounter in multicounterList and remove it
                                     Iterator<Multicounter> a = multicounterList.iterator();
                                     while (a.hasNext()) {
                                         Multicounter m = a.next();
-                                        if(m.equals(item))
+                                        if(m.getName().equals(item))
                                         {
                                             a.remove();
                                             break;
@@ -258,7 +257,6 @@ public class CounterListActivity extends AppCompatActivity {
                                     }
                                     //save multiCounterList
                                     saveMultiCounterList();
-
                                     //remove name from multicounterNameList (list of strings)
                                     Iterator<String> b = multicounterNameList.iterator();
                                     while (b.hasNext()) {
@@ -505,7 +503,7 @@ public class CounterListActivity extends AppCompatActivity {
         SharedPreferences sharedPref = CounterListActivity.this.getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         Gson gson = new Gson();
-        String jsonMC = gson.toJson(CounterListActivity.multicounterList);
+        String jsonMC = gson.toJson(multicounterList);
         editor.putString("MultiCounterList", jsonMC);
         editor.commit();
     }
