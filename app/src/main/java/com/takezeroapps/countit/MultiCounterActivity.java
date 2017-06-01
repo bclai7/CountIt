@@ -278,7 +278,6 @@ public class MultiCounterActivity extends AppCompatActivity {
         return false;
     }
 
-    //check method
     public void saveCountersToMulticounter(ArrayList<Counter> counterList) {
         for(Multicounter m: CounterListActivity.multicounterList)
         {
