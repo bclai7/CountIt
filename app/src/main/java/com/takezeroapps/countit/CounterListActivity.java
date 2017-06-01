@@ -420,18 +420,14 @@ public class CounterListActivity extends AppCompatActivity {
                             //create new multicounter and add to list
                             multicounterList.add(new Multicounter(mcName, initCount));
 
-                            //save multicounter list
-                            SharedPreferences sharedPref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPref.edit();
-                            Gson gson = new Gson();
-                            String jsonMC = gson.toJson(multicounterList);
-                            editor.putString("MultiCounterList", jsonMC);
-                            editor.commit();
+                            saveMultiCounterList();
 
                             multicounterNameList.add(mcName);
                             saveCounterList(multicounterNameList);
-                            finish();
-                            startActivity(getIntent());
+
+                            multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+                            adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                            listView.setAdapter(adapter);
                         }
 
                     }
