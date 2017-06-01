@@ -321,21 +321,6 @@ public class CounterListActivity extends AppCompatActivity {
         }
     }
 
-
-   /*
-        //for the actual counter activity, for each count in the counter
-
-        //save move list
-        SharedPreferences sharedPref = getSharedPreferences(filename, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-
-        Gson gson = new Gson();
-        String jsonMoves = gson.toJson(moveList);
-
-        editor.putString(filename, jsonMoves);
-        editor.commit();
-    */
-
    public boolean inCounterList(String counterName)
    {
        for(String s: multicounterNameList)
@@ -347,24 +332,6 @@ public class CounterListActivity extends AppCompatActivity {
        }
        return false;
    }
-
-    public class OnSpinnerItemClicked implements AdapterView.OnItemSelectedListener {
-
-        @Override
-        public void onItemSelected(AdapterView<?> parent,
-                                   View view, int pos, long id) {
-            Toast.makeText(parent.getContext(), "Clicked : " +
-                    parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
-            Log.d("test", "option: "+parent.getItemAtPosition(pos).toString());
-
-
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView parent) {
-            // Do nothing.
-        }
-    }
 
     //SEARCH FUNCTIONS
 

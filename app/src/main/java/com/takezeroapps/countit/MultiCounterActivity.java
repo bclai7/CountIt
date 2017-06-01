@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -35,6 +37,9 @@ public class MultiCounterActivity extends AppCompatActivity {
     //private ArrayList<Multicounter> multicounterList = new ArrayList<Multicounter>();
     private Multicounter current;
     SingleCounterFragment testFragment = new SingleCounterFragment();
+    boolean vibrateSetting, resetconfirmSetting, screenSetting;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +93,15 @@ public class MultiCounterActivity extends AppCompatActivity {
     public void onResume()
     {
         super.onResume();
+        //get saved "keep screen on" setting from shared preferences
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        screenSetting = prefs.getBoolean("switch_preference_screen", false);
+
+        if(screenSetting)
+        {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+
     }
 
     @Override
@@ -182,7 +196,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                             } else if (inSingleCounterList(counterName)) {
                                 Snackbar.make(getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                 dialog.cancel();
-                            } else if (counterName.length() > 25) {
+                            } else if (counterName.length() > 20) {
                                 Snackbar.make(getWindow().getDecorView().getRootView(), R.string.sc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                 dialog.cancel();
                             } else if (numberInvalid(startCount)) {

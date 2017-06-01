@@ -11,8 +11,6 @@ public class Multicounter {
     int count; //number of counters
     public ArrayList<Counter> counters;
 
-    //initialize starting counters with generic label names and a starting count of 0 (in the constructor). Also set fragments to the correct fragments.
-    //removeCounter() method
     //eraseAllCounters() method ???
 
     public Multicounter(String name, int count)
@@ -47,8 +45,15 @@ public class Multicounter {
         return count;
     }
 
-    public void addCounter(Counter counter)
+    public void deleteCounter(Counter counter)
     {
-        counters.add(counter);
+        for(Counter c: new ArrayList<Counter>(counters)){
+            if(c.getLabel().equals(counter.getLabel()))
+            {
+                counters.remove(c);
+            }
+            break;
+        }
     }
+
 }
