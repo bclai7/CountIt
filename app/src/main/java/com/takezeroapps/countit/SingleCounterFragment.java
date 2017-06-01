@@ -14,6 +14,7 @@ import android.support.design.widget.Snackbar;
 import android.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -27,6 +28,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
 
 import static android.graphics.Color.BLACK;
 
@@ -215,7 +218,7 @@ public class SingleCounterFragment extends Fragment{
                                     try {
                                         String counterName = counterEdit.getText().toString(); //input text - the user defined counter name
 
-                                        if (counterName.equals("")) {
+                                        if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
                                             Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                             dialog.cancel();
                                         } else if (inSingleCounterList(counterName)) {
@@ -275,6 +278,90 @@ public class SingleCounterFragment extends Fragment{
 
                         AlertDialog dialog = deleteDialog.create();
                         deleteDialog.show();
+                    }
+                }
+        );
+
+        counterCount.setOnLongClickListener(
+                new ImageButton.OnLongClickListener(){
+                    @Override
+                    public boolean onLongClick(final View view) {
+                        final int currcount = getCount();
+
+                        final CharSequence[] negOptions = {getActivity().getResources().getString(R.string.make_negative_num)}; //choices to select from, only one choice so it only has one element
+                        final ArrayList selectedItems=new ArrayList();
+
+                        final AlertDialog.Builder counterChanger = new AlertDialog.Builder(getActivity());
+                        counterChanger.setTitle(R.string.change_count); //set title
+
+                        // Set up the input
+                        final EditText input = new EditText(getActivity());
+
+                        // Specify the type of input expected; this, for example, sets the input as a number, and will use the numpad
+                        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                        counterChanger.setView(input);
+
+                        // Set up the buttons
+                        counterChanger.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                String input_string = input.getText().toString().trim();
+                                int newNum;
+
+                                if(input_string.isEmpty() || input_string.length() == 0 || input_string.equals("") || TextUtils.isEmpty(input_string)) //check if input is empty
+                                {
+                                    Snackbar.make(view, R.string.no_input_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                    newNum=getCount(); //set new count back to old count (or else manually setting a real number > resetting count > entering blank input = count being the original real number instead of 0 after the reset)
+                                    dialog.cancel();
+                                }
+                                else //if string is not empty, convert to int
+                                    newNum = Integer.valueOf(input.getText().toString());//get integer value of new number
+
+                                if(newNum > 2147483646) //if entered is too high, print error and return to original number
+                                {
+                                    if(vibrateSetting)
+                                        vib.vibrate(pattern, -1);
+                                    Snackbar.make(view, R.string.too_high_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                    dialog.cancel();
+                                }
+                                else if(newNum < -2147483646) //if number entered is too low, print error and return to original number
+                                {
+                                    if(vibrateSetting)
+                                        vib.vibrate(pattern, -1);
+                                    Snackbar.make(view, R.string.too_high_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                    dialog.cancel();
+                                }
+                                else //else change number
+                                {
+                                    if(isNegative)
+                                        setCount(-1*newNum); //if isNegative checkbox is checked, make the number negative
+                                    else
+                                        setCount(newNum); //if checkbox is not checked, keep number the same
+                                }
+                            }
+                        });
+                        counterChanger.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel(); //cancel dialog and do not save changes when "cancel" button is clicked
+                            }
+                        });
+                        counterChanger.setMultiChoiceItems(negOptions, null, new DialogInterface.OnMultiChoiceClickListener() { //checkbox for negative number
+                            @Override
+                            public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                                if (isChecked) {
+                                    isNegative=true; //if checkbox is checked, set the boolean value for negative number as true
+                                }
+                                else
+                                    isNegative=false; //otherwise if checkbox is not checked, then keep value positive
+                            }
+                        });
+
+                        counterChanger.show(); //show dialog
+                        isNegative=false; //sets negative flag back to false after dialog is closed. This is so the input doesn't stay negative on each new change by the user
+
+                        return true;
                     }
                 }
         );

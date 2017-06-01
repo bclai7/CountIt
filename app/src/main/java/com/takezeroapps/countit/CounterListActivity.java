@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -242,7 +243,7 @@ public class CounterListActivity extends AppCompatActivity {
                         String mcName = input.getText().toString(); //input text - the user defined multi-counter name
                         int initCount = Integer.parseInt(sp.getSelectedItem().toString()); // initial count entered by user
 
-                        if (mcName.equals("")) {
+                        if (mcName.isEmpty() || mcName.length() == 0 || mcName.equals("") || TextUtils.isEmpty(mcName)) {
                             Snackbar.make(getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             dialog.cancel();
                         } else if (inCounterList(mcName)) {

@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -186,11 +187,11 @@ public class MultiCounterActivity extends AppCompatActivity {
                         try {
                             String counterName = cName.getText().toString(); //input text - the user defined counter name
 
-                            if(cCount.getText().toString().equals("")) throw new IllegalArgumentException();
+                            if(cCount.getText().toString().equals("") || cCount.getText().toString().isEmpty() || cCount.getText().toString().length() == 0  || TextUtils.isEmpty(cCount.getText().toString())) throw new IllegalArgumentException();
 
                             int startCount = Integer.parseInt(cCount.getText().toString()); // starting count entered by user
 
-                            if (counterName.equals("")) {
+                            if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
                                 Snackbar.make(getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                 dialog.cancel();
                             } else if (inSingleCounterList(counterName)) {
