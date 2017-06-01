@@ -2,8 +2,10 @@
     <string name="app_name">Count It</string>
     <string name="reset_title">Reset Counter</string>
     <string name="delete_title">Delete Counter</string>
+    <string name="delete_mc_title">Delete Multicounter</string>
     <string name="reset_question">Are you sure you want to reset the counter?</string>
-    <string name="delete_question">Are you sure you want to delete the counter?</string>
+    <string name="delete_question">Are you sure you want to delete this counter?</string>
+    <string name="delete_mc_question">Are you sure you want to delete this multicounter?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>m
     <string name="change_count">Change Count</string>
@@ -25,6 +27,9 @@
     <string name="create_single_counter_title">Create New Counter</string>
     <string name="counter_already_exists">Counter Name already exists!</string>
     <string name="no_counter_name">No counter name was entered!</string>
+    <string name="mcounter_already_exists">Multicounter Name already exists!</string>
+    <string name="no_mcounter_name">No multicounter name was entered!</string>
+
     <string name="no_counter_count">No count was entered!</string>
     <string name="counter_colon">Counter: </string>
     <string name="multicounter_activity_title">Counter Name</string>
@@ -34,8 +39,8 @@
     <string name="max_number_of_counters_error">You have reached the maximum number of counters</string>
     <string name="count_hint">Starting Count</string>
     <string name="invalid_number_entered">Number entered is invalid</string>
-    <string name="rename_single_counter">Edit Counter Name</string>
-    <string name="rename_multi_counter">Edit Multicounter Name</string>
+    <string name="rename_single_counter">Rename Counter</string>
+    <string name="rename_multi_counter">Rename Multicounter</string>
 
 
     <string name="set_starting_count">Starting Count: </string>

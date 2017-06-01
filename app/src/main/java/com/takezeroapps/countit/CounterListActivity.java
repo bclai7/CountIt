@@ -47,6 +47,7 @@ public class CounterListActivity extends AppCompatActivity {
     TextView tx;
     String[] c = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
     public static final String MULTICOUNTER_NAME_KEY = "multicounter_name";
+    ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +69,7 @@ public class CounterListActivity extends AppCompatActivity {
         //initialize listView to the listview object in the xml file
         listView = (ListView)findViewById(R.id.counter_list);
         //add array of counter names to adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.mcounters_text_format, multicounterNamesArray);
+        adapter = new ArrayAdapter<String>(this, R.layout.mcounters_text_format, multicounterNamesArray);
 
         //set adapter to list view
         listView.setAdapter(adapter);
@@ -88,7 +89,7 @@ public class CounterListActivity extends AppCompatActivity {
 
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, final View view, int position, long id) {
                 //on long click
 
                 final String item = (String) ((TextView) view).getText();
@@ -100,8 +101,8 @@ public class CounterListActivity extends AppCompatActivity {
                 alertDialog.setView(convertView);
                 alertDialog.setTitle(item);
                 ListView lv = (ListView) convertView.findViewById(R.id.listView1);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(CounterListActivity.this,android.R.layout.simple_list_item_1,names);
-                lv.setAdapter(adapter);
+                ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(CounterListActivity.this,android.R.layout.simple_list_item_1,names);
+                lv.setAdapter(adapter1);
                 final AlertDialog alert = alertDialog.create();
                 alert.show();
 
@@ -164,10 +165,10 @@ public class CounterListActivity extends AppCompatActivity {
                                         String counterName = counterEdit.getText().toString(); //input text - the user defined counter name
 
                                         if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
-                                            Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                            Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.no_mcounter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                             dialog.cancel();
                                         } else if (inCounterList(counterName)) {
-                                            Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                            Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.mcounter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                             dialog.cancel();
                                         } else if (counterName.length() > 40) {
                                             Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.mc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
@@ -211,8 +212,10 @@ public class CounterListActivity extends AppCompatActivity {
                                             //save multicounter list
                                             saveMultiCounterList();
 
-                                            finish();
-                                            startActivity(getIntent());
+                                            ((TextView)view).setText(counterName);
+                                            multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+                                            adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                            listView.setAdapter(adapter);
                                         }
 
                                     }
@@ -233,7 +236,57 @@ public class CounterListActivity extends AppCompatActivity {
                         }
                         else if(position==2) //delete button
                         {
+                            AlertDialog.Builder deleteDialog = new AlertDialog.Builder(CounterListActivity.this);
 
+                            deleteDialog.setMessage(R.string.delete_mc_question)
+                                    .setTitle(R.string.delete_mc_title);
+                            deleteDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //dismiss the previous dialog with the list of options
+                                    alert.dismiss();
+
+                                    //find multicounter and delete from list
+                                    //first find multicounter in multicounterList and remove it
+                                    Iterator<Multicounter> a = multicounterList.iterator();
+                                    while (a.hasNext()) {
+                                        Multicounter m = a.next();
+                                        if(m.equals(item))
+                                        {
+                                            a.remove();
+                                            break;
+                                        }
+                                    }
+                                    //save multiCounterList
+                                    saveMultiCounterList();
+
+                                    //remove name from multicounterNameList (list of strings)
+                                    Iterator<String> b = multicounterNameList.iterator();
+                                    while (b.hasNext()) {
+                                        String s = b.next(); // must be called before you can call i.remove()
+                                        if(s.equals(item))
+                                        {
+                                            b.remove();
+                                            break;
+                                        }
+                                    }
+                                    //save string list
+                                    saveCounterList(multicounterNameList);
+
+                                    multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+                                    adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                    listView.setAdapter(adapter);
+
+                                }
+                            });
+                            deleteDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //cancel dialog if "no" is clicked
+                                    dialog.cancel();
+                                }
+                            });
+
+                            AlertDialog dialog = deleteDialog.create();
+                            deleteDialog.show();
                         }
                         else if(position==3) //details button
                         {
@@ -356,10 +409,10 @@ public class CounterListActivity extends AppCompatActivity {
                         int initCount = Integer.parseInt(sp.getSelectedItem().toString()); // initial count entered by user
 
                         if (mcName.isEmpty() || mcName.length() == 0 || mcName.equals("") || TextUtils.isEmpty(mcName)) {
-                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.no_mcounter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             dialog.cancel();
                         } else if (inCounterList(mcName)) {
-                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.mcounter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             dialog.cancel();
                         } else if (mcName.length() > 40) {
                             Snackbar.make(getWindow().getDecorView().getRootView(), R.string.mc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
