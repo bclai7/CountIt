@@ -247,26 +247,6 @@ public class MultiCounterActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        /*
-        LinearLayout lay = (LinearLayout)findViewById(R.id.mc_linear_scroll_layout);
-        for(Counter c: current.counters)
-        {
-            //for each counter, find the fragment it belongs to and use the fragment to get the label name and count name and store it in the counter object using the setter methods
-            //after you've done this for each counter, save current.counters to the "counters" arrayList variable using the "saveCountersToMulticounter()" method
-            for(int i=0; i<lay.getChildCount(); i++)
-            {
-                if(lay.getChildAt(i).getTag().equals(c.getCounterId()))
-                {
-                    //((SingleCounterFragment)lay.getChildAt(i)).get
-                }
-            }
-        }
-        */
-    }
-
     public boolean inSingleCounterList(String counterName)
     {
         for(Counter co: current.counters)

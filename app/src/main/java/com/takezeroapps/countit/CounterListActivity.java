@@ -34,6 +34,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import static android.graphics.Color.BLACK;
 
@@ -81,10 +82,7 @@ public class CounterListActivity extends AppCompatActivity {
                 bundle.putString(MULTICOUNTER_NAME_KEY, selected);
                 Intent intent = new Intent(CounterListActivity.this, MultiCounterActivity.class);
                 intent.putExtras(bundle);
-                Log.d("test", "Selected: "+selected);
                 startActivity(intent);
-
-                //startActivity(new Intent(CounterListActivity.this, MultiCounterActivity.class));
             }
         });
 
@@ -94,10 +92,9 @@ public class CounterListActivity extends AppCompatActivity {
                 //on long click
 
                 final String item = (String) ((TextView) view).getText();
-
                 //create popup dialog
                 String names[] ={getResources().getString(R.string.open_counter), getResources().getString(R.string.rename_counter), getResources().getString(R.string.delete_counter), getResources().getString(R.string.details_counter), };
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(CounterListActivity.this);
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CounterListActivity.this);
                 LayoutInflater inflater = getLayoutInflater();
                 View convertView = (View) inflater.inflate(R.layout.popup_list, null);
                 alertDialog.setView(convertView);
@@ -105,7 +102,8 @@ public class CounterListActivity extends AppCompatActivity {
                 ListView lv = (ListView) convertView.findViewById(R.id.listView1);
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(CounterListActivity.this,android.R.layout.simple_list_item_1,names);
                 lv.setAdapter(adapter);
-                alertDialog.show();
+                final AlertDialog alert = alertDialog.create();
+                alert.show();
 
                 lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -113,11 +111,125 @@ public class CounterListActivity extends AppCompatActivity {
                         //Log.d("test","Item "+ item +": " + ((TextView) viewIn).getText());
                         if(position == 0) //open button
                         {
+                            Bundle bundle = new Bundle();
+                            bundle.putString(MULTICOUNTER_NAME_KEY, item);
+                            Intent intent = new Intent(CounterListActivity.this, MultiCounterActivity.class);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
 
                         }
                         else if(position == 1) //rename button
                         {
+                            alert.dismiss();
+                            //create dialog
+                            AlertDialog.Builder builder = new AlertDialog.Builder(CounterListActivity.this);
+                            builder.setTitle(R.string.rename_multi_counter);
+                            Context context = CounterListActivity.this; //store context in a variable
+                            LinearLayout layout = new LinearLayout(context);
+                            layout.setOrientation(LinearLayout.VERTICAL);
 
+                            //textview telling user to enter counter name
+                            final TextView name = new TextView(context);
+                            name.setText(R.string.set_counter_name);
+                            name.setTextSize(16);
+                            name.setTextColor(BLACK);
+                            layout.addView(name);
+
+                            //Text input for counter name
+                            final EditText counterEdit = new EditText(context);
+                            counterEdit.setHint(item);
+                            layout.addView(counterEdit);
+                            //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
+                            counterEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+                                @Override
+                                public void onFocusChange(View v, boolean hasFocus) {
+                                    // TODO Auto-generated method stub
+                                    if (hasFocus) {
+                                        counterEdit.setSingleLine(true);
+                                        counterEdit.setMaxLines(1);
+                                        counterEdit.setLines(1);
+                                    }
+                                }
+                            });
+
+                            layout.setPadding(60, 50, 60, 10);
+                            builder.setView(layout);
+                            builder.create();
+
+                            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    try {
+                                        String counterName = counterEdit.getText().toString(); //input text - the user defined counter name
+
+                                        if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
+                                            Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                            dialog.cancel();
+                                        } else if (inCounterList(counterName)) {
+                                            Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                            dialog.cancel();
+                                        } else if (counterName.length() > 40) {
+                                            Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.mc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                            dialog.cancel();
+                                        } else {
+
+                                            int it=0;
+                                            for(String st: multicounterNameList)
+                                            {
+                                                if(st.equals(item))
+                                                {
+                                                    break;
+                                                }
+                                                it++;
+                                            }
+
+                                            //remove old name from multicounterNameList (list of strings)
+                                            Iterator<String> i = multicounterNameList.iterator();
+                                            while (i.hasNext()) {
+                                                String s = i.next(); // must be called before you can call i.remove()
+                                                if(s.equals(item))
+                                                {
+                                                    i.remove();
+                                                    break;
+                                                }
+                                            }
+                                            //add new name to String list and save
+                                            multicounterNameList.add(it, counterName);
+                                            saveCounterList(multicounterNameList);
+
+                                            //set the new name in the actual counter object
+                                            for(Multicounter m: CounterListActivity.multicounterList)
+                                            {
+                                                if(m.getName().equals(item))
+                                                {
+                                                    m.setName(counterName);
+                                                    break;
+                                                }
+                                            }
+
+                                            //save multicounter list
+                                            saveMultiCounterList();
+
+                                            finish();
+                                            startActivity(getIntent());
+                                        }
+
+                                    }
+                                    catch (IllegalArgumentException e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                            builder.show();
                         }
                         else if(position==2) //delete button
                         {
@@ -333,6 +445,17 @@ public class CounterListActivity extends AppCompatActivity {
        }
        return false;
    }
+
+    public void saveMultiCounterList()
+    {
+        //save multicounter list
+        SharedPreferences sharedPref = CounterListActivity.this.getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        Gson gson = new Gson();
+        String jsonMC = gson.toJson(CounterListActivity.multicounterList);
+        editor.putString("MultiCounterList", jsonMC);
+        editor.commit();
+    }
 
     //SEARCH FUNCTIONS
 

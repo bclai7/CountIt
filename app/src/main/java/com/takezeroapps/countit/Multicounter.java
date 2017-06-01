@@ -48,15 +48,6 @@ public class Multicounter {
 
     public void deleteCounter(String counter)
     {
-        /*
-        for(Counter c: new ArrayList<Counter>(counters)){
-            if(c.getLabel().equals(counter.getLabel()))
-            {
-                counters.remove(c);
-            }
-            break;
-        }
-        */
         Iterator<Counter> i = counters.iterator();
         while (i.hasNext()) {
             Counter c = i.next(); // must be called before you can call i.remove()
