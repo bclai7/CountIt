@@ -1,6 +1,8 @@
 package com.takezeroapps.countit;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -11,6 +13,7 @@ public class Multicounter {
     String name; //name of multicounter
     int count; //number of counters
     public ArrayList<Counter> counters;
+    String currentDateTime; //date the counter is created
 
     //eraseAllCounters() method ???
 
@@ -24,6 +27,7 @@ public class Multicounter {
         {
             counters.add(new Counter(this.name, "counter"+i, 0));
         }
+        currentDateTime = DateFormat.getDateTimeInstance().format(new Date());
     }
 
     public void setName(String name)
@@ -44,6 +48,11 @@ public class Multicounter {
     {
         count = counters.size();
         return count;
+    }
+
+    public String getDateTime()
+    {
+        return currentDateTime;
     }
 
     public void deleteCounter(String counter)

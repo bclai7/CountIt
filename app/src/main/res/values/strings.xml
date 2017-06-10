@@ -29,6 +29,11 @@
     <string name="no_counter_name">No counter name was entered!</string>
     <string name="mcounter_already_exists">Multicounter Name already exists!</string>
     <string name="no_mcounter_name">No multicounter name was entered!</string>
+    <string name="counter_details_title">Multicounter Details</string>
+    <string name="counter_details_name">Name: </string>
+    <string name="close">Close</string>
+    <string name="counter_details_number_counters">Number of Counters: </string>
+    <string name="created">Created: </string>
 
     <string name="no_counter_count">No count was entered!</string>
     <string name="counter_colon">Counter: </string>

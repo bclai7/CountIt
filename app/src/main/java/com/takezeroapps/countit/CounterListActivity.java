@@ -4,10 +4,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -288,7 +291,93 @@ public class CounterListActivity extends AppCompatActivity {
                         }
                         else if(position==3) //details button
                         {
+                            alert.dismiss();
+                            //find number of counters in the multicounter and store it in variable. Find the date the MC was created and store it in a variable
+                            int numOfCounters=0;
+                            String dateCreated="";
+                            for(Multicounter mco: multicounterList)
+                            {
+                                if(mco.getName().equals(item))
+                                {
+                                    numOfCounters=mco.getCount();
+                                    dateCreated=mco.getDateTime();
+                                    break;
+                                }
+                            }
 
+                            //create dialog
+                            AlertDialog.Builder builder = new AlertDialog.Builder(CounterListActivity.this);
+                            builder.setTitle(R.string.counter_details_title);
+                            Context context = CounterListActivity.this; //store context in a variable
+                            LinearLayout layout = new LinearLayout(context);
+                            layout.setOrientation(LinearLayout.VERTICAL);
+
+                            //formatting for displaying of info
+                            Spanned nT; //name field text
+                            Spanned cT; //counter count field text
+                            Spanned dT; //date field text
+                            //set bold field labels
+                            String nameFirst = "<B>"+getResources().getString(R.string.counter_details_name)+"</B>";
+                            String countFirst = "<B>"+getResources().getString(R.string.counter_details_number_counters)+"</B>";
+                            String dateFirst = "<B>"+getResources().getString(R.string.created)+"</B>";
+
+                            if (Build.VERSION.SDK_INT >= 24) {
+                                nT = Html.fromHtml(nameFirst, Html.FROM_HTML_MODE_LEGACY); // for 24 api and more
+                                cT = Html.fromHtml(countFirst, Html.FROM_HTML_MODE_LEGACY); // for 24 api and more
+                                dT = Html.fromHtml(dateFirst, Html.FROM_HTML_MODE_LEGACY); // for 24 api and more
+                            } else {
+                                nT = Html.fromHtml(nameFirst +" "+ item);
+                                cT = Html.fromHtml(countFirst +" "+ numOfCounters);
+                                dT = Html.fromHtml(dateFirst +" "+ dateCreated);
+                            }
+
+                            //textview Showing the counter's name
+                            final TextView name = new TextView(context);
+                            name.setText(nT);
+                            name.setTextSize(20);
+                            name.setTextColor(BLACK);
+                            layout.addView(name);
+
+
+                            //textview to create a space in between fields
+                            final TextView space1 = new TextView(context);
+                            space1.setText("");
+                            space1.setTextSize(10);
+                            layout.addView(space1);
+
+                            //textview showing the number of counters in the multicounter
+                            final TextView numCountTv = new TextView(context);
+                            numCountTv.setText(cT);
+                            numCountTv.setTextSize(20);
+                            numCountTv.setTextColor(BLACK);
+                            layout.addView(numCountTv);
+
+                            //textview to create a space in between fields
+                            final TextView space2 = new TextView(context);
+                            space2.setText("");
+                            space2.setTextSize(10);
+                            layout.addView(space2);
+
+                            //textview showing the date and time the counter was created
+                            final TextView dateCreatedTv = new TextView(context);
+                            dateCreatedTv.setText(dT);
+                            dateCreatedTv.setTextSize(20);
+                            dateCreatedTv.setTextColor(BLACK);
+                            layout.addView(dateCreatedTv);
+
+                            //set layout margins and show
+                            layout.setPadding(60, 50, 60, 10);
+                            builder.setView(layout);
+                            builder.create();
+
+                            builder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                            builder.show();
                         }
                     }
                 });
