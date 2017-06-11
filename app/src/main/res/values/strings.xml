@@ -118,5 +118,16 @@
     <string name="pref_description_version">0.0
     </string>
 
+    <!--SORT MENU OPTIONS-->
+    <string-array
+        name="sort_menu_options_array">
+        <item>Name</item>
+        <item>Date Created (Recent First)</item>
+        <item>Date Created (Oldest First)</item>
+        <item>Date Modified (Recent First)</item>
+        <item>Date Modified (Oldest First)</item>
+    </string-array>
+    <string name="sort_by">Sort By:</string>
+
 
 </resources>

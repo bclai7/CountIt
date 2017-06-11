@@ -266,6 +266,7 @@ public class MainActivity extends AppCompatActivity
                 }
         );
 
+        //Top appbar with options, do not remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

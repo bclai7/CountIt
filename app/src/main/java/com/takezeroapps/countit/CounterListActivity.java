@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -435,6 +436,7 @@ public class CounterListActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.multicounter_list_drawer, menu);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -551,6 +553,41 @@ public class CounterListActivity extends AppCompatActivity {
                 builder.show();
             }
 
+        }
+
+        else if (id == R.id.multicounter_sort) //sort button
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(CounterListActivity.this);
+            builder.setTitle(R.string.sort_by)
+                    .setItems(R.array.sort_menu_options_array, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // The 'which' argument contains the index position
+                            // of the selected item
+
+                            if(which == 0) //Name
+                            {
+
+                            }
+                            else if(which == 1) //Date Created (Recent First)
+                            {
+
+                            }
+                            else if(which == 2) //Date Created (Oldest First)
+                            {
+
+                            }
+                            else if(which == 3) //Date Modified (Recent First)
+                            {
+
+                            }
+                            else if(which == 4) //Date Modified (Oldest First)
+                            {
+
+                            }
+
+                        }
+                    });
+            builder.create().show();
         }
         else if (id == R.id.multicounter_search) //search button
         {
