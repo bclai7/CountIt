@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -29,8 +30,14 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import static android.graphics.Color.BLACK;
 
@@ -48,6 +55,8 @@ public class MultiCounterActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         String counterName = bundle.getString(CounterListActivity.MULTICOUNTER_NAME_KEY);
         setTitle(counterName);
+
+        //CounterListActivity.multicounterNameList = getCounterList();
 
         //load data into multi counter list
         File f = new File("/data/data/com.takezeroapps.countit/shared_prefs/MultiCounterList.xml");
@@ -121,12 +130,7 @@ public class MultiCounterActivity extends AppCompatActivity {
         }
 
         //save multicounter list
-        SharedPreferences sharedPref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        Gson gson = new Gson();
-        String jsonMC = gson.toJson(CounterListActivity.multicounterList);
-        editor.putString("MultiCounterList", jsonMC);
-        editor.commit();
+        saveMultiCounterList();
     }
 
     @Override
@@ -233,12 +237,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                                 current.counters.add(newCounter);
                                 saveCountersToMulticounter(current.counters);
                                 //save multicounter list
-                                SharedPreferences sharedPref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                Gson gson = new Gson();
-                                String jsonMC = gson.toJson(CounterListActivity.multicounterList);
-                                editor.putString("MultiCounterList", jsonMC);
-                                editor.commit();
+                                saveMultiCounterList();
 
                                 FragmentManager fragmentManager = getFragmentManager();
                                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -269,7 +268,53 @@ public class MultiCounterActivity extends AppCompatActivity {
         }
 
         else if (id == R.id.multicounter_delete) { //delete multicounter button
+            AlertDialog.Builder deleteDialog = new AlertDialog.Builder(MultiCounterActivity.this);
 
+            deleteDialog.setMessage(R.string.delete_mc_question)
+                    .setTitle(R.string.delete_mc_title);
+            deleteDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    //find multicounter and delete from list
+                    //first find multicounter in multicounterList and remove it
+                    Iterator<Multicounter> a = CounterListActivity.multicounterList.iterator();
+                    while (a.hasNext()) {
+                        Multicounter m = a.next();
+                        if(m.getName().equals(current.getName()))
+                        {
+                            a.remove();
+                            break;
+                        }
+                    }
+                    //save multiCounterList
+                    saveMultiCounterList();
+
+                    //remove name from multicounterNameList (list of strings)
+                    Iterator<String> b = CounterListActivity.multicounterNameList.iterator();
+                    while (b.hasNext()) {
+                        String s = b.next(); // must be called before you can call i.remove()
+                        if(s.equals(current.getName()))
+                        {
+                            b.remove();
+                            break;
+                        }
+                    }
+                    //save string list
+                    saveCounterList(CounterListActivity.multicounterNameList);
+
+                    //go back to counter list activity
+                    startActivity(new Intent(MultiCounterActivity.this, CounterListActivity.class));
+
+                }
+            });
+            deleteDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    //cancel dialog if "no" is clicked
+                    dialog.cancel();
+                }
+            });
+
+            AlertDialog dialog = deleteDialog.create();
+            deleteDialog.show();
         }
 
         else if (id == R.id.multicounter_edit) { //edit/rename multicounter button
@@ -308,5 +353,29 @@ public class MultiCounterActivity extends AppCompatActivity {
         if(num < -2147483646)
             return true;
         return false;
+    }
+
+    public void saveMultiCounterList()
+    {
+        //save multicounter list
+        SharedPreferences sharedPref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        Gson gson = new Gson();
+        String jsonMC = gson.toJson(CounterListActivity.multicounterList);
+        editor.putString("MultiCounterList", jsonMC);
+        editor.commit();
+    }
+
+    private void saveCounterList(ArrayList<String> counterList) {
+        try {
+            FileOutputStream fileOutputStream = openFileOutput("MultiCounterNames.txt", Context.MODE_PRIVATE);
+            ObjectOutputStream out = new ObjectOutputStream(fileOutputStream);
+            out.writeObject(counterList);
+            out.close();
+            fileOutputStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

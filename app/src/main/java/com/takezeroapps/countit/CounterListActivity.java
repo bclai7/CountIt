@@ -45,7 +45,7 @@ public class CounterListActivity extends AppCompatActivity {
 
     private ListView listView;
     private String[] multicounterNamesArray;
-    private ArrayList<String> multicounterNameList = new ArrayList<String>();
+    public static ArrayList<String> multicounterNameList = new ArrayList<String>();
     public static ArrayList<Multicounter> multicounterList = new ArrayList<Multicounter>();
     TextView tx;
     String[] c = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
@@ -59,13 +59,11 @@ public class CounterListActivity extends AppCompatActivity {
 
         if(getCounterList() == null)
         {
-            Log.d("test", "counterlist null");
             saveCounterList(multicounterNameList);
         }
 
         //load text file storing the multicounter names
         multicounterNameList=getCounterList();
-        Log.d("test", "Size: "+multicounterNameList.size());
 
         //convert to array so it can be read by adapter
         multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
