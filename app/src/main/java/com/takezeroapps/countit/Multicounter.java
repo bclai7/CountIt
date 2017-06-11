@@ -13,7 +13,10 @@ public class Multicounter {
     String name; //name of multicounter
     int count; //number of counters
     public ArrayList<Counter> counters;
-    String currentDateTime; //date the counter is created
+    String createdDateTime; //string of the date the multicounter is created
+    Long createdTimeStamp; //time stamp of when the multicounter was created, uses the amount of milliseconds since epoch (jan 1, 1970). This will be used to sort multicounters by created date.
+    String modifiedDateTime; //string of the date the multicounter was last modified
+    Long modifiedTimeStamp; //time stamp of when the multicounter was last modified, uses the amount of milliseconds since epoch (jan 1, 1970). This will be used to sort multicounters by last modified date.
 
     //eraseAllCounters() method ???
 
@@ -27,7 +30,10 @@ public class Multicounter {
         {
             counters.add(new Counter(this.name, "counter"+i, 0));
         }
-        currentDateTime = DateFormat.getDateTimeInstance().format(new Date());
+        createdDateTime = DateFormat.getDateTimeInstance().format(new Date());
+        createdTimeStamp = System.currentTimeMillis();
+        modifiedDateTime = DateFormat.getDateTimeInstance().format(new Date());
+        modifiedTimeStamp = System.currentTimeMillis();
     }
 
     public void setName(String name)
@@ -50,9 +56,34 @@ public class Multicounter {
         return count;
     }
 
-    public String getDateTime()
+    public String getCreatedDateTime()
     {
-        return currentDateTime;
+        return createdDateTime;
+    }
+
+    public Long getCreatedTimeStamp()
+    {
+        return createdTimeStamp;
+    }
+
+    public String getModifiedDateTime()
+    {
+        return modifiedDateTime;
+    }
+
+    public void setModifiedDateTime()
+    {
+
+    }
+
+    public Long getModifiedTimeStamp()
+    {
+        return modifiedTimeStamp;
+    }
+
+    public void setModifiedTimeStamp()
+    {
+
     }
 
     public void deleteCounter(String counter)

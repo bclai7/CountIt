@@ -295,12 +295,14 @@ public class CounterListActivity extends AppCompatActivity {
                             //find number of counters in the multicounter and store it in variable. Find the date the MC was created and store it in a variable
                             int numOfCounters=0;
                             String dateCreated="";
+                            String dateModified="";
                             for(Multicounter mco: multicounterList)
                             {
                                 if(mco.getName().equals(item))
                                 {
                                     numOfCounters=mco.getCount();
-                                    dateCreated=mco.getDateTime();
+                                    dateCreated=mco.getCreatedDateTime();
+                                    dateModified=mco.getModifiedDateTime();
                                     break;
                                 }
                             }
@@ -316,19 +318,24 @@ public class CounterListActivity extends AppCompatActivity {
                             Spanned nT; //name field text
                             Spanned cT; //counter count field text
                             Spanned dT; //date field text
+                            Spanned mT; //date modifed text
+
                             //set bold field labels
                             String nameFirst = "<B>"+getResources().getString(R.string.counter_details_name)+"</B>";
                             String countFirst = "<B>"+getResources().getString(R.string.counter_details_number_counters)+"</B>";
                             String dateFirst = "<B>"+getResources().getString(R.string.created)+"</B>";
+                            String modFirst = "<B>"+getResources().getString(R.string.last_modified)+"</B>";
 
                             if (Build.VERSION.SDK_INT >= 24) {
-                                nT = Html.fromHtml(nameFirst, Html.FROM_HTML_MODE_LEGACY); // for 24 api and more
-                                cT = Html.fromHtml(countFirst, Html.FROM_HTML_MODE_LEGACY); // for 24 api and more
-                                dT = Html.fromHtml(dateFirst, Html.FROM_HTML_MODE_LEGACY); // for 24 api and more
+                                nT = Html.fromHtml(nameFirst +" "+ item, Html.FROM_HTML_MODE_LEGACY); // for 24 api and more
+                                cT = Html.fromHtml(countFirst +" "+ numOfCounters, Html.FROM_HTML_MODE_LEGACY); // for 24 api and more
+                                dT = Html.fromHtml(dateFirst +" "+ dateCreated, Html.FROM_HTML_MODE_LEGACY); // for 24 api and more
+                                mT = Html.fromHtml(modFirst +" "+ dateModified, Html.FROM_HTML_MODE_LEGACY); // for 24 api and more
                             } else {
                                 nT = Html.fromHtml(nameFirst +" "+ item);
                                 cT = Html.fromHtml(countFirst +" "+ numOfCounters);
                                 dT = Html.fromHtml(dateFirst +" "+ dateCreated);
+                                mT = Html.fromHtml(modFirst +" "+ dateModified);
                             }
 
                             //textview Showing the counter's name
@@ -364,6 +371,19 @@ public class CounterListActivity extends AppCompatActivity {
                             dateCreatedTv.setTextSize(20);
                             dateCreatedTv.setTextColor(BLACK);
                             layout.addView(dateCreatedTv);
+
+                            //textview to create a space in between fields
+                            final TextView space3 = new TextView(context);
+                            space3.setText("");
+                            space3.setTextSize(10);
+                            layout.addView(space3);
+
+                            //textview showing the date and time the counter was created
+                            final TextView dateModifiedTv = new TextView(context);
+                            dateModifiedTv.setText(mT);
+                            dateModifiedTv.setTextSize(20);
+                            dateModifiedTv.setTextColor(BLACK);
+                            layout.addView(dateModifiedTv);
 
                             //set layout margins and show
                             layout.setPadding(60, 50, 60, 10);

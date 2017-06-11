@@ -34,6 +34,7 @@
     <string name="close">Close</string>
     <string name="counter_details_number_counters">Number of Counters: </string>
     <string name="created">Created: </string>
+    <string name="last_modified">Last Modifed: </string>
 
     <string name="no_counter_count">No count was entered!</string>
     <string name="counter_colon">Counter: </string>
