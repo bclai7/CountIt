@@ -1,6 +1,7 @@
 package com.takezeroapps.countit;
 
 import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -24,7 +26,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,6 +80,7 @@ public class CounterListActivity extends AppCompatActivity {
         multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
         //initialize listView to the listview object in the xml file
         listView = (ListView)findViewById(R.id.counter_list);
+
         //add array of counter names to adapter
         adapter = new ArrayAdapter<String>(this, R.layout.mcounters_text_format, multicounterNamesArray);
 
@@ -415,7 +417,6 @@ public class CounterListActivity extends AppCompatActivity {
                 return true;
             }
         });
-
     }
 
     @Override
@@ -439,19 +440,23 @@ public class CounterListActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.multicounter_list_drawer, menu);
 
-        /*
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.multicounter_search).getActionView();
-        // Assumes current activity is the searchable activity
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getComponentName()));
-        Log.d("test", "here 4");
-        // Do not iconify the widget; expand it by default
-        searchView.setIconifiedByDefault(false);
-        Log.d("test", "here 5");
+        MenuItem item = menu.findItem(R.id.multicounter_search);
+        SearchView searchView = (SearchView)item.getActionView();
 
-        Log.d("test", "at end of oncreateoptions");
-        */
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+
+                return false;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -548,7 +553,7 @@ public class CounterListActivity extends AppCompatActivity {
 
                             saveMultiCounterList();
 
-                            multicounterNameList.add(mcName);
+                            multicounterNameList.add(0, mcName);
                             saveCounterList(multicounterNameList);
 
                             multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
@@ -679,10 +684,6 @@ public class CounterListActivity extends AppCompatActivity {
                     });
             builder.create().show();
         }
-        else if (id == R.id.multicounter_search) //search button
-        {
-
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -740,5 +741,4 @@ public class CounterListActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    //SEARCH FUNCTIONS
 }

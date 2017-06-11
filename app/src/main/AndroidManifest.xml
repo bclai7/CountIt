@@ -32,7 +32,6 @@
             android:name=".CounterListActivity"
             android:label="@string/title_activity_counterlist"
             android:parentActivityName=".MainActivity">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.takezeroapps.countit.MainActivity" />
