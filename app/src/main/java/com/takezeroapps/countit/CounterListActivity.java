@@ -11,7 +11,6 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -25,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +60,7 @@ public class CounterListActivity extends AppCompatActivity {
     String[] c = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
     public static final String MULTICOUNTER_NAME_KEY = "multicounter_name";
     ArrayAdapter<String> adapter;
+    int searchListStartPos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -414,6 +415,7 @@ public class CounterListActivity extends AppCompatActivity {
                 return true;
             }
         });
+
     }
 
     @Override
@@ -430,28 +432,26 @@ public class CounterListActivity extends AppCompatActivity {
             Type type = new TypeToken<ArrayList<Multicounter>>(){}.getType();
             multicounterList = gson.fromJson(jsonMC, type);
         }
-        else
-        {
-            Log.d("test", "sharedpref doesn't exist");
-        }
-        
-        for(Multicounter m: multicounterList)
-        {
-            Log.d("test", "MC Name: "+m.getName());
-        }
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.multicounter_list_drawer, menu);
+
+        /*
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.multicounter_search).getActionView();
         // Assumes current activity is the searchable activity
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getComponentName()));
+        Log.d("test", "here 4");
         // Do not iconify the widget; expand it by default
         searchView.setIconifiedByDefault(false);
+        Log.d("test", "here 5");
 
+        Log.d("test", "at end of oncreateoptions");
+        */
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -741,80 +741,4 @@ public class CounterListActivity extends AppCompatActivity {
     }
 
     //SEARCH FUNCTIONS
-    private int[] search(String query) {
-        int lo=0, hi=multicounterNameList.size()-1;
-        String mcounter = query.toLowerCase();
-        while (lo <= hi) {
-            int mid=(lo+hi)/2;
-            if (multicounterNameList.get(mid).toLowerCase().startsWith(mcounter)) {
-                // need to scan left and right until no more matches
-                return getExtent(mid, mcounter);
-            }
-            // mid does not start with the given name, go left or right
-            int c = query.compareToIgnoreCase(multicounterNameList.get(mid));
-            if (c < 0) {
-                hi = mid-1;
-            } else {
-                lo = mid+1;
-            }
-        }
-        return null;
-    }
-
-    private int[] getExtent(int mid, String mcounter) {
-        int[] extent = new int[2];
-        extent[0] = mid;
-        // scan left
-        while (extent[0] > 0) {
-            if (multicounterNameList.get(extent[0]-1).toLowerCase().startsWith(mcounter)) {
-                extent[0]--;
-            } else {
-                break;
-            }
-        }
-        // scan right
-        extent[1] = mid;
-        while (extent[1] < multicounterNameList.size()-1) {
-            if (multicounterNameList.get(extent[1]+1).toLowerCase().startsWith(mcounter)) {
-                extent[1]++;
-            } else {
-                break;
-            }
-        }
-        return extent;
-
-    }
-
-    protected void onNewIntent(Intent intent) {
-        setIntent(intent);
-        handleIntent(intent);
-    }
-
-    private void handleIntent(Intent intent) {
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query =
-                    intent.getStringExtra(SearchManager.QUERY);
-            showSearchResults(query);
-        } else {
-            showMulticounterList();
-        }
-    }
-
-    private void showMulticounterList() {
-        listView.setAdapter(
-                new ArrayAdapter<String>(this, R.layout.mcounters_text_format, multicounterNameList));
-        listView.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent,
-                                            View view, int position, long id) {
-                        showMulticounter(position);
-                    }
-                }
-        );
-    }
-
-
-
-
 }

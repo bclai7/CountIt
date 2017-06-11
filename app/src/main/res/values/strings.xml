@@ -131,5 +131,6 @@
     <string name="sort_by">Sort By:</string>
 
     <string name="search_multicounter">Search Multicounter</string>
+    <string name="search_empty">No match found</string>
 
 </resources>
