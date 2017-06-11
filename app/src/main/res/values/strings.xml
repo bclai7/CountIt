@@ -121,7 +121,8 @@
     <!--SORT MENU OPTIONS-->
     <string-array
         name="sort_menu_options_array">
-        <item>Name</item>
+        <item>Name (Ascending)</item>
+        <item>Name (Descending)</item>
         <item>Date Created (Recent First)</item>
         <item>Date Created (Oldest First)</item>
         <item>Date Modified (Recent First)</item>
@@ -129,5 +130,6 @@
     </string-array>
     <string name="sort_by">Sort By:</string>
 
+    <string name="search_multicounter">Search Multicounter</string>
 
 </resources>

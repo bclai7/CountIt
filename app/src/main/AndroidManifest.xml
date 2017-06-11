@@ -32,6 +32,13 @@
             android:name=".CounterListActivity"
             android:label="@string/title_activity_counterlist"
             android:parentActivityName=".MainActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.takezeroapps.countit.MainActivity" />
@@ -40,6 +47,9 @@
             android:name=".MultiCounterActivity"
             android:label="@string/multicounter_activity_title"
             android:parentActivityName=".CounterListActivity">
+
+
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.takezeroapps.countit.MainActivity" />

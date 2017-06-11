@@ -1,5 +1,6 @@
 package com.takezeroapps.countit;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -38,9 +40,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import static android.graphics.Color.BLACK;
+import static com.takezeroapps.countit.MulticounterComparator.CREATED_SORT;
+import static com.takezeroapps.countit.MulticounterComparator.MODIFIED_SORT;
+import static com.takezeroapps.countit.MulticounterComparator.NAME_SORT;
+import static com.takezeroapps.countit.MulticounterComparator.decending;
+import static com.takezeroapps.countit.MulticounterComparator.getComparator;
 
 public class CounterListActivity extends AppCompatActivity {
 
@@ -436,6 +444,13 @@ public class CounterListActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.multicounter_list_drawer, menu);
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.multicounter_search).getActionView();
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        // Do not iconify the widget; expand it by default
+        searchView.setIconifiedByDefault(false);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -564,25 +579,100 @@ public class CounterListActivity extends AppCompatActivity {
                             // The 'which' argument contains the index position
                             // of the selected item
 
-                            if(which == 0) //Name
-                            {
+                            ArrayList<String> newOrder = new ArrayList<String>(); //temp arraylist to hold new order of strings
 
+                            if(which == 0) //Name (Ascending)
+                            {
+                                Collections.sort(multicounterList, decending(getComparator(NAME_SORT, CREATED_SORT, MODIFIED_SORT)));
+                                Collections.reverse(multicounterList);
+                                for(Multicounter m: multicounterList)
+                                {
+                                    newOrder.add(m.getName());
+                                }
+
+                                multicounterNameList=newOrder; //set string list to new sorted order
+                                saveCounterList(multicounterNameList); //save new ordered string list
+
+                                multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+                                adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                listView.setAdapter(adapter);
                             }
-                            else if(which == 1) //Date Created (Recent First)
+                            else if(which == 1) //Name (Descending)
                             {
+                                Collections.sort(multicounterList, decending(getComparator(NAME_SORT, CREATED_SORT, MODIFIED_SORT)));
+                                for(Multicounter m: multicounterList)
+                                {
+                                    newOrder.add(m.getName());
+                                }
 
+                                multicounterNameList=newOrder; //set string list to new sorted order
+                                saveCounterList(multicounterNameList); //save new ordered string list
+
+                                multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+                                adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                listView.setAdapter(adapter);
                             }
-                            else if(which == 2) //Date Created (Oldest First)
+                            else if(which == 2) //Date Created (Recent First)
                             {
+                                Collections.sort(multicounterList, decending(getComparator(CREATED_SORT, NAME_SORT, MODIFIED_SORT)));
+                                for(Multicounter m: multicounterList)
+                                {
+                                    newOrder.add(m.getName());
+                                }
 
+                                multicounterNameList=newOrder; //set string list to new sorted order
+                                saveCounterList(multicounterNameList); //save new ordered string list
+
+                                multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+                                adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                listView.setAdapter(adapter);
                             }
-                            else if(which == 3) //Date Modified (Recent First)
+                            else if(which == 3) //Date Created (Oldest First)
                             {
+                                Collections.sort(multicounterList, decending(getComparator(CREATED_SORT, NAME_SORT, MODIFIED_SORT)));
+                                Collections.reverse(multicounterList);
+                                for(Multicounter m: multicounterList)
+                                {
+                                    newOrder.add(m.getName());
+                                }
 
+                                multicounterNameList=newOrder; //set string list to new sorted order
+                                saveCounterList(multicounterNameList); //save new ordered string list
+
+                                multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+                                adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                listView.setAdapter(adapter);
                             }
-                            else if(which == 4) //Date Modified (Oldest First)
+                            else if(which == 4) //Date Modified (Recent First)
                             {
+                                Collections.sort(multicounterList, decending(getComparator(MODIFIED_SORT, CREATED_SORT, NAME_SORT)));
+                                for(Multicounter m: multicounterList)
+                                {
+                                    newOrder.add(m.getName());
+                                }
 
+                                multicounterNameList=newOrder; //set string list to new sorted order
+                                saveCounterList(multicounterNameList); //save new ordered string list
+
+                                multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+                                adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                listView.setAdapter(adapter);
+                            }
+                            else if(which == 5) //Date Modified (Oldest First)
+                            {
+                                Collections.sort(multicounterList, decending(getComparator(MODIFIED_SORT, CREATED_SORT, NAME_SORT)));
+                                Collections.reverse(multicounterList);
+                                for(Multicounter m: multicounterList)
+                                {
+                                    newOrder.add(m.getName());
+                                }
+
+                                multicounterNameList=newOrder; //set string list to new sorted order
+                                saveCounterList(multicounterNameList); //save new ordered string list
+
+                                multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+                                adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                listView.setAdapter(adapter);
                             }
 
                         }
@@ -614,7 +704,7 @@ public class CounterListActivity extends AppCompatActivity {
         return counterList;
     }
 
-    private void saveCounterList(ArrayList<String> counterList) {
+    private void saveCounterList(ArrayList<String> counterList) { //saves multicounter NAME list to text file
         try {
             FileOutputStream fileOutputStream = openFileOutput("MultiCounterNames.txt", Context.MODE_PRIVATE);
             ObjectOutputStream out = new ObjectOutputStream(fileOutputStream);
@@ -651,6 +741,80 @@ public class CounterListActivity extends AppCompatActivity {
     }
 
     //SEARCH FUNCTIONS
+    private int[] search(String query) {
+        int lo=0, hi=multicounterNameList.size()-1;
+        String mcounter = query.toLowerCase();
+        while (lo <= hi) {
+            int mid=(lo+hi)/2;
+            if (multicounterNameList.get(mid).toLowerCase().startsWith(mcounter)) {
+                // need to scan left and right until no more matches
+                return getExtent(mid, mcounter);
+            }
+            // mid does not start with the given name, go left or right
+            int c = query.compareToIgnoreCase(multicounterNameList.get(mid));
+            if (c < 0) {
+                hi = mid-1;
+            } else {
+                lo = mid+1;
+            }
+        }
+        return null;
+    }
+
+    private int[] getExtent(int mid, String mcounter) {
+        int[] extent = new int[2];
+        extent[0] = mid;
+        // scan left
+        while (extent[0] > 0) {
+            if (multicounterNameList.get(extent[0]-1).toLowerCase().startsWith(mcounter)) {
+                extent[0]--;
+            } else {
+                break;
+            }
+        }
+        // scan right
+        extent[1] = mid;
+        while (extent[1] < multicounterNameList.size()-1) {
+            if (multicounterNameList.get(extent[1]+1).toLowerCase().startsWith(mcounter)) {
+                extent[1]++;
+            } else {
+                break;
+            }
+        }
+        return extent;
+
+    }
+
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query =
+                    intent.getStringExtra(SearchManager.QUERY);
+            showSearchResults(query);
+        } else {
+            showMulticounterList();
+        }
+    }
+
+    private void showMulticounterList() {
+        listView.setAdapter(
+                new ArrayAdapter<String>(this, R.layout.mcounters_text_format, multicounterNameList));
+        listView.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent,
+                                            View view, int position, long id) {
+                        showMulticounter(position);
+                    }
+                }
+        );
+    }
+
+
 
 
 }

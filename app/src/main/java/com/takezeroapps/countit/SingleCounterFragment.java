@@ -320,6 +320,7 @@ public class SingleCounterFragment extends Fragment{
 
                                 if(newNum > 2147483646) //if entered is too high, print error and return to original number
                                 {
+                                    Log.d("test", "number 2 hig");
                                     if(vibrateSetting)
                                         vib.vibrate(pattern, -1);
                                     Snackbar.make(view, R.string.too_high_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
