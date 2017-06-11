@@ -319,6 +319,116 @@ public class MultiCounterActivity extends AppCompatActivity {
 
         else if (id == R.id.multicounter_edit) { //edit/rename multicounter button
 
+            AlertDialog.Builder builder = new AlertDialog.Builder(MultiCounterActivity.this);
+            builder.setTitle(R.string.rename_multi_counter);
+            Context context = MultiCounterActivity.this; //store context in a variable
+            LinearLayout layout = new LinearLayout(context);
+            layout.setOrientation(LinearLayout.VERTICAL);
+
+            //textview telling user to enter counter name
+            final TextView name = new TextView(context);
+            name.setText(R.string.set_counter_name);
+            name.setTextSize(16);
+            name.setTextColor(BLACK);
+            layout.addView(name);
+
+            //Text input for counter name
+            final EditText counterEdit = new EditText(context);
+            counterEdit.setHint(current.getName());
+            layout.addView(counterEdit);
+            //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
+            counterEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    // TODO Auto-generated method stub
+                    if (hasFocus) {
+                        counterEdit.setSingleLine(true);
+                        counterEdit.setMaxLines(1);
+                        counterEdit.setLines(1);
+                    }
+                }
+            });
+
+            layout.setPadding(60, 50, 60, 10);
+            builder.setView(layout);
+            builder.create();
+
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    try {
+                        String counterName = counterEdit.getText().toString(); //input text - the user defined counter name
+
+                        if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
+                            Snackbar.make(MultiCounterActivity.this.getWindow().getDecorView().getRootView(), R.string.no_mcounter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            dialog.cancel();
+                        } else if (inCounterList(counterName)) {
+                            Snackbar.make(MultiCounterActivity.this.getWindow().getDecorView().getRootView(), R.string.mcounter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            dialog.cancel();
+                        } else if (counterName.length() > 40) {
+                            Snackbar.make(MultiCounterActivity.this.getWindow().getDecorView().getRootView(), R.string.mc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            dialog.cancel();
+                        } else {
+
+                            int it=0;
+                            for(String st: CounterListActivity.multicounterNameList)
+                            {
+                                if(st.equals(current.getName()))
+                                {
+                                    break;
+                                }
+                                it++;
+                            }
+
+                            //remove old name from multicounterNameList (list of strings)
+                            Iterator<String> i = CounterListActivity.multicounterNameList.iterator();
+                            while (i.hasNext()) {
+                                String s = i.next(); // must be called before you can call i.remove()
+                                if(s.equals(current.getName()))
+                                {
+                                    i.remove();
+                                    break;
+                                }
+                            }
+                            //add new name to String list and save
+                            CounterListActivity.multicounterNameList.add(it, counterName);
+                            saveCounterList(CounterListActivity.multicounterNameList);
+
+                            //set the new name in the actual counter object
+                            for(Multicounter m: CounterListActivity.multicounterList)
+                            {
+                                if(m.getName().equals(current.getName()))
+                                {
+                                    m.setName(counterName);
+                                    m.setModifiedDateTime();
+                                    m.setModifiedTimeStamp();
+                                    break;
+                                }
+                            }
+
+                            //save multicounter list
+                            saveMultiCounterList();
+
+                            setTitle(counterName);
+                        }
+
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            builder.show();
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -377,5 +487,17 @@ public class MultiCounterActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean inCounterList(String counterName)
+    {
+        for(String s: CounterListActivity.multicounterNameList)
+        {
+            if(counterName.equals(s))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
