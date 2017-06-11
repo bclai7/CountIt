@@ -106,6 +106,30 @@ public class MultiCounterActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        //set new modified time every time the activity is paused
+        for(Multicounter m: CounterListActivity.multicounterList)
+        {
+            if(current.getName().equals(m.getName()))
+            {
+                m.setModifiedDateTime();
+                m.setModifiedTimeStamp();
+                break;
+            }
+        }
+
+        //save multicounter list
+        SharedPreferences sharedPref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        Gson gson = new Gson();
+        String jsonMC = gson.toJson(CounterListActivity.multicounterList);
+        editor.putString("MultiCounterList", jsonMC);
+        editor.commit();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.multicounter_drawer, menu);
         return super.onCreateOptionsMenu(menu);

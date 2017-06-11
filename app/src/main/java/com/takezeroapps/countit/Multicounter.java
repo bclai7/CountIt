@@ -73,7 +73,7 @@ public class Multicounter {
 
     public void setModifiedDateTime()
     {
-
+        modifiedDateTime = DateFormat.getDateTimeInstance().format(new Date());
     }
 
     public Long getModifiedTimeStamp()
@@ -83,7 +83,7 @@ public class Multicounter {
 
     public void setModifiedTimeStamp()
     {
-
+        modifiedTimeStamp = System.currentTimeMillis();
     }
 
     public void deleteCounter(String counter)

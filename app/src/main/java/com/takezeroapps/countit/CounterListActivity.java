@@ -208,6 +208,8 @@ public class CounterListActivity extends AppCompatActivity {
                                                 if(m.getName().equals(item))
                                                 {
                                                     m.setName(counterName);
+                                                    m.setModifiedDateTime();
+                                                    m.setModifiedTimeStamp();
                                                     break;
                                                 }
                                             }
@@ -341,7 +343,7 @@ public class CounterListActivity extends AppCompatActivity {
                             //textview Showing the counter's name
                             final TextView name = new TextView(context);
                             name.setText(nT);
-                            name.setTextSize(20);
+                            name.setTextSize(16);
                             name.setTextColor(BLACK);
                             layout.addView(name);
 
@@ -355,7 +357,7 @@ public class CounterListActivity extends AppCompatActivity {
                             //textview showing the number of counters in the multicounter
                             final TextView numCountTv = new TextView(context);
                             numCountTv.setText(cT);
-                            numCountTv.setTextSize(20);
+                            numCountTv.setTextSize(16);
                             numCountTv.setTextColor(BLACK);
                             layout.addView(numCountTv);
 
@@ -368,7 +370,7 @@ public class CounterListActivity extends AppCompatActivity {
                             //textview showing the date and time the counter was created
                             final TextView dateCreatedTv = new TextView(context);
                             dateCreatedTv.setText(dT);
-                            dateCreatedTv.setTextSize(20);
+                            dateCreatedTv.setTextSize(16);
                             dateCreatedTv.setTextColor(BLACK);
                             layout.addView(dateCreatedTv);
 
@@ -381,7 +383,7 @@ public class CounterListActivity extends AppCompatActivity {
                             //textview showing the date and time the counter was created
                             final TextView dateModifiedTv = new TextView(context);
                             dateModifiedTv.setText(mT);
-                            dateModifiedTv.setTextSize(20);
+                            dateModifiedTv.setTextSize(16);
                             dateModifiedTv.setTextColor(BLACK);
                             layout.addView(dateModifiedTv);
 
