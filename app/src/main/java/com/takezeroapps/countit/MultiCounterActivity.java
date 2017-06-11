@@ -268,6 +268,14 @@ public class MultiCounterActivity extends AppCompatActivity {
 
         }
 
+        else if (id == R.id.multicounter_delete) { //delete multicounter button
+
+        }
+
+        else if (id == R.id.multicounter_edit) { //edit/rename multicounter button
+
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

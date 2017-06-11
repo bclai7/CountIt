@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/multicounter_edit"
+        android:title=""
+        app:showAsAction="always"
+        android:icon="@drawable/ic_action_edit_white"
+        />
+
+    <item
+        android:id="@+id/multicounter_delete"
+        android:title=""
+        app:showAsAction="always"
+        android:icon="@drawable/ic_action_delete_white"
+        />
+
     <item
         android:id="@+id/multicounter_add"
         android:title=""
