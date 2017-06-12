@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -441,7 +442,7 @@ public class CounterListActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.multicounter_list_drawer, menu);
 
         MenuItem item = menu.findItem(R.id.multicounter_search);
-        SearchView searchView = (SearchView)item.getActionView();
+        final SearchView searchView = (SearchView)item.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -456,7 +457,7 @@ public class CounterListActivity extends AppCompatActivity {
                 return false;
             }
         });
-
+        
         return super.onCreateOptionsMenu(menu);
     }
 
