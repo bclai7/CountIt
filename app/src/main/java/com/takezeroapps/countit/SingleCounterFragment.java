@@ -44,6 +44,8 @@ public class SingleCounterFragment extends Fragment{
     String mcName, cName;
     int cCount;
     boolean isNegative, vibrateSetting, resetconfirmSetting, screenSetting;
+    Counter currentSC;
+    Multicounter currentMC;
 
     public static SingleCounterFragment newInstance(String mcName, String cName, int cCount) {
         SingleCounterFragment myFragment = new SingleCounterFragment();
@@ -66,6 +68,22 @@ public class SingleCounterFragment extends Fragment{
             cCount = getArguments().getInt("cCount");
             counterName.setText(cName);
             counterCount.setText(Integer.toString(cCount));
+
+            for(Multicounter m: CounterListActivity.multicounterList)
+            {
+                if(m.getName().equals(mcName))
+                {
+                    currentMC=m;
+                    for(Counter c: m.counters)
+                    {
+                        if(c.getLabel().equals(cName))
+                        {
+                            currentSC=c;
+                            break;
+                        }
+                    }
+                }
+            }
         }
         catch (Exception e)
         {
@@ -84,6 +102,7 @@ public class SingleCounterFragment extends Fragment{
         resetButton=(ImageButton)view.findViewById(R.id.scounter_reset);
         editCounterName=(ImageButton)view.findViewById(R.id.edit_counter_name);
         deleteCounter=(ImageButton)view.findViewById(R.id.delete_counter);
+
 
         final Vibrator vib = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         final long[] pattern = {0, 20, 150, 20}; //double vibration pattern for errors
@@ -367,32 +386,17 @@ public class SingleCounterFragment extends Fragment{
                 }
         );
 
-
-
-
         return view;
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        for(Multicounter m: CounterListActivity.multicounterList)
-        {
-            if(m.getName().equals(mcName))
-            {
-                for(Counter c: m.counters)
-                {
-                    if(c.getLabel().equals(cName))
-                    {
-                        c.setCount(getCount());
-                        break;
-                    }
-                }
-            }
-        }
+
+        currentSC.setCount(getCount());
 
         //save multicounter list
-        saveMultiCounterList();
+        //saveMultiCounterList();
     }
 
     @Override
@@ -414,54 +418,27 @@ public class SingleCounterFragment extends Fragment{
 
     public void setNewCounterName(String n)
     {
-        for(Multicounter m: CounterListActivity.multicounterList)
-        {
-            if(m.getName().equals(mcName))
-            {
-                for(Counter c: m.counters)
-                {
-                    if(c.getLabel().equals(cName))
-                    {
-                        c.setLabel(n);
-                        counterName.setText(n);
-                        cName=n;
-                        break;
-                    }
-                }
-            }
-        }
+        currentSC.setLabel(n);
+        counterName.setText(n);
+        cName=n;
     }
 
     public boolean inSingleCounterList(String countN)
     {
-        for(Multicounter m: CounterListActivity.multicounterList)
+        for(Counter c: currentMC.counters)
         {
-            if(m.getName().equals(mcName))
+            if(c.getLabel().equals(countN))
             {
-                for(Counter c: m.counters)
-                {
-                    if(c.getLabel().equals(countN))
-                    {
-                        return true;
-                    }
-                }
-                break;
+                return true;
             }
         }
+
         return false;
     }
 
     public void deleteCounterFromMC()
     {
-        for(Multicounter m: CounterListActivity.multicounterList)
-        {
-            if(m.getName().equals(mcName))
-            {
-
-                m.deleteCounter(cName);
-                break;
-            }
-        }
+        currentMC.deleteCounter(cName);
     }
 
     public int getCount()

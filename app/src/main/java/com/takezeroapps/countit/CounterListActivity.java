@@ -435,6 +435,18 @@ public class CounterListActivity extends AppCompatActivity {
             multicounterList = gson.fromJson(jsonMC, type);
         }
 
+        //TEST BEGIN
+        if(multicounterList.isEmpty()) {
+            for (int i = 0; i < 20; i++) {
+                multicounterList.add(new Multicounter("mc" + i, 20));
+                multicounterNameList.add(0, "mc" + i);
+            }
+
+            saveMultiCounterList();
+            saveCounterList(multicounterNameList);
+        }
+        //TEST END
+
     }
 
     @Override
@@ -457,7 +469,7 @@ public class CounterListActivity extends AppCompatActivity {
                 return false;
             }
         });
-        
+
         return super.onCreateOptionsMenu(menu);
     }
 

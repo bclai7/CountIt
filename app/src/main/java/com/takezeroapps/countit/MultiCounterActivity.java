@@ -119,15 +119,8 @@ public class MultiCounterActivity extends AppCompatActivity {
         super.onPause();
 
         //set new modified time every time the activity is paused
-        for(Multicounter m: CounterListActivity.multicounterList)
-        {
-            if(current.getName().equals(m.getName()))
-            {
-                m.setModifiedDateTime();
-                m.setModifiedTimeStamp();
-                break;
-            }
-        }
+        current.setModifiedDateTime();
+        current.setModifiedTimeStamp();
 
         //save multicounter list
         saveMultiCounterList();
@@ -396,16 +389,9 @@ public class MultiCounterActivity extends AppCompatActivity {
                             saveCounterList(CounterListActivity.multicounterNameList);
 
                             //set the new name in the actual counter object
-                            for(Multicounter m: CounterListActivity.multicounterList)
-                            {
-                                if(m.getName().equals(current.getName()))
-                                {
-                                    m.setName(counterName);
-                                    m.setModifiedDateTime();
-                                    m.setModifiedTimeStamp();
-                                    break;
-                                }
-                            }
+                            current.setName(counterName);
+                            current.setModifiedDateTime();
+                            current.setModifiedTimeStamp();
 
                             //save multicounter list
                             saveMultiCounterList();
@@ -446,14 +432,7 @@ public class MultiCounterActivity extends AppCompatActivity {
     }
 
     public void saveCountersToMulticounter(ArrayList<Counter> counterList) {
-        for(Multicounter m: CounterListActivity.multicounterList)
-        {
-            if(current.getName().equals(m.getName()))
-            {
-                m.counters=counterList;
-                break;
-            }
-        }
+        current.counters=counterList;
     }
 
     public boolean numberInvalid(int num)
