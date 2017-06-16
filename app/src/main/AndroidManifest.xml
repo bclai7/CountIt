@@ -39,7 +39,8 @@
         <activity
             android:name=".MultiCounterActivity"
             android:label="@string/multicounter_activity_title"
-            android:parentActivityName=".CounterListActivity">
+            android:parentActivityName=".CounterListActivity"
+            android:configChanges="orientation|screenSize">
 
 
 
