@@ -437,7 +437,7 @@ public class CounterListActivity extends AppCompatActivity {
 
         //TEST BEGIN
         if(multicounterList.isEmpty()) {
-            for (int i = 0; i < 20; i++) {
+            for (int i = 1; i < 100; i++) {
                 multicounterList.add(new Multicounter("mc" + i, 20));
                 multicounterNameList.add(0, "mc" + i);
             }
@@ -480,7 +480,7 @@ public class CounterListActivity extends AppCompatActivity {
 
         if (id == R.id.multicounter_add) { //add counter button
 
-            if(multicounterNameList.size() + 1 > 50) //maximum number of multicounters set to 50
+            if(multicounterNameList.size() + 1 > 100) //maximum number of multicounters set to 100
             {
                 Snackbar.make(getWindow().getDecorView().getRootView(), R.string.max_number_of_multicounters_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }

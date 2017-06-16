@@ -123,6 +123,9 @@ public class SingleCounterFragment extends Fragment{
                             if(vibrateSetting)
                                 vib.vibrate(10);
                             addCount();
+                            //Set modified times
+                            currentMC.setModifiedDateTime();
+                            currentMC.setModifiedTimeStamp();
                         }
                     }
                 }
@@ -144,6 +147,9 @@ public class SingleCounterFragment extends Fragment{
                             if(vibrateSetting)
                                 vib.vibrate(10);
                             subCount();
+                            //Set modified times
+                            currentMC.setModifiedDateTime();
+                            currentMC.setModifiedTimeStamp();
                         }
                     }
                 }
@@ -167,6 +173,9 @@ public class SingleCounterFragment extends Fragment{
                                 public void onClick(DialogInterface dialog, int id) {
                                     // reset count if "yes" is clicked
                                     resetCount();
+                                    //Set modified times
+                                    currentMC.setModifiedDateTime();
+                                    currentMC.setModifiedTimeStamp();
                                 }
                             });
                             resetDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -184,6 +193,9 @@ public class SingleCounterFragment extends Fragment{
                         }
                         else{
                             resetCount();
+                            //Set modified times
+                            currentMC.setModifiedDateTime();
+                            currentMC.setModifiedTimeStamp();
                         }
                     }
                 }
@@ -250,6 +262,10 @@ public class SingleCounterFragment extends Fragment{
                                             //find current counter and set the name to the new name
                                             setNewCounterName(counterName); //sets new countername in the counter object as well as the textview
 
+                                            //Set modified times
+                                            currentMC.setModifiedDateTime();
+                                            currentMC.setModifiedTimeStamp();
+
                                             //save multicounter list
                                             saveMultiCounterList();
                                         }
@@ -286,6 +302,10 @@ public class SingleCounterFragment extends Fragment{
                                 deleteCounterFromMC();
                                 saveMultiCounterList();
                                 deleteFragment();
+
+                                //Set modified times
+                                currentMC.setModifiedDateTime();
+                                currentMC.setModifiedTimeStamp();
                             }
                         });
                         deleteDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -393,7 +413,7 @@ public class SingleCounterFragment extends Fragment{
     public void onPause() {
         super.onPause();
 
-        currentSC.setCount(getCount());
+        currentSC.setCount(currentSC.getCount());
 
         //save multicounter list
         //saveMultiCounterList();
@@ -447,20 +467,23 @@ public class SingleCounterFragment extends Fragment{
     }
     public void setCount(int num)
     {
-        counterCount.setText(Integer.toString(num));
+        currentSC.setCount(num);
+        counterCount.setText(Integer.toString(currentSC.getCount()));
     }
 
     public void addCount()
     {
-        int num = Integer.valueOf(counterCount.getText().toString());
-        num++;
-        counterCount.setText(Integer.toString(num));
+        //int num = Integer.valueOf(counterCount.getText().toString());
+        //num++;
+        currentSC.addCount();
+        counterCount.setText(Integer.toString(currentSC.getCount()));;
     }
     public void subCount()
     {
-        int num = Integer.valueOf(counterCount.getText().toString());
-        num--;
-        counterCount.setText(Integer.toString(num));
+        //int num = Integer.valueOf(counterCount.getText().toString());
+        //num--;
+        currentSC.subCount();
+        counterCount.setText(Integer.toString(currentSC.getCount()));
     }
     public void resetCount()
     {

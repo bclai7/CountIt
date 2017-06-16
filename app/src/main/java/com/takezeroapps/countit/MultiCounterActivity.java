@@ -7,13 +7,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.InputType;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -53,7 +56,7 @@ public class MultiCounterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_counter);
         Bundle bundle = getIntent().getExtras();
-        String counterName = bundle.getString(CounterListActivity.MULTICOUNTER_NAME_KEY);
+        final String counterName = bundle.getString(CounterListActivity.MULTICOUNTER_NAME_KEY);
         setTitle(counterName);
 
         //CounterListActivity.multicounterNameList = getCounterList();
@@ -84,6 +87,7 @@ public class MultiCounterActivity extends AppCompatActivity {
         try
         {
             for (Counter c : current.counters) {
+                Log.d("test", "Counter "+c.getLabel()+": "+c.getCount());
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(current.getName(), c.getLabel(), c.getCount());
@@ -106,6 +110,7 @@ public class MultiCounterActivity extends AppCompatActivity {
         //get saved "keep screen on" setting from shared preferences
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         screenSetting = prefs.getBoolean("switch_preference_screen", false);
+        resetconfirmSetting = prefs.getBoolean("switch_preference_resetconfirm", true);
 
         if(screenSetting)
         {
@@ -117,10 +122,6 @@ public class MultiCounterActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
-        //set new modified time every time the activity is paused
-        current.setModifiedDateTime();
-        current.setModifiedTimeStamp();
 
         //save multicounter list
         saveMultiCounterList();
@@ -138,7 +139,7 @@ public class MultiCounterActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.multicounter_add) { //add counter button
-            if(current.counters.size() + 1 > 10) //maximum number of multicounters set to 50
+            if(current.counters.size() + 1 > 20) //maximum number of multicounters set to 50
             {
                 Snackbar.make(getWindow().getDecorView().getRootView(), R.string.max_number_of_counters_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
@@ -228,7 +229,11 @@ public class MultiCounterActivity extends AppCompatActivity {
                                 //create new counter and add to multicounter
                                 Counter newCounter = new Counter(current.getName(), counterName, startCount);
                                 current.counters.add(newCounter);
-                                saveCountersToMulticounter(current.counters);
+
+                                //set modified times
+                                current.setModifiedDateTime();
+                                current.setModifiedTimeStamp();
+
                                 //save multicounter list
                                 saveMultiCounterList();
 
@@ -243,7 +248,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                         }
                         catch (IllegalArgumentException e)
                         {
-                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.no_counter_count, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            Snackbar.make(getWindow().getDecorView().getRootView(), R.string.invalid_starting_count, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             dialog.cancel();
                         }
                     }
@@ -416,6 +421,52 @@ public class MultiCounterActivity extends AppCompatActivity {
             builder.show();
 
         }
+        else if(id == R.id.multicounter_reset_all)
+        {
+            if(resetconfirmSetting) {
+                // Instantiate an AlertDialog.Builder with its constructor
+                AlertDialog.Builder resetDialog = new AlertDialog.Builder(MultiCounterActivity.this);
+
+                // Set Dialog Title, message, and other properties
+                resetDialog.setMessage(R.string.reset_all_question)
+                        .setTitle(R.string.reset_all_title)
+                ; // semi-colon only goes after ALL of the properties
+
+                // Add the buttons
+                resetDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // reset count if "yes" is clicked
+                        current.resetAllCounters();
+
+                        //set modified times
+                        current.setModifiedDateTime();
+                        current.setModifiedTimeStamp();
+
+                        saveMultiCounterList();
+                        finish();
+                        startActivity(getIntent());
+                    }
+                });
+                resetDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //cancel dialog if "no" is clicked
+                        dialog.cancel();
+                    }
+                });
+
+                // Get the AlertDialog from create()
+                AlertDialog dialog = resetDialog.create();
+
+                //show dialog when reset button is clicked
+                resetDialog.show();
+            }
+            else{
+                current.resetAllCounters();
+                saveMultiCounterList();
+                finish();
+                startActivity(getIntent());
+            }
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -429,10 +480,6 @@ public class MultiCounterActivity extends AppCompatActivity {
             }
         }
         return false;
-    }
-
-    public void saveCountersToMulticounter(ArrayList<Counter> counterList) {
-        current.counters=counterList;
     }
 
     public boolean numberInvalid(int num)

@@ -35,8 +35,11 @@
     <string name="counter_details_number_counters">Number of Counters: </string>
     <string name="created">Created: </string>
     <string name="last_modified">Last Modifed: </string>
+    <string name="reset_all_title">Reset All</string>
+    <string name="reset_all_question">Are you sure you want to reset all counters?</string>
 
-    <string name="no_counter_count">No count was entered!</string>
+
+    <string name="invalid_starting_count">Invalid starting count</string>
     <string name="counter_colon">Counter: </string>
     <string name="multicounter_activity_title">Counter Name</string>
     <string name="mc_title_length_error">Please enter a title name with 40 characters or less</string>

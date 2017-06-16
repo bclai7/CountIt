@@ -18,8 +18,6 @@ public class Multicounter {
     String modifiedDateTime; //string of the date the multicounter was last modified
     Long modifiedTimeStamp; //time stamp of when the multicounter was last modified, uses the amount of milliseconds since epoch (jan 1, 1970). This will be used to sort multicounters by last modified date.
 
-    //eraseAllCounters() method ???
-
     public Multicounter(String name, int count)
     {
         this.name=name;
@@ -97,6 +95,14 @@ public class Multicounter {
                 i.remove();
                 break;
             }
+        }
+    }
+
+    public void resetAllCounters()
+    {
+        for(Counter c: counters)
+        {
+            c.setCount(0);
         }
     }
 
