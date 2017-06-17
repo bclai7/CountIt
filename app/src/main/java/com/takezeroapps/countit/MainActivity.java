@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.Vibrator;
@@ -30,6 +31,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.takezeroapps.countit.R;
 
@@ -43,7 +45,10 @@ public class MainActivity extends AppCompatActivity
     int newNum;
     OperatorFragment opf = new OperatorFragment();
     Button addButton, subButton;
-    ImageButton resetButton;
+    ImageButton resetButton, counterButton;
+    boolean portraitMode;
+    Bundle in;
+    int count;
 
     @Override
     public void onResume()
@@ -58,15 +63,47 @@ public class MainActivity extends AppCompatActivity
         volumeSetting = prefs.getBoolean("switch_preference_volume", false);
 
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        int count = sharedPref.getInt("count_key", 0);
-        opf.changeCount(count);
+        count = sharedPref.getInt("count_key", 0);
+        opf.changeCount(count, portraitMode);
 
         if(screenSetting)
         {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
-        //resetButton.setImageResource(R.drawable.ic_reset_gray);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration config) {
+        super.onConfigurationChanged(config);
+        // Check for the rotation
+        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            //Log.d("test", "Landscape");
+            //Toast.makeText(this, "LANDSCAPE", Toast.LENGTH_SHORT).show();
+            portraitMode=false;
+            opf.changeCount(count, portraitMode);
+
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean("orientation_key", portraitMode);
+            editor.commit();
+
+            finish();
+            startActivity(getIntent());
+        } else if (config.orientation == Configuration.ORIENTATION_PORTRAIT){
+            //Log.d("test", "Portrait");
+            //Toast.makeText(this, "PORTRAIT", Toast.LENGTH_SHORT).show();
+            portraitMode=true;
+            opf.changeCount(count, portraitMode);
+
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean("orientation_key", portraitMode);
+            editor.commit();
+
+            finish();
+            startActivity(getIntent());
+        }
     }
 
     @Override
@@ -94,11 +131,13 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         final Vibrator vib = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
         final long[] pattern = {0, 20, 150, 20}; //double vibration pattern for errors
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        portraitMode = sharedPref.getBoolean("orientation_key", false);
 
         addButton = (Button) findViewById(R.id.plusButton);
         subButton = (Button) findViewById(R.id.minusButton);
         resetButton = (ImageButton) findViewById(R.id.resetButton);
-        ImageButton counterButton = (ImageButton) findViewById(R.id.countButton);
+        counterButton = (ImageButton) findViewById(R.id.countButton);
 
         //long click on actual number count, this is to manually enter a count
         counterButton.setOnLongClickListener(
@@ -152,10 +191,14 @@ public class MainActivity extends AppCompatActivity
                                 }
                                 else //else change number
                                 {
-                                    if(isNegative)
-                                        opf.changeCount(-1*newNum); //if isNegative checkbox is checked, make the number negative
-                                    else
-                                        opf.changeCount(newNum); //if checkbox is not checked, keep number the same
+                                    if(isNegative) {
+                                        opf.changeCount(-1 * newNum, portraitMode); //if isNegative checkbox is checked, make the number negative
+                                        count=newNum*-1;
+                                    }
+                                    else {
+                                        opf.changeCount(newNum, portraitMode); //if checkbox is not checked, keep number the same
+                                        count=newNum;
+                                    }
                                 }
                             }
                         });
@@ -199,7 +242,8 @@ public class MainActivity extends AppCompatActivity
                         {
                             if(vibrateSetting)
                                 vib.vibrate(10);
-                            opf.addCount();
+                            count++;
+                            opf.addCount(portraitMode);
                         }
                     }
                 }
@@ -220,7 +264,8 @@ public class MainActivity extends AppCompatActivity
                         {
                             if(vibrateSetting)
                                 vib.vibrate(10);
-                            opf.subCount();
+                            opf.subCount(portraitMode);
+                            count--;
                         }
                     }
                 }
@@ -243,7 +288,8 @@ public class MainActivity extends AppCompatActivity
                             resetDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     // reset count if "yes" is clicked
-                                    opf.resetCount();
+                                    opf.resetCount(portraitMode);
+                                    count=0;
                                 }
                             });
                             resetDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -260,7 +306,8 @@ public class MainActivity extends AppCompatActivity
                             resetDialog.show();
                         }
                         else{
-                            opf.resetCount();
+                            opf.resetCount(portraitMode);
+                            count=0;
                         }
                     }
                 }

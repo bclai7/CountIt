@@ -1,13 +1,16 @@
 package com.takezeroapps.countit;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.takezeroapps.countit.R;
 
@@ -30,38 +33,38 @@ public class OperatorFragment extends Fragment{
     {
         return Integer.valueOf(cnt.getText().toString());
     }
-    public void changeCount(int num) //This function is used by the main activity to change the count when the button is held
+    public void changeCount(int num, boolean portraitMode) //This function is used by the main activity to change the count when the button is held
     {
         Operations op = new Operations(); //create object from Operations.java class
-        int size = op.getSize(num); //use method to get size of text
+        int size = op.getSize(num, portraitMode); //use method to get size of text
         cnt.setTextSize(TypedValue.COMPLEX_UNIT_SP, size); //sets the text size in sp units depending on the size of the number
         String countstring = Integer.toString(num); //convert the input number to a string
         cnt.setText(countstring); //sets text to specified string
     }
 
-    public void addCount()
+    public void addCount(boolean portraitMode)
     {
         int num = Integer.valueOf(cnt.getText().toString());
         num++;
         Operations op = new Operations(); //create object from Operations.java class
-        int size = op.getSize(num); //use method to get size of text
+        int size = op.getSize(num, portraitMode); //use method to get size of text
         cnt.setTextSize(TypedValue.COMPLEX_UNIT_SP, size); //sets the text size in sp units depending on the size of the number
         String countstring = Integer.toString(num);
         cnt.setText(countstring);
     }
-    public void subCount()
+    public void subCount(boolean portraitMode)
     {
         int num = Integer.valueOf(cnt.getText().toString());
         num--;
         Operations op = new Operations(); //create object from Operations.java class
-        int size = op.getSize(num); //use method to get size of text
+        int size = op.getSize(num, portraitMode); //use method to get size of text
         cnt.setTextSize(TypedValue.COMPLEX_UNIT_SP, size); //sets the text size in sp units depending on the size of the number
         String countstring = Integer.toString(num);
         cnt.setText(countstring);
     }
-    public void resetCount()
+    public void resetCount(boolean portraitMode)
     {
-        changeCount(0);
+        changeCount(0, portraitMode);
     }
 
 }
