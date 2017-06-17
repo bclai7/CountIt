@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
@@ -754,4 +755,40 @@ public class CounterListActivity extends AppCompatActivity {
         editor.commit();
     }
 
+    //Save orientation
+
+    @Override
+    public void onConfigurationChanged(Configuration config) {
+        super.onConfigurationChanged(config);
+        // Check for the rotation
+        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            //Log.d("test", "Landscape");
+            //Toast.makeText(this, "LANDSCAPE", Toast.LENGTH_SHORT).show();
+            MainActivity.portraitMode=false;
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean("orientation_key", MainActivity.portraitMode);
+            editor.commit();
+        } else if (config.orientation == Configuration.ORIENTATION_PORTRAIT){
+            //Log.d("test", "Portrait");
+            //Toast.makeText(this, "PORTRAIT", Toast.LENGTH_SHORT).show();
+            MainActivity.portraitMode=true;
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean("orientation_key", MainActivity.portraitMode);
+            editor.commit();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //save orientation mode
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("orientation_key", MainActivity.portraitMode);
+        editor.commit();
+
+        //Log.d("test", "Shared Pref value CL onPause: " + a);
+    }
 }

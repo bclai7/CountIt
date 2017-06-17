@@ -46,6 +46,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
      */
+
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
@@ -213,4 +214,40 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     }
 
+    //Save orientation
+
+    @Override
+    public void onConfigurationChanged(Configuration config) {
+        super.onConfigurationChanged(config);
+        // Check for the rotation
+        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            //Log.d("test", "Landscape");
+            //Toast.makeText(this, "LANDSCAPE", Toast.LENGTH_SHORT).show();
+            MainActivity.portraitMode=false;
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean("orientation_key", MainActivity.portraitMode);
+            editor.commit();
+        } else if (config.orientation == Configuration.ORIENTATION_PORTRAIT){
+            //Log.d("test", "Portrait");
+            //Toast.makeText(this, "PORTRAIT", Toast.LENGTH_SHORT).show();
+            MainActivity.portraitMode=true;
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean("orientation_key", MainActivity.portraitMode);
+            editor.commit();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //save orientation mode
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("orientation_key", MainActivity.portraitMode);
+        editor.commit();
+
+        //Log.d("test", "Shared Pref value Setting onPause: " + a);
+    }
 }
