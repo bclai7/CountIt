@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -46,6 +47,7 @@ public class SingleCounterFragment extends Fragment{
     boolean isNegative, vibrateSetting, resetconfirmSetting, screenSetting;
     Counter currentSC;
     Multicounter currentMC;
+    EditText counterEdit, input;
 
     public static SingleCounterFragment newInstance(String mcName, String cName, int cCount) {
         SingleCounterFragment myFragment = new SingleCounterFragment();
@@ -205,86 +207,106 @@ public class SingleCounterFragment extends Fragment{
                 new ImageButton.OnClickListener(){
                     public void onClick(View v){
 
-                            //create dialog
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                            builder.setTitle(R.string.rename_single_counter);
-                            Context context = getActivity(); //store context in a variable
-                            LinearLayout layout = new LinearLayout(context);
-                            layout.setOrientation(LinearLayout.VERTICAL);
+                        //create dialog
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(R.string.rename_single_counter);
+                        Context context = getActivity(); //store context in a variable
+                        LinearLayout layout = new LinearLayout(context);
+                        layout.setOrientation(LinearLayout.VERTICAL);
 
-                            //textview telling user to enter counter name
-                            final TextView name = new TextView(context);
-                            name.setText(R.string.set_counter_name);
-                            name.setTextSize(16);
-                            name.setTextColor(BLACK);
-                            layout.addView(name);
+                        //textview telling user to enter counter name
+                        final TextView name = new TextView(context);
+                        name.setText(R.string.set_counter_name);
+                        name.setTextSize(16);
+                        name.setTextColor(BLACK);
+                        layout.addView(name);
 
-                            //Text input for counter name
-                            final EditText counterEdit = new EditText(context);
-                            counterEdit.setHint(cName);
-                            layout.addView(counterEdit);
-                            //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
-                            counterEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        //Text input for counter name
+                        counterEdit = new EditText(context);
+                        counterEdit.setHint(cName);
+                        layout.addView(counterEdit);
+                        //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
+                        counterEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
-                                @Override
-                                public void onFocusChange(View v, boolean hasFocus) {
-                                    // TODO Auto-generated method stub
-                                    if (hasFocus) {
-                                        counterEdit.setSingleLine(true);
-                                        counterEdit.setMaxLines(1);
-                                        counterEdit.setLines(1);
-                                    }
+                            @Override
+                            public void onFocusChange(View v, boolean hasFocus) {
+                                // TODO Auto-generated method stub
+                                if (hasFocus) {
+                                    counterEdit.setSingleLine(true);
+                                    counterEdit.setMaxLines(1);
+                                    counterEdit.setLines(1);
                                 }
-                            });
+                            }
+                        });
 
-                            layout.setPadding(60, 50, 60, 10);
+                        layout.setPadding(60, 50, 60, 10);
 
-                            builder.setView(layout);
+                        builder.setView(layout);
 
-                            builder.create();
+                        builder.create();
 
-                            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    try {
-                                        String counterName = counterEdit.getText().toString(); //input text - the user defined counter name
+                        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    String counterName = counterEdit.getText().toString(); //input text - the user defined counter name
 
-                                        if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
-                                            Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                                            dialog.cancel();
-                                        } else if (inSingleCounterList(counterName)) {
-                                            Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                                            dialog.cancel();
-                                        } else if (counterName.length() > 20) {
-                                            Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.sc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                                            dialog.cancel();
-                                        } else {
-                                            //find current counter and set the name to the new name
-                                            setNewCounterName(counterName); //sets new countername in the counter object as well as the textview
+                                    if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
+                                        Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                        dialog.cancel();
+                                        removeCounterEditKeyboard();
+                                    } else if (inSingleCounterList(counterName)) {
+                                        Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                        dialog.cancel();
+                                        removeCounterEditKeyboard();
+                                    } else if (counterName.length() > 20) {
+                                        Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.sc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                        dialog.cancel();
+                                        removeCounterEditKeyboard();
+                                    } else {
+                                        //find current counter and set the name to the new name
+                                        setNewCounterName(counterName); //sets new countername in the counter object as well as the textview
 
-                                            //Set modified times
-                                            currentMC.setModifiedDateTime();
-                                            currentMC.setModifiedTimeStamp();
+                                        //Set modified times
+                                        currentMC.setModifiedDateTime();
+                                        currentMC.setModifiedTimeStamp();
 
-                                            //save multicounter list
-                                            saveMultiCounterList();
-                                        }
-
+                                        //save multicounter list
+                                        saveMultiCounterList();
+                                        removeCounterEditKeyboard();
                                     }
-                                    catch (IllegalArgumentException e)
-                                    {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-                            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            });
 
-                            builder.show();
+                                }
+                                catch (IllegalArgumentException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+                        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
+                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                                imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
+
+                            }
+                        });
+
+                        builder.show();
+
+                        counterEdit.requestFocus();
+                        InputMethodManager imm2 = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                     }
                 }
         );
@@ -334,7 +356,7 @@ public class SingleCounterFragment extends Fragment{
                         counterChanger.setTitle(R.string.change_count); //set title
 
                         // Set up the input
-                        final EditText input = new EditText(getActivity());
+                        input = new EditText(getActivity());
 
                         // Specify the type of input expected; this, for example, sets the input as a number, and will use the numpad
                         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
@@ -353,15 +375,16 @@ public class SingleCounterFragment extends Fragment{
                                         Snackbar.make(view, R.string.no_input_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
                                         newNum = getCount(); //set new count back to old count (or else manually setting a real number > resetting count > entering blank input = count being the original real number instead of 0 after the reset)
                                         dialog.cancel();
+                                        removeInputKeyboard();
                                     } else //if string is not empty, convert to int
                                         newNum = Integer.valueOf(input.getText().toString());//get integer value of new number
-                                    
-                                    {
-                                        if (isNegative)
-                                            setCount(-1 * newNum); //if isNegative checkbox is checked, make the number negative
-                                        else
-                                            setCount(newNum); //if checkbox is not checked, keep number the same
-                                    }
+
+                                    if (isNegative)
+                                        setCount(-1 * newNum); //if isNegative checkbox is checked, make the number negative
+                                    else
+                                        setCount(newNum); //if checkbox is not checked, keep number the same
+
+                                    removeInputKeyboard();
                                 }
                                 catch (Exception e)
                                 {
@@ -369,6 +392,8 @@ public class SingleCounterFragment extends Fragment{
                                         vib.vibrate(pattern, -1);
                                     Snackbar.make(view, R.string.invalid_number_entered, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
                                     dialog.cancel();
+
+                                    removeInputKeyboard();
                                 }
                             }
                         });
@@ -389,8 +414,24 @@ public class SingleCounterFragment extends Fragment{
                             }
                         });
 
+                        counterChanger.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
+                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                                imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
+
+                            }
+                        });
+
                         counterChanger.show(); //show dialog
                         isNegative=false; //sets negative flag back to false after dialog is closed. This is so the input doesn't stay negative on each new change by the user
+
+                        input.requestFocus();
+                        InputMethodManager imm2 = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
                         return true;
                     }
@@ -405,9 +446,11 @@ public class SingleCounterFragment extends Fragment{
         super.onPause();
 
         currentSC.setCount(currentSC.getCount());
-
-        //save multicounter list
-        //saveMultiCounterList();
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(counterEdit != null)
+            imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
+        if(input != null)
+            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
     }
 
     @Override
@@ -500,6 +543,18 @@ public class SingleCounterFragment extends Fragment{
         String jsonMC = gson.toJson(CounterListActivity.multicounterList);
         editor.putString("MultiCounterList", jsonMC);
         editor.commit();
+    }
+
+    public void removeCounterEditKeyboard()
+    {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
+    }
+
+    public void removeInputKeyboard()
+    {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
     }
 
 }
