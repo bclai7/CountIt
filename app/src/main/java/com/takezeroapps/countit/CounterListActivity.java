@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
@@ -66,11 +68,15 @@ public class CounterListActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter;
     int searchListStartPos;
     EditText counterEdit;
+    boolean vibrateSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_counter_list);
+
+        final Vibrator vib = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+        final long[] pattern = {0, 20, 150, 20}; //double vibration pattern for errors
 
         if(getCounterList() == null)
         {
@@ -182,14 +188,20 @@ public class CounterListActivity extends AppCompatActivity {
                                         String counterName = counterEdit.getText().toString(); //input text - the user defined counter name
 
                                         if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
+                                            if (vibrateSetting)
+                                                vib.vibrate(pattern, -1);
                                             Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.no_mcounter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                             dialog.cancel();
                                             removeKeyboard();//remove keyboard from screen
                                         } else if (inCounterList(counterName)) {
+                                            if (vibrateSetting)
+                                                vib.vibrate(pattern, -1);
                                             Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.mcounter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                             dialog.cancel();
                                             removeKeyboard();//remove keyboard from screen
                                         } else if (counterName.length() > 40) {
+                                            if (vibrateSetting)
+                                                vib.vibrate(pattern, -1);
                                             Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.mc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                             dialog.cancel();
                                             removeKeyboard();//remove keyboard from screen
@@ -469,7 +481,9 @@ public class CounterListActivity extends AppCompatActivity {
             saveMultiCounterList();
             saveCounterList(multicounterNameList);
         }
-        //TEST END
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        vibrateSetting = prefs.getBoolean("switch_preference_vibrate", true);
 
     }
 
@@ -502,10 +516,15 @@ public class CounterListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        final Vibrator vib = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+        final long[] pattern = {0, 20, 150, 20}; //double vibration pattern for errors
+
         if (id == R.id.multicounter_add) { //add counter button
 
             if(multicounterNameList.size() + 1 > 100) //maximum number of multicounters set to 100
             {
+                if (vibrateSetting)
+                    vib.vibrate(pattern, -1);
                 Snackbar.make(getWindow().getDecorView().getRootView(), R.string.max_number_of_multicounters_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
             else {
@@ -575,12 +594,18 @@ public class CounterListActivity extends AppCompatActivity {
                         int initCount = Integer.parseInt(sp.getSelectedItem().toString()); // initial count entered by user
 
                         if (mcName.isEmpty() || mcName.length() == 0 || mcName.equals("") || TextUtils.isEmpty(mcName)) {
+                            if (vibrateSetting)
+                                vib.vibrate(pattern, -1);
                             Snackbar.make(getWindow().getDecorView().getRootView(), R.string.no_mcounter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             dialog.cancel();
                         } else if (inCounterList(mcName)) {
+                            if (vibrateSetting)
+                                vib.vibrate(pattern, -1);
                             Snackbar.make(getWindow().getDecorView().getRootView(), R.string.mcounter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             dialog.cancel();
                         } else if (mcName.length() > 40) {
+                            if (vibrateSetting)
+                                vib.vibrate(pattern, -1);
                             Snackbar.make(getWindow().getDecorView().getRootView(), R.string.mc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             dialog.cancel();
                         } else {

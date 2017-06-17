@@ -32,6 +32,8 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
+import Exceptions.NoCountEnteredException;
+
 import static android.graphics.Color.BLACK;
 
 /**
@@ -43,7 +45,7 @@ public class SingleCounterFragment extends Fragment{
     Button plusButton, minusButton;
     ImageButton resetButton, editCounterName, deleteCounter;
     String mcName, cName;
-    int cCount;
+    int cCount, newNum;
     boolean isNegative, vibrateSetting, resetconfirmSetting, screenSetting;
     Counter currentSC;
     Multicounter currentMC;
@@ -104,7 +106,6 @@ public class SingleCounterFragment extends Fragment{
         resetButton=(ImageButton)view.findViewById(R.id.scounter_reset);
         editCounterName=(ImageButton)view.findViewById(R.id.edit_counter_name);
         deleteCounter=(ImageButton)view.findViewById(R.id.delete_counter);
-
 
         final Vibrator vib = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         final long[] pattern = {0, 20, 150, 20}; //double vibration pattern for errors
@@ -252,14 +253,20 @@ public class SingleCounterFragment extends Fragment{
                                     String counterName = counterEdit.getText().toString(); //input text - the user defined counter name
 
                                     if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
+                                        if(vibrateSetting)
+                                            vib.vibrate(pattern, -1);
                                         Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                         dialog.cancel();
                                         removeCounterEditKeyboard();
                                     } else if (inSingleCounterList(counterName)) {
+                                        if(vibrateSetting)
+                                            vib.vibrate(pattern, -1);
                                         Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                         dialog.cancel();
                                         removeCounterEditKeyboard();
                                     } else if (counterName.length() > 20) {
+                                        if(vibrateSetting)
+                                            vib.vibrate(pattern, -1);
                                         Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.sc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                         dialog.cancel();
                                         removeCounterEditKeyboard();
@@ -368,25 +375,34 @@ public class SingleCounterFragment extends Fragment{
                             public void onClick(DialogInterface dialog, int which) {
                                 try {
                                     String input_string = input.getText().toString().trim();
-                                    int newNum;
 
                                     if (input_string.isEmpty() || input_string.length() == 0 || input_string.equals("") || TextUtils.isEmpty(input_string)) //check if input is empty
                                     {
-                                        Snackbar.make(view, R.string.no_input_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
-                                        newNum = getCount(); //set new count back to old count (or else manually setting a real number > resetting count > entering blank input = count being the original real number instead of 0 after the reset)
-                                        dialog.cancel();
-                                        removeInputKeyboard();
+                                        throw new NoCountEnteredException();
                                     } else //if string is not empty, convert to int
+                                    {
                                         newNum = Integer.valueOf(input.getText().toString());//get integer value of new number
+                                    }
 
-                                    if (isNegative)
+                                    if (isNegative) {
                                         setCount(-1 * newNum); //if isNegative checkbox is checked, make the number negative
-                                    else
+                                    }
+                                    else {
                                         setCount(newNum); //if checkbox is not checked, keep number the same
+                                    }
 
                                     removeInputKeyboard();
                                 }
-                                catch (Exception e)
+                                catch (NoCountEnteredException e1)
+                                {
+                                    if(vibrateSetting)
+                                        vib.vibrate(pattern, -1);
+                                    Snackbar.make(view, R.string.no_input_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                    newNum = getCount(); //set new count back to old count (or else manually setting a real number > resetting count > entering blank input = count being the original real number instead of 0 after the reset)
+                                    dialog.cancel();
+                                    removeInputKeyboard();
+                                }
+                                catch (Exception e2)
                                 {
                                     if (vibrateSetting)
                                         vib.vibrate(pattern, -1);
@@ -421,7 +437,7 @@ public class SingleCounterFragment extends Fragment{
                                 //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
                                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-                                imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
+                                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
 
                             }
                         });

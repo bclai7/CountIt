@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Count It</string>
+    <string name="publisher_name">Deico Tech</string>
+    <string name="email">support@deicotech.com</string>
     <string name="reset_title">Reset Counter</string>
     <string name="delete_title">Delete Counter</string>
     <string name="delete_mc_title">Delete Multicounter</string>
@@ -80,7 +82,7 @@
 
     <!-- Vibrate -->
     <string name="pref_title_vibrate">Vibration</string>
-    <string name="pref_description_vibrate">Vibrate on button press
+    <string name="pref_description_vibrate">Enable vibration effect on button press
     </string>
 
     <!-- Reset Confirmation -->
@@ -114,7 +116,7 @@
     <string name="pref_header_info">Info</string>
 
     <string name="pref_title_contact">Contact</string>
-    <string name="pref_description_contact">support@takezeroapps.com
+    <string name="pref_description_contact">support@deicotech.com
     </string>
 
     <string name="pref_title_version">Version Number</string>
