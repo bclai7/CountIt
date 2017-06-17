@@ -399,8 +399,8 @@ public class MainActivity extends AppCompatActivity
         if(input != null)
             imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
 
-        //if(counterChangeView != null)
-        //    imm.hideSoftInputFromWindow(counterChangeView.getWindowToken(), 0);
+        if(counterChangeView != null)
+            imm.hideSoftInputFromWindow(counterChangeView.getWindowToken(), 0);
     }
 
     @Override

@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -50,7 +51,7 @@ public class MultiCounterActivity extends AppCompatActivity {
     private Multicounter current;
     SingleCounterFragment testFragment = new SingleCounterFragment();
     boolean vibrateSetting, resetconfirmSetting, screenSetting;
-
+    EditText counterEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +133,10 @@ public class MultiCounterActivity extends AppCompatActivity {
         editor.putBoolean("orientation_key", MainActivity.portraitMode);
         editor.commit();
 
-        //Log.d("test", "Shared Pref value CL onPause: " + a);
+        //remove keyboard so its not stuck on screen when activity is pauses
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(counterEdit != null)
+            imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
     }
 
     @Override
@@ -339,7 +343,7 @@ public class MultiCounterActivity extends AppCompatActivity {
             layout.addView(name);
 
             //Text input for counter name
-            final EditText counterEdit = new EditText(context);
+            counterEdit = new EditText(context);
             counterEdit.setHint(current.getName());
             layout.addView(counterEdit);
             //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
@@ -369,12 +373,15 @@ public class MultiCounterActivity extends AppCompatActivity {
                         if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
                             Snackbar.make(MultiCounterActivity.this.getWindow().getDecorView().getRootView(), R.string.no_mcounter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             dialog.cancel();
+                            removeKeyboard();
                         } else if (inCounterList(counterName)) {
                             Snackbar.make(MultiCounterActivity.this.getWindow().getDecorView().getRootView(), R.string.mcounter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             dialog.cancel();
+                            removeKeyboard();
                         } else if (counterName.length() > 40) {
                             Snackbar.make(MultiCounterActivity.this.getWindow().getDecorView().getRootView(), R.string.mc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             dialog.cancel();
+                            removeKeyboard();
                         } else {
 
                             int it=0;
@@ -410,6 +417,8 @@ public class MultiCounterActivity extends AppCompatActivity {
                             saveMultiCounterList();
 
                             setTitle(counterName);
+
+                            removeKeyboard();
                         }
 
                     }
@@ -423,10 +432,27 @@ public class MultiCounterActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
+                    removeKeyboard();
+                }
+            });
+
+            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                    imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
+
                 }
             });
 
             builder.show();
+
+            counterEdit.requestFocus();
+            InputMethodManager imm2 = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
         }
         else if(id == R.id.multicounter_reset_all)
@@ -558,5 +584,11 @@ public class MultiCounterActivity extends AppCompatActivity {
             editor.putBoolean("orientation_key", MainActivity.portraitMode);
             editor.commit();
         }
+    }
+
+    public void removeKeyboard()
+    {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
     }
 }

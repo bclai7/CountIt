@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -64,6 +65,7 @@ public class CounterListActivity extends AppCompatActivity {
     public static final String MULTICOUNTER_NAME_KEY = "multicounter_name";
     ArrayAdapter<String> adapter;
     int searchListStartPos;
+    EditText counterEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +154,7 @@ public class CounterListActivity extends AppCompatActivity {
                             layout.addView(name);
 
                             //Text input for counter name
-                            final EditText counterEdit = new EditText(context);
+                            counterEdit = new EditText(context);
                             counterEdit.setHint(item);
                             layout.addView(counterEdit);
                             //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
@@ -182,12 +184,15 @@ public class CounterListActivity extends AppCompatActivity {
                                         if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
                                             Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.no_mcounter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                             dialog.cancel();
+                                            removeKeyboard();//remove keyboard from screen
                                         } else if (inCounterList(counterName)) {
                                             Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.mcounter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                             dialog.cancel();
+                                            removeKeyboard();//remove keyboard from screen
                                         } else if (counterName.length() > 40) {
                                             Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.mc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                             dialog.cancel();
+                                            removeKeyboard();//remove keyboard from screen
                                         } else {
 
                                             int it=0;
@@ -233,6 +238,7 @@ public class CounterListActivity extends AppCompatActivity {
                                             multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
                                             adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
                                             listView.setAdapter(adapter);
+                                            removeKeyboard();//remove keyboard from screen
                                         }
 
                                     }
@@ -246,10 +252,27 @@ public class CounterListActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.cancel();
+                                    removeKeyboard();//remove keyboard from screen
+                                }
+                            });
+
+                            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
+                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                                    imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
+
                                 }
                             });
 
                             builder.show();
+
+                            counterEdit.requestFocus();
+                            InputMethodManager imm2 = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                         }
                         else if(position==2) //delete button
                         {
@@ -789,6 +812,15 @@ public class CounterListActivity extends AppCompatActivity {
         editor.putBoolean("orientation_key", MainActivity.portraitMode);
         editor.commit();
 
-        //Log.d("test", "Shared Pref value CL onPause: " + a);
+        //remove keyboard so its not stuck on screen when activity is pauses
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(counterEdit != null)
+            imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
+    }
+
+    public void removeKeyboard()
+    {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
     }
 }
