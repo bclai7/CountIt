@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity
     {
         //get saved settings from stored preferences
         super.onResume();
-        Log.d("test", "ONRESUME");
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         vibrateSetting = prefs.getBoolean("switch_preference_vibrate", true);
@@ -74,7 +73,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onConfigurationChanged(Configuration config) {
         super.onConfigurationChanged(config);
-        Log.d("test", "ONCONFIG");
         portraitMode=true;
 
         SharedPreferences sp = this.getPreferences(Context.MODE_PRIVATE);
@@ -85,10 +83,7 @@ public class MainActivity extends AppCompatActivity
 
         // Check for the rotation
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            //Log.d("test", "Landscape");
-            //Toast.makeText(this, "LANDSCAPE", Toast.LENGTH_SHORT).show();
             portraitMode=false;
-            //Log.d("test", "port mode changing to landsape: "+portraitMode);
             opf.changeCount(count, portraitMode);
 
             SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -99,12 +94,9 @@ public class MainActivity extends AppCompatActivity
             finish();
             startActivity(getIntent());
         } else if (config.orientation == Configuration.ORIENTATION_PORTRAIT){
-            //Log.d("test", "Portrait");
-            //Toast.makeText(this, "PORTRAIT", Toast.LENGTH_SHORT).show();
             portraitMode=true;
             opf.changeCount(count, portraitMode);
 
-            //Log.d("test", "port mode changing to portrait: "+portraitMode);
             SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean("orientation_key", portraitMode);
@@ -138,16 +130,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Log.d("test", "ONCREATE");
-        //Log.d("test", "Portrait Mode onCreate B4: "+portraitMode);
-
-        //SharedPreferences sharedPrefa = this.getPreferences(Context.MODE_PRIVATE);
-        //portraitMode = sharedPrefa.getBoolean("orientation_key", true);
 
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         count = sharedPref.getInt("count_key", 0);
-        //Log.d("test", "Portrait Mode onCreate AF: "+portraitMode);
-        Log.d("test", "---------");
 
         opf.changeCount(count, portraitMode);
 
@@ -362,7 +347,6 @@ public class MainActivity extends AppCompatActivity
         //save orientation mode
         editor.putBoolean("orientation_key", portraitMode);
         editor.commit();
-        Log.d("test", "Main onPause: "+portraitMode);
     }
 
     @Override
