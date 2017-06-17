@@ -6,17 +6,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.SoundEffectConstants;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -27,17 +24,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.takezeroapps.countit.R;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+
+import Exceptions.NoCountEnteredException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -49,13 +43,17 @@ public class MainActivity extends AppCompatActivity
     public static boolean portraitMode=true;
     Bundle in;
     int count;
-    boolean onConfigRan;
+    boolean inputDialogCreated;
+    View counterChangeView;
+    EditText input;
 
     @Override
     public void onResume()
     {
         //get saved settings from stored preferences
         super.onResume();
+
+        //remove keyboard so its not stuck on screen when activity is resumed
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         vibrateSetting = prefs.getBoolean("switch_preference_vibrate", true);
@@ -131,6 +129,17 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //fixes issue where loading into landscape uses the wrong font size
+        Configuration newConfig = getResources().getConfiguration();
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            //Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+            portraitMode=false;
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            //Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+            portraitMode=true;
+        }
+
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         count = sharedPref.getInt("count_key", 0);
 
@@ -149,6 +158,8 @@ public class MainActivity extends AppCompatActivity
                 new ImageButton.OnLongClickListener(){
                     @Override
                     public boolean onLongClick(final View view) {
+                        counterChangeView =view;
+                        inputDialogCreated=true;
                         final int currcount = opf.getCount();
 
                         final CharSequence[] negOptions = {MainActivity.this.getResources().getString(R.string.make_negative_num)}; //choices to select from, only one choice so it only has one element
@@ -158,52 +169,65 @@ public class MainActivity extends AppCompatActivity
                         counterChanger.setTitle(R.string.change_count); //set title
 
                         // Set up the input
-                        final EditText input = new EditText(MainActivity.this);
+                        input = new EditText(MainActivity.this);
 
                         // Specify the type of input expected; this, for example, sets the input as a number, and will use the numpad
                         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                        input.setHint(R.string.enter_new_count);
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         counterChanger.setView(input);
 
                         // Set up the buttons
                         counterChanger.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    String input_string = input.getText().toString().trim();
 
-                                String input_string = input.getText().toString().trim();
+                                    if (input_string.isEmpty() || input_string.length() == 0 || input_string.equals("") || TextUtils.isEmpty(input_string)) //check if input is empty
+                                    {
+                                        throw new NoCountEnteredException();
+                                    } else //if string is not empty, convert to int
+                                        newNum = Integer.valueOf(input.getText().toString());//get integer value of new number
 
-                                if(input_string.isEmpty() || input_string.length() == 0 || input_string.equals("") || TextUtils.isEmpty(input_string)) //check if input is empty
+                                    {
+                                        if (isNegative) {
+                                            opf.changeCount(-1 * newNum, portraitMode); //if isNegative checkbox is checked, make the number negative
+                                            count = newNum * -1;
+                                        } else {
+                                            opf.changeCount(newNum, portraitMode); //if checkbox is not checked, keep number the same
+                                            count = newNum;
+                                        }
+                                    }
+
+                                    //removes keyboard from screen when user clicks ok so it is not stuck on the screen
+                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                                }
+                                catch (NoCountEnteredException e1)
                                 {
+                                    if (vibrateSetting)
+                                        vib.vibrate(pattern, -1);
+
                                     Snackbar.make(view, R.string.no_input_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
-                                    newNum=opf.getCount(); //set new count back to old count (or else manually setting a real number > resetting count > entering blank input = count being the original real number instead of 0 after the reset)
+                                    newNum = opf.getCount(); //set new count back to old count (or else manually setting a real number > resetting count > entering blank input = count being the original real number instead of 0 after the reset)
                                     dialog.cancel();
-                                }
-                                else //if string is not empty, convert to int
-                                    newNum = Integer.valueOf(input.getText().toString());//get integer value of new number
 
-                                if(newNum > 2147483646) //if entered is too high, print error and return to original number
-                                {
-                                    if(vibrateSetting)
-                                        vib.vibrate(pattern, -1);
-                                    Snackbar.make(view, R.string.too_high_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
-                                    dialog.cancel();
+                                    //removes keyboard from screen when user clicks ok so it is not stuck on the screen
+                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
                                 }
-                                else if(newNum < -2147483646) //if number entered is too low, print error and return to original number
+                                catch(Exception e2)
                                 {
-                                    if(vibrateSetting)
+                                    //checking if the number is higher than maximum is no longer needed because the program will throw an exception if its too high anyway, this is where it is caught
+                                    if (vibrateSetting)
                                         vib.vibrate(pattern, -1);
-                                    Snackbar.make(view, R.string.too_high_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                    Snackbar.make(view, R.string.invalid_number_entered, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
                                     dialog.cancel();
-                                }
-                                else //else change number
-                                {
-                                    if(isNegative) {
-                                        opf.changeCount(-1 * newNum, portraitMode); //if isNegative checkbox is checked, make the number negative
-                                        count=newNum*-1;
-                                    }
-                                    else {
-                                        opf.changeCount(newNum, portraitMode); //if checkbox is not checked, keep number the same
-                                        count=newNum;
-                                    }
+
+                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+
                                 }
                             }
                         });
@@ -211,6 +235,10 @@ public class MainActivity extends AppCompatActivity
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel(); //cancel dialog and do not save changes when "cancel" button is clicked
+
+                                //removes keyboard from screen when user clicks cancel so it is not stuck on the screen
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
                             }
                         });
                         counterChanger.setMultiChoiceItems(negOptions, null, new DialogInterface.OnMultiChoiceClickListener() { //checkbox for negative number
@@ -224,7 +252,24 @@ public class MainActivity extends AppCompatActivity
                             }
                         });
 
+                        counterChanger.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+
+                            }
+                        });
+
+
                         counterChanger.show(); //show dialog
+                        input.requestFocus();
+                        InputMethodManager imm2 = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
                         isNegative=false; //sets negative flag back to false after dialog is closed. This is so the input doesn't stay negative on each new change by the user
 
                         return true;
@@ -347,6 +392,15 @@ public class MainActivity extends AppCompatActivity
         //save orientation mode
         editor.putBoolean("orientation_key", portraitMode);
         editor.commit();
+
+        //remove keyboard so its not stuck on screen when activity is pauses
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        //imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+        if(input != null)
+            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+
+        //if(counterChangeView != null)
+        //    imm.hideSoftInputFromWindow(counterChangeView.getWindowToken(), 0);
     }
 
     @Override

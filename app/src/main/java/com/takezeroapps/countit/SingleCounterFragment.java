@@ -344,40 +344,31 @@ public class SingleCounterFragment extends Fragment{
                         counterChanger.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    String input_string = input.getText().toString().trim();
+                                    int newNum;
 
-                                String input_string = input.getText().toString().trim();
-                                int newNum;
-
-                                if(input_string.isEmpty() || input_string.length() == 0 || input_string.equals("") || TextUtils.isEmpty(input_string)) //check if input is empty
-                                {
-                                    Snackbar.make(view, R.string.no_input_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
-                                    newNum=getCount(); //set new count back to old count (or else manually setting a real number > resetting count > entering blank input = count being the original real number instead of 0 after the reset)
-                                    dialog.cancel();
+                                    if (input_string.isEmpty() || input_string.length() == 0 || input_string.equals("") || TextUtils.isEmpty(input_string)) //check if input is empty
+                                    {
+                                        Snackbar.make(view, R.string.no_input_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                        newNum = getCount(); //set new count back to old count (or else manually setting a real number > resetting count > entering blank input = count being the original real number instead of 0 after the reset)
+                                        dialog.cancel();
+                                    } else //if string is not empty, convert to int
+                                        newNum = Integer.valueOf(input.getText().toString());//get integer value of new number
+                                    
+                                    {
+                                        if (isNegative)
+                                            setCount(-1 * newNum); //if isNegative checkbox is checked, make the number negative
+                                        else
+                                            setCount(newNum); //if checkbox is not checked, keep number the same
+                                    }
                                 }
-                                else //if string is not empty, convert to int
-                                    newNum = Integer.valueOf(input.getText().toString());//get integer value of new number
-
-                                if(newNum > 2147483646) //if entered is too high, print error and return to original number
+                                catch (Exception e)
                                 {
-                                    Log.d("test", "number 2 hig");
-                                    if(vibrateSetting)
+                                    if (vibrateSetting)
                                         vib.vibrate(pattern, -1);
-                                    Snackbar.make(view, R.string.too_high_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                    Snackbar.make(view, R.string.invalid_number_entered, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
                                     dialog.cancel();
-                                }
-                                else if(newNum < -2147483646) //if number entered is too low, print error and return to original number
-                                {
-                                    if(vibrateSetting)
-                                        vib.vibrate(pattern, -1);
-                                    Snackbar.make(view, R.string.too_high_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
-                                    dialog.cancel();
-                                }
-                                else //else change number
-                                {
-                                    if(isNegative)
-                                        setCount(-1*newNum); //if isNegative checkbox is checked, make the number negative
-                                    else
-                                        setCount(newNum); //if checkbox is not checked, keep number the same
                                 }
                             }
                         });

@@ -88,7 +88,6 @@ public class MultiCounterActivity extends AppCompatActivity {
         try
         {
             for (Counter c : current.counters) {
-                Log.d("test", "Counter "+c.getLabel()+": "+c.getCount());
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(current.getName(), c.getLabel(), c.getCount());

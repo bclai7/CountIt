@@ -438,7 +438,7 @@ public class CounterListActivity extends AppCompatActivity {
 
         //TEST BEGIN
         if(multicounterList.isEmpty()) {
-            for (int i = 1; i < 100; i++) {
+            for (int i = 1; i < 50; i++) {
                 multicounterList.add(new Multicounter("mc" + i, 20));
                 multicounterNameList.add(0, "mc" + i);
             }

@@ -50,7 +50,7 @@
     <string name="invalid_number_entered">Number entered is invalid</string>
     <string name="rename_single_counter">Rename Counter</string>
     <string name="rename_multi_counter">Rename Multicounter</string>
-
+    <string name="enter_new_count">Enter new count</string>
 
     <string name="set_starting_count">Starting Count: </string>
 
