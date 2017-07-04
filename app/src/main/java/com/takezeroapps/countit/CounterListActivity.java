@@ -517,9 +517,6 @@ public class CounterListActivity extends AppCompatActivity {
             }
         });
 
-        searchIcon = menu.findItem(R.id.multicounter_search);
-        optionsIcon = menu.findItem(R.id.multicounterlist_options);
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -529,13 +526,20 @@ public class CounterListActivity extends AppCompatActivity {
         {
             menu.findItem(R.id.multicounter_search).setVisible(false);
             menu.findItem(R.id.multicounterlist_options).setVisible(false);
-            //menu.removeItem(R.id.multicounter_search);
-            //menu.removeItem(R.id.multicounterlist_options);
+            menu.findItem(R.id.multicounterlist_delete).setVisible(true);
+            menu.findItem(R.id.multicounterlist_edit).setIcon(R.drawable.ic_action_cancel_white);
+            setTitle("Select");
+
         }
         else if(editMode==false)
         {
             menu.findItem(R.id.multicounter_search).setVisible(true);
             menu.findItem(R.id.multicounterlist_options).setVisible(true);
+            menu.findItem(R.id.multicounterlist_delete).setVisible(false);
+            menu.findItem(R.id.multicounterlist_edit).setIcon(R.drawable.ic_action_edit_white);
+            setTitle("Multi-Counters");
+
+
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -1177,6 +1181,11 @@ public class CounterListActivity extends AppCompatActivity {
                 editMode=false;
                 invalidateOptionsMenu(); //refreshed app bar and shows icons according to edit mode
             }
+        }
+
+        if(id == R.id.multicounterlist_delete)
+        {
+
         }
 
         return super.onOptionsItemSelected(item);
