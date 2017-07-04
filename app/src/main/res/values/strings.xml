@@ -39,6 +39,13 @@
     <string name="last_modified">Last Modifed: </string>
     <string name="reset_all_title">Reset All</string>
     <string name="reset_all_question">Are you sure you want to reset all counters?</string>
+    <string name="create_new">New Multicounter</string>
+    <string name="sort">Sort By</string>
+
+    <string name="new_c">New Counter</string>
+    <string name="rename_mc">Rename Multicounter</string>
+    <string name="delete_mc">Delete Multicounter</string>
+    <string name="reset_all_c">Reset All Counters</string>
 
 
     <string name="invalid_starting_count">Invalid starting count</string>

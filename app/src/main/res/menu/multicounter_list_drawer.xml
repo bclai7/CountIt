@@ -10,16 +10,16 @@
         app:closeIcon="@drawable/ic_action_edit_white"
         />
     <item
-        android:id="@+id/multicounter_sort"
+        android:id="@+id/multicounterlist_edit"
         android:title=""
-        android:icon="@drawable/ic_action_sort_white"
         app:showAsAction="always"
+        android:icon="@drawable/ic_action_edit_white"
         />
     <item
-        android:id="@+id/multicounter_add"
+        android:id="@+id/multicounterlist_options"
         android:title=""
         app:showAsAction="always"
-        android:icon="@drawable/ic_action_add"
+        android:icon="@drawable/ic_menu_moreoverflow_white"
         />
 
 </menu>

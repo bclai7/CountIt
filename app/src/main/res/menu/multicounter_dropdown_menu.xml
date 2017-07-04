@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/add_c"
+        android:title="@string/new_c"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/rename_mc"
+        android:title="@string/rename_mc"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/delete_mc"
+        android:title="@string/delete_mc"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/reset_all_c"
+        android:title="@string/reset_all_c"
+        app:showAsAction="always"
+        />
+
+</menu>
