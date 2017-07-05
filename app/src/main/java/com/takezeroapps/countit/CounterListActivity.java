@@ -121,7 +121,7 @@ public class CounterListActivity extends AppCompatActivity {
                 String names[] ={getResources().getString(R.string.open_counter), getResources().getString(R.string.rename_counter), getResources().getString(R.string.delete_counter), getResources().getString(R.string.details_counter), };
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CounterListActivity.this);
                 LayoutInflater inflater = getLayoutInflater();
-                View convertView = (View) inflater.inflate(R.layout.popup_list, null);
+                View convertView = (View) inflater.inflate(R.layout.options_popup_list, null);
                 alertDialog.setView(convertView);
                 alertDialog.setTitle(item);
                 ListView lv = (ListView) convertView.findViewById(R.id.listView1);
@@ -526,7 +526,6 @@ public class CounterListActivity extends AppCompatActivity {
         {
             menu.findItem(R.id.multicounter_search).setVisible(false);
             menu.findItem(R.id.multicounterlist_options).setVisible(false);
-            menu.findItem(R.id.multicounterlist_delete).setVisible(true);
             menu.findItem(R.id.multicounterlist_edit).setIcon(R.drawable.ic_action_cancel_white);
             setTitle("Select");
 
@@ -535,7 +534,6 @@ public class CounterListActivity extends AppCompatActivity {
         {
             menu.findItem(R.id.multicounter_search).setVisible(true);
             menu.findItem(R.id.multicounterlist_options).setVisible(true);
-            menu.findItem(R.id.multicounterlist_delete).setVisible(false);
             menu.findItem(R.id.multicounterlist_edit).setIcon(R.drawable.ic_action_edit_white);
             setTitle("Multi-Counters");
 
@@ -844,7 +842,7 @@ public class CounterListActivity extends AppCompatActivity {
                         String names[] ={getResources().getString(R.string.open_counter), getResources().getString(R.string.rename_counter), getResources().getString(R.string.delete_counter), getResources().getString(R.string.details_counter), };
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CounterListActivity.this);
                         LayoutInflater inflater = getLayoutInflater();
-                        View convertView = (View) inflater.inflate(R.layout.popup_list, null);
+                        View convertView = (View) inflater.inflate(R.layout.options_popup_list, null);
                         alertDialog.setView(convertView);
                         alertDialog.setTitle(item);
                         ListView lv = (ListView) convertView.findViewById(R.id.listView1);
@@ -1181,11 +1179,6 @@ public class CounterListActivity extends AppCompatActivity {
                 editMode=false;
                 invalidateOptionsMenu(); //refreshed app bar and shows icons according to edit mode
             }
-        }
-
-        if(id == R.id.multicounterlist_delete)
-        {
-
         }
 
         return super.onOptionsItemSelected(item);
