@@ -15,12 +15,6 @@
         app:showAsAction="always"
         android:icon="@drawable/ic_action_edit_white"
         />
-    <item
-        android:id="@+id/multicounterlist_delete"
-        android:title=""
-        app:showAsAction="always"
-        android:icon="@drawable/ic_action_delete_white"
-        />
 
     <item
         android:id="@+id/multicounterlist_options"
