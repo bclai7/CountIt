@@ -812,10 +812,15 @@ public class CounterListActivity extends AppCompatActivity {
                 listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
                 listView.setAdapter(adapter);
                 listView.setOnItemClickListener(null);
+                if (mActionMode != null) {
+                    return false;
+                }
+                // Start the CAB using the ActionMode.Callback defined above
                 mActionMode = CounterListActivity.this.startActionMode(mActionModeCallback);
                 editMode=true;
 
                 invalidateOptionsMenu(); //refreshed app bar and shows icons according to edit mode
+                return true;
             }
             else if(editMode)
             {
@@ -1206,7 +1211,7 @@ public class CounterListActivity extends AppCompatActivity {
         @Override
         public void  onDestroyActionMode(ActionMode mode) {
             // TODO  Auto-generated method stub
-
+                mActionMode = null;
         }
 
         @Override
@@ -1297,6 +1302,7 @@ public class CounterListActivity extends AppCompatActivity {
             // Calls  toggleSelection method from ListViewAdapter Class
             adapter.toggleSelection(position);
         }
+
     };
 
     private ArrayList<String> getCounterList() {
