@@ -524,25 +524,6 @@ public class CounterListActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        /*
-        if(editMode==true)
-        {
-            menu.findItem(R.id.multicounter_search).setVisible(false);
-            menu.findItem(R.id.multicounterlist_options).setVisible(false);
-            menu.findItem(R.id.multicounterlist_edit).setIcon(R.drawable.ic_action_cancel_white);
-            setTitle("Select");
-
-        }
-        else if(editMode==false)
-        {
-            menu.findItem(R.id.multicounter_search).setVisible(true);
-            menu.findItem(R.id.multicounterlist_options).setVisible(true);
-            menu.findItem(R.id.multicounterlist_edit).setIcon(R.drawable.ic_action_edit_white);
-            setTitle("Multi-Counters");
-
-
-        }
-        */
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -816,7 +797,6 @@ public class CounterListActivity extends AppCompatActivity {
             listView.setOnItemClickListener(null);
             listView.setOnItemLongClickListener(null);
 
-            listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
             listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             //mActionMode = CounterListActivity.this.startActionMode(mActionModeCallback);
 
@@ -835,6 +815,11 @@ public class CounterListActivity extends AppCompatActivity {
         @Override
         public boolean  onPrepareActionMode(ActionMode mode, Menu menu) {
             // TODO  Auto-generated method stub
+            adapter.removeSelection();
+            listView.clearChoices();
+            final int checkedCountA  = listView.getCheckedItemCount();
+            mode.setTitle(checkedCountA  + "  Selected");
+
             return false;
         }
 
@@ -1204,15 +1189,26 @@ public class CounterListActivity extends AppCompatActivity {
             });
 
             listView.setChoiceMode(CHOICE_MODE_NONE);
+            adapter.removeSelection();
             adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
             listView.setAdapter(adapter);
+            listView.clearChoices();
 
         }
 
         @Override
-        public boolean  onCreateActionMode(ActionMode mode, Menu menu) {
+        public boolean  onCreateActionMode(final ActionMode mode, Menu menu) {
             // TODO  Auto-generated method stub
             mode.getMenuInflater().inflate(R.menu.contextual_action_bar, menu);
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    final int checkedCountA  = listView.getCheckedItemCount();
+                    mode.setTitle(checkedCountA  + "  Selected");
+                }
+            });
+
             return true;
 
         }
@@ -1253,7 +1249,7 @@ public class CounterListActivity extends AppCompatActivity {
                     // record.
                     AlertDialog.Builder  builder = new AlertDialog.Builder(
                             CounterListActivity.this);
-                    builder.setMessage("Do you  want to delete selected record(s)?");
+                    builder.setMessage("Are you sure you want to delete "+listView.getCheckedItemCount()+" multicounters?");
 
                     builder.setNegativeButton("No", new  DialogInterface.OnClickListener() {
 
@@ -1296,7 +1292,8 @@ public class CounterListActivity extends AppCompatActivity {
 
         }
 
-        //@Override
+        /*
+        @Override
         public void  onItemCheckedStateChanged(ActionMode mode,
                                                int position, long id, boolean checked) {
             // TODO  Auto-generated method stub
@@ -1306,7 +1303,7 @@ public class CounterListActivity extends AppCompatActivity {
             // Calls  toggleSelection method from ListViewAdapter Class
             adapter.toggleSelection(position);
         }
-
+        */
     };
 
     private ArrayList<String> getCounterList() {
