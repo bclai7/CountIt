@@ -816,6 +816,7 @@ public class CounterListActivity extends AppCompatActivity {
             listView.setOnItemClickListener(null);
             listView.setOnItemLongClickListener(null);
 
+            listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
             listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             //mActionMode = CounterListActivity.this.startActionMode(mActionModeCallback);
 
@@ -1222,21 +1223,30 @@ public class CounterListActivity extends AppCompatActivity {
             // TODO  Auto-generated method stub
             switch  (item.getItemId()) {
                 case R.id.selectAll:
-                    //
-                    final int checkedCount  = mcList.size();
-                    // If item  is already selected or checked then remove or
-                    // unchecked  and again select all
-                    adapter.removeSelection();
-                    for (int i = 0; i <  checkedCount; i++) {
-                        listView.setItemChecked(i,   true);
-                        //  listviewadapter.toggleSelection(i);
+                    if(listView.getCheckedItemCount() == mcList.size()) //if all items are already selected, un-select them
+                    {
+                        adapter.removeSelection();
+                        listView.clearChoices();
+                        final int checkedCountA  = listView.getCheckedItemCount();
+                        mode.setTitle(checkedCountA  + "  Selected");
                     }
-                    // Set the  CAB title according to total checked items
+                    else {
+                        //
+                        final int checkedCount = mcList.size();
+                        // If item  is already selected or checked then remove or
+                        // unchecked  and again select all
+                        adapter.removeSelection();
+                        for (int i = 0; i < checkedCount; i++) {
+                            listView.setItemChecked(i, true);
+                            //  listviewadapter.toggleSelection(i);
+                        }
+                        // Set the  CAB title according to total checked items
 
-                    // Calls  toggleSelection method from ListViewAdapter Class
+                        // Calls  toggleSelection method from ListViewAdapter Class
 
-                    // Count no.  of selected item and print it
-                    mode.setTitle(checkedCount  + "  Selected");
+                        // Count no.  of selected item and print it
+                        mode.setTitle(checkedCount + "  Selected");
+                    }
                     return true;
                 case R.id.delete:
                     // Add  dialog for confirmation to delete selected item

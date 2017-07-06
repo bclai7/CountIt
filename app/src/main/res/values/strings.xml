@@ -43,6 +43,7 @@
     <string name="sort">Sort By</string>
     <string name="delete">Delete</string>
     <string name="select_all">Select All</string>
+    <string name="deselect_all">Un-Check All</string>
 
     <string name="new_c">New Counter</string>
     <string name="rename_mc">Rename Multicounter</string>
