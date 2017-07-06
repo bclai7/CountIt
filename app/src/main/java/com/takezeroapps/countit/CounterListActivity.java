@@ -18,6 +18,8 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,8 +44,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import static android.graphics.Color.BLACK;
 import static com.takezeroapps.countit.MulticounterComparator.CREATED_SORT;
@@ -61,12 +65,15 @@ public class CounterListActivity extends AppCompatActivity {
     TextView tx;
     String[] c = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"};
     public static final String MULTICOUNTER_NAME_KEY = "multicounter_name";
-    ArrayAdapter<String> adapter;
+    MultiCounterListViewAdapter adapter;
     int searchListStartPos;
     EditText counterEdit;
     boolean vibrateSetting;
     boolean editMode=false;
     MenuItem searchIcon, optionsIcon;
+    List<String> mcList;
+    ArrayAdapter<String> adapterA;
+    ActionMode mActionMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,10 +97,8 @@ public class CounterListActivity extends AppCompatActivity {
         listView = (ListView)findViewById(R.id.counter_list);
 
         //add array of counter names to adapter
-        adapter = new ArrayAdapter<String>(this, R.layout.mcounters_text_format, multicounterNamesArray);
-
-        //this is the code to make the checkboxes show up
-        //adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, multicounterNamesArray);
+        mcList= Arrays.asList(multicounterNamesArray);
+        adapter = new MultiCounterListViewAdapter(this, R.layout.mcounters_text_format, mcList);
 
         //set adapter to list view
         listView.setAdapter(adapter);
@@ -249,7 +254,8 @@ public class CounterListActivity extends AppCompatActivity {
 
                                             ((TextView)view).setText(counterName);
                                             multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
-                                            adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                            mcList= Arrays.asList(multicounterNamesArray);
+                                            adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                             listView.setAdapter(adapter);
                                             removeKeyboard();//remove keyboard from screen
                                         }
@@ -324,7 +330,8 @@ public class CounterListActivity extends AppCompatActivity {
                                     saveCounterList(multicounterNameList);
 
                                     multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
-                                    adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                    mcList= Arrays.asList(multicounterNamesArray);
+                                    adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                     listView.setAdapter(adapter);
 
                                 }
@@ -455,13 +462,6 @@ public class CounterListActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        /*
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, multicounterNamesArray);
-        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(null);
-        */
 
     }
 
@@ -661,7 +661,8 @@ public class CounterListActivity extends AppCompatActivity {
                                         saveCounterList(multicounterNameList);
 
                                         multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
-                                        adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                        mcList= Arrays.asList(multicounterNamesArray);
+                                        adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                         listView.setAdapter(adapter);
                                     }
 
@@ -702,7 +703,8 @@ public class CounterListActivity extends AppCompatActivity {
                                             saveCounterList(multicounterNameList); //save new ordered string list
 
                                             multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
-                                            adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                            mcList= Arrays.asList(multicounterNamesArray);
+                                            adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                             listView.setAdapter(adapter);
                                         }
                                         else if(which == 1) //Name (Descending)
@@ -717,7 +719,8 @@ public class CounterListActivity extends AppCompatActivity {
                                             saveCounterList(multicounterNameList); //save new ordered string list
 
                                             multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
-                                            adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                            mcList= Arrays.asList(multicounterNamesArray);
+                                            adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                             listView.setAdapter(adapter);
                                         }
                                         else if(which == 2) //Date Created (Recent First)
@@ -732,7 +735,8 @@ public class CounterListActivity extends AppCompatActivity {
                                             saveCounterList(multicounterNameList); //save new ordered string list
 
                                             multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
-                                            adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                            mcList= Arrays.asList(multicounterNamesArray);
+                                            adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                             listView.setAdapter(adapter);
                                         }
                                         else if(which == 3) //Date Created (Oldest First)
@@ -748,7 +752,8 @@ public class CounterListActivity extends AppCompatActivity {
                                             saveCounterList(multicounterNameList); //save new ordered string list
 
                                             multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
-                                            adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                            mcList= Arrays.asList(multicounterNamesArray);
+                                            adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                             listView.setAdapter(adapter);
                                         }
                                         else if(which == 4) //Date Modified (Recent First)
@@ -763,7 +768,8 @@ public class CounterListActivity extends AppCompatActivity {
                                             saveCounterList(multicounterNameList); //save new ordered string list
 
                                             multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
-                                            adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                            mcList= Arrays.asList(multicounterNamesArray);
+                                            adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                             listView.setAdapter(adapter);
                                         }
                                         else if(which == 5) //Date Modified (Oldest First)
@@ -779,7 +785,8 @@ public class CounterListActivity extends AppCompatActivity {
                                             saveCounterList(multicounterNameList); //save new ordered string list
 
                                             multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
-                                            adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                            mcList= Arrays.asList(multicounterNamesArray);
+                                            adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                             listView.setAdapter(adapter);
                                         }
 
@@ -800,10 +807,12 @@ public class CounterListActivity extends AppCompatActivity {
         {
             if(!editMode) {
 
-                adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, multicounterNamesArray);
+                mcList= Arrays.asList(multicounterNamesArray);
+                adapter = new MultiCounterListViewAdapter(this, android.R.layout.simple_list_item_multiple_choice, mcList);
                 listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
                 listView.setAdapter(adapter);
                 listView.setOnItemClickListener(null);
+                mActionMode = CounterListActivity.this.startActionMode(mActionModeCallback);
                 editMode=true;
 
                 invalidateOptionsMenu(); //refreshed app bar and shows icons according to edit mode
@@ -811,10 +820,10 @@ public class CounterListActivity extends AppCompatActivity {
             else if(editMode)
             {
                 //add array of counter names to adapter
-                adapter = new ArrayAdapter<String>(this, R.layout.mcounters_text_format, multicounterNamesArray);
+                mcList= Arrays.asList(multicounterNamesArray);
+                adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
 
                 //this is the code to make the checkboxes show up
-                //adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, multicounterNamesArray);
 
                 //set adapter to list view
                 listView.setAdapter(adapter);
@@ -970,7 +979,8 @@ public class CounterListActivity extends AppCompatActivity {
 
                                                     ((TextView)view).setText(counterName);
                                                     multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
-                                                    adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                                    mcList= Arrays.asList(multicounterNamesArray);
+                                                    adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                                     listView.setAdapter(adapter);
                                                     removeKeyboard();//remove keyboard from screen
                                                 }
@@ -1045,7 +1055,8 @@ public class CounterListActivity extends AppCompatActivity {
                                             saveCounterList(multicounterNameList);
 
                                             multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
-                                            adapter = new ArrayAdapter<String>(CounterListActivity.this, R.layout.mcounters_text_format, multicounterNamesArray);
+                                            mcList= Arrays.asList(multicounterNamesArray);
+                                            adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                             listView.setAdapter(adapter);
 
                                         }
@@ -1183,6 +1194,110 @@ public class CounterListActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        @Override
+        public boolean  onPrepareActionMode(ActionMode mode, Menu menu) {
+            // TODO  Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public void  onDestroyActionMode(ActionMode mode) {
+            // TODO  Auto-generated method stub
+
+        }
+
+        @Override
+        public boolean  onCreateActionMode(ActionMode mode, Menu menu) {
+            // TODO  Auto-generated method stub
+            mode.getMenuInflater().inflate(R.menu.contextual_action_bar, menu);
+            return true;
+
+        }
+
+        @Override
+        public boolean  onActionItemClicked(final ActionMode mode,
+                                            MenuItem item) {
+            // TODO  Auto-generated method stub
+            switch  (item.getItemId()) {
+                case R.id.selectAll:
+                    //
+                    final int checkedCount  = mcList.size();
+                    // If item  is already selected or checked then remove or
+                    // unchecked  and again select all
+                    adapter.removeSelection();
+                    for (int i = 0; i <  checkedCount; i++) {
+                        listView.setItemChecked(i,   true);
+                        //  listviewadapter.toggleSelection(i);
+                    }
+                    // Set the  CAB title according to total checked items
+
+                    // Calls  toggleSelection method from ListViewAdapter Class
+
+                    // Count no.  of selected item and print it
+                    mode.setTitle(checkedCount  + "  Selected");
+                    return true;
+                case R.id.delete:
+                    // Add  dialog for confirmation to delete selected item
+                    // record.
+                    AlertDialog.Builder  builder = new AlertDialog.Builder(
+                            CounterListActivity.this);
+                    builder.setMessage("Do you  want to delete selected record(s)?");
+
+                    builder.setNegativeButton("No", new  DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void  onClick(DialogInterface dialog, int which) {
+                            // TODO  Auto-generated method stub
+
+                        }
+                    });
+                    builder.setPositiveButton("Yes", new  DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void  onClick(DialogInterface dialog, int which) {
+                            // TODO  Auto-generated method stub
+                            SparseBooleanArray selected = adapter
+                                    .getSelectedIds();
+                            for (int i =  (selected.size() - 1); i >= 0; i--) {
+                                if  (selected.valueAt(i)) {
+                                    String  selecteditem = adapter
+                                            .getItem(selected.keyAt(i));
+                                    // Remove  selected items following the ids
+                                    adapter.remove(selecteditem);
+                                }
+                            }
+
+                            // Close CAB
+                            mode.finish();
+                            selected.clear();
+
+                        }
+                    });
+                    AlertDialog alert =  builder.create();
+                    alert.setIcon(R.drawable.ic_action_delete);// dialog  Icon
+                    alert.setTitle("Confirmation"); // dialog  Title
+                    alert.show();
+                    return true;
+                default:
+                    return false;
+            }
+
+        }
+
+        //@Override
+        public void  onItemCheckedStateChanged(ActionMode mode,
+                                               int position, long id, boolean checked) {
+            // TODO  Auto-generated method stub
+            final int checkedCount  = listView.getCheckedItemCount();
+            // Set the  CAB title according to total checked items
+            mode.setTitle(checkedCount  + "  Selected");
+            // Calls  toggleSelection method from ListViewAdapter Class
+            adapter.toggleSelection(position);
+        }
+    };
 
     private ArrayList<String> getCounterList() {
         ArrayList<String> counterList = null;
