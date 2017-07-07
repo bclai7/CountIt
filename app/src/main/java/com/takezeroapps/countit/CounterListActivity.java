@@ -1313,40 +1313,57 @@ public class CounterListActivity extends AppCompatActivity {
                         public void  onClick(DialogInterface dialog, int which) {
                             // TODO  Auto-generated method stub
                             SparseBooleanArray checkedItemPositions = listView.getCheckedItemPositions();
-                            for (int i =  (checkedItemPositions.size() - 1); i >= 0; i--) {
-                                if  (checkedItemPositions.valueAt(i)) {
-                                    String  selecteditem = adapter.getItem(checkedItemPositions.keyAt(i));
-                                    Iterator<Multicounter> a = multicounterList.iterator();
-                                    while (a.hasNext()) {
-                                        Multicounter m = a.next();
-                                        if(m.getName().equals(selecteditem))
-                                        {
-                                            a.remove();
-                                            break;
-                                        }
-                                    }
-                                    //save multiCounterList
-                                    saveMultiCounterList();
-                                    //remove name from multicounterNameList (list of strings)
-                                    Iterator<String> b = multicounterNameList.iterator();
-                                    while (b.hasNext()) {
-                                        String s = b.next(); // must be called before you can call i.remove()
-                                        if(s.equals(selecteditem))
-                                        {
-                                            b.remove();
-                                            break;
-                                        }
-                                    }
-                                    //save string list
-                                    saveCounterList(multicounterNameList);
+                            
+                            if(listView.getCheckedItemCount() == listView.getCount())
+                            {
+                                Log.d("test","delete all");
+                                //if the number of checked items equal the size of the list, just clear the list instead of iterating
+                                multicounterList.clear();
+                                saveMultiCounterList();
+                                //same with name list
+                                multicounterNameList.clear();
+                                saveCounterList(multicounterNameList);
 
-                                    multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
-                                    mcList= Arrays.asList(multicounterNamesArray);
-                                    adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
-                                    listView.setAdapter(adapter);
+                                //set adapter accordingly
+                                multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+                                mcList= Arrays.asList(multicounterNamesArray);
+                                adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
+                                listView.setAdapter(adapter);
+
+                            }
+                            else {
+                                for (int i = (checkedItemPositions.size() - 1); i >= 0; i--) {
+                                    if (checkedItemPositions.valueAt(i)) {
+                                        String selecteditem = adapter.getItem(checkedItemPositions.keyAt(i));
+                                        Iterator<Multicounter> a = multicounterList.iterator();
+                                        while (a.hasNext()) {
+                                            Multicounter m = a.next();
+                                            if (m.getName().equals(selecteditem)) {
+                                                a.remove();
+                                                break;
+                                            }
+                                        }
+                                        //save multiCounterList
+                                        saveMultiCounterList();
+                                        //remove name from multicounterNameList (list of strings)
+                                        Iterator<String> b = multicounterNameList.iterator();
+                                        while (b.hasNext()) {
+                                            String s = b.next(); // must be called before you can call i.remove()
+                                            if (s.equals(selecteditem)) {
+                                                b.remove();
+                                                break;
+                                            }
+                                        }
+                                        //save string list
+                                        saveCounterList(multicounterNameList);
+
+                                        multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+                                        mcList = Arrays.asList(multicounterNamesArray);
+                                        adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
+                                        listView.setAdapter(adapter);
+                                    }
                                 }
                             }
-
                             // Close CAB
                             mode.finish();
                             checkedItemPositions.clear();
