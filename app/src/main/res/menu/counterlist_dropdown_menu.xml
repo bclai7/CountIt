@@ -11,5 +11,10 @@
         android:title="@string/sort"
         app:showAsAction="always"
         />
+    <item
+        android:id="@+id/multiselect_mc"
+        android:title="@string/select_multiple"
+        app:showAsAction="always"
+        />
 
 </menu>

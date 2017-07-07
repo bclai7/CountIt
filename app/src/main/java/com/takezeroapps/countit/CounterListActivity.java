@@ -792,6 +792,24 @@ public class CounterListActivity extends AppCompatActivity {
                                 });
                         builder.create().show();
                     }
+                    if(item.getItemId() == R.id.multiselect_mc)
+                    {
+                        mcList= Arrays.asList(multicounterNamesArray);
+                        adapter = new MultiCounterListViewAdapter(CounterListActivity.this, android.R.layout.simple_list_item_multiple_choice, mcList);
+                        //listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+                        listView.setAdapter(adapter);
+                        listView.setOnItemClickListener(null);
+                        listView.setOnItemLongClickListener(null);
+
+                        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+                        //mActionMode = CounterListActivity.this.startActionMode(mActionModeCallback);
+
+                        if (mActionMode != null) {
+                            return false;
+                        }
+                        // Start the CAB using the ActionMode.Callback defined above
+                        mActionMode = CounterListActivity.this.startActionMode(mActionModeCallback);
+                    }
 
                     return false;
                 }
@@ -799,25 +817,6 @@ public class CounterListActivity extends AppCompatActivity {
             });
             popupMenu.show();
 
-        }
-
-        if(id == R.id.multicounterlist_edit)
-        {
-            mcList= Arrays.asList(multicounterNamesArray);
-            adapter = new MultiCounterListViewAdapter(this, android.R.layout.simple_list_item_multiple_choice, mcList);
-            //listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-            listView.setAdapter(adapter);
-            listView.setOnItemClickListener(null);
-            listView.setOnItemLongClickListener(null);
-
-            listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-            //mActionMode = CounterListActivity.this.startActionMode(mActionModeCallback);
-
-            if (mActionMode != null) {
-                return false;
-            }
-            // Start the CAB using the ActionMode.Callback defined above
-            mActionMode = CounterListActivity.this.startActionMode(mActionModeCallback);
         }
 
         return super.onOptionsItemSelected(item);
