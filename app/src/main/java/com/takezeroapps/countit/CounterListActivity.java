@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -521,7 +522,7 @@ public class CounterListActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.multicounter_list_drawer, menu);
         MenuItem item = menu.findItem(R.id.multicounter_search);
         final SearchView searchView = (SearchView)item.getActionView();
-
+        final MenuItem optionsIcon = menu.findItem(R.id.multicounterlist_options);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -543,6 +544,22 @@ public class CounterListActivity extends AppCompatActivity {
                 return false;
             }
 
+        });
+
+        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                Log.d("test", "search opened");
+                optionsIcon.setVisible(false);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                Log.d("test", "search closed");
+                optionsIcon.setVisible(true);
+                return true;
+            }
         });
 
         return super.onCreateOptionsMenu(menu);
