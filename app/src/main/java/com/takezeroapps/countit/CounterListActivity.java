@@ -77,8 +77,10 @@ public class CounterListActivity extends AppCompatActivity {
     ArrayAdapter<String> adapterA;
     ActionMode mActionMode;
     MenuItem itm;
-
     String yesText, noText, selectCheck, deselectCheck, selectedTitle, sure_delete_1, sure_delete_2, confirmationTitle;
+    long[] checkedItems;
+    Vibrator vib;
+    long[] pattern = new long[4];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +96,12 @@ public class CounterListActivity extends AppCompatActivity {
         sure_delete_2 = getResources().getString(R.string.sure_delete_2);
         confirmationTitle = getResources().getString(R.string.confirmation_title);
 
-        final Vibrator vib = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
-        final long[] pattern = {0, 20, 150, 20}; //double vibration pattern for errors
+         vib = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+         pattern[0]=0;
+         pattern[1]=20;
+         pattern[2]=150;
+         pattern[3]=20;
+         //= {0, 20, 150, 20}; //double vibration pattern for errors
 
         if(getCounterList() == null)
         {
@@ -544,9 +550,6 @@ public class CounterListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        final Vibrator vib = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
-        final long[] pattern = {0, 20, 150, 20}; //double vibration pattern for errors
-
         if (id == R.id.multicounterlist_options) { //options button (3 dots)
 
             //creates dropdown list when option button is clicked
@@ -929,20 +932,20 @@ public class CounterListActivity extends AppCompatActivity {
                                             String counterName = counterEdit.getText().toString(); //input text - the user defined counter name
 
                                             if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
-                                                //if (vibrateSetting)
-                                                //    vib.vibrate(pattern, -1);
+                                                if (vibrateSetting)
+                                                    vib.vibrate(pattern, -1);
                                                 Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.no_mcounter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                                 dialog.cancel();
                                                 removeKeyboard();//remove keyboard from screen
                                             } else if (inCounterList(counterName)) {
-                                                //if (vibrateSetting)
-                                                //    vib.vibrate(pattern, -1);
+                                                if (vibrateSetting)
+                                                    vib.vibrate(pattern, -1);
                                                 Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.mcounter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                                 dialog.cancel();
                                                 removeKeyboard();//remove keyboard from screen
                                             } else if (counterName.length() > 40) {
-                                                //if (vibrateSetting)
-                                                //    vib.vibrate(pattern, -1);
+                                                if (vibrateSetting)
+                                                    vib.vibrate(pattern, -1);
                                                 Snackbar.make(CounterListActivity.this.getWindow().getDecorView().getRootView(), R.string.mc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                                 dialog.cancel();
                                                 removeKeyboard();//remove keyboard from screen
@@ -1260,9 +1263,8 @@ public class CounterListActivity extends AppCompatActivity {
                             listView.setItemChecked(i, true);
                             //  listviewadapter.toggleSelection(i);
                         }
-                        // Set the  CAB title according to total checked items
 
-                        // Calls  toggleSelection method from ListViewAdapter Class
+                        checkedItems = listView.getCheckedItemIds();
 
                         // Count no.  of selected item and print it
                         mode.setTitle(checkedCount + " "+selectedTitle);
