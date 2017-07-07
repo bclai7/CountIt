@@ -1313,10 +1313,9 @@ public class CounterListActivity extends AppCompatActivity {
                         public void  onClick(DialogInterface dialog, int which) {
                             // TODO  Auto-generated method stub
                             SparseBooleanArray checkedItemPositions = listView.getCheckedItemPositions();
-                            
+
                             if(listView.getCheckedItemCount() == listView.getCount())
                             {
-                                Log.d("test","delete all");
                                 //if the number of checked items equal the size of the list, just clear the list instead of iterating
                                 multicounterList.clear();
                                 saveMultiCounterList();
