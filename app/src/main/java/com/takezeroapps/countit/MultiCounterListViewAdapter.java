@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import  java.util.List;
 
 import  android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import  android.util.SparseBooleanArray;
 import  android.view.LayoutInflater;
@@ -87,6 +88,12 @@ public class  MultiCounterListViewAdapter extends ArrayAdapter<String> implement
     @Override
     public int getCount() {
         return DataList.size();
+    }
+
+    @Nullable
+    @Override
+    public String getItem(int position) {
+        return DataList.get(position);
     }
 
     @Override
