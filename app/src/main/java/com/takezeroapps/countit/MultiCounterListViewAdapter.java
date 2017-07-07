@@ -74,7 +74,7 @@ public class  MultiCounterListViewAdapter extends ArrayAdapter<String> implement
             }
         }
         if(rid == R.layout.mcounters_text_format) {
-            holderA.tvTitle.setText(DataList.get(position-1).toString());
+            holderA.tvTitle.setText(DataList.get(position).toString());
         }
         else if(rid==android.R.layout.simple_list_item_multiple_choice)
         {
@@ -82,6 +82,11 @@ public class  MultiCounterListViewAdapter extends ArrayAdapter<String> implement
         }
 
         return view;
+    }
+
+    @Override
+    public int getCount() {
+        return DataList.size();
     }
 
     @Override
@@ -151,7 +156,6 @@ public class  MultiCounterListViewAdapter extends ArrayAdapter<String> implement
                     FilterResults results){
 
                 DataList = (List<String>) results.values;
-
                 notifyDataSetChanged();
             }
 
