@@ -549,14 +549,12 @@ public class CounterListActivity extends AppCompatActivity {
         MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                Log.d("test", "search opened");
                 optionsIcon.setVisible(false);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                Log.d("test", "search closed");
                 optionsIcon.setVisible(true);
                 return true;
             }
