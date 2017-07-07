@@ -1,18 +1,22 @@
 package com.takezeroapps.countit;
 
+import java.util.ArrayList;
 import  java.util.List;
 
 import  android.content.Context;
+import android.util.Log;
 import  android.util.SparseBooleanArray;
 import  android.view.LayoutInflater;
 import  android.view.View;
 import  android.view.ViewGroup;
 import  android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
+import android.widget.Filter;
+import android.widget.Filterable;
 import  android.widget.ImageView;
 import  android.widget.TextView;
 
-public class  MultiCounterListViewAdapter extends ArrayAdapter<String> {
+public class  MultiCounterListViewAdapter extends ArrayAdapter<String> implements Filterable {
     Context myContext;
     LayoutInflater inflater;
     List<String> DataList;
@@ -69,9 +73,8 @@ public class  MultiCounterListViewAdapter extends ArrayAdapter<String> {
                 holderB = (ViewHolderB) view.getTag();
             }
         }
-
         if(rid == R.layout.mcounters_text_format) {
-            holderA.tvTitle.setText(DataList.get(position).toString());
+            holderA.tvTitle.setText(DataList.get(position-1).toString());
         }
         else if(rid==android.R.layout.simple_list_item_multiple_choice)
         {
@@ -118,5 +121,40 @@ public class  MultiCounterListViewAdapter extends ArrayAdapter<String> {
 
     public  SparseBooleanArray getSelectedIds() {
         return mSelectedItemsIds;
+    }
+
+    public List<String> orig=null;
+
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                final FilterResults oReturn = new FilterResults();
+                final ArrayList<String> results = new ArrayList<String>();
+                if (orig == null)
+                    orig = DataList;
+                if (constraint != null) {
+                    if (orig != null && orig.size() > 0) {
+                        for (final String g : orig) {
+                            if (g.toLowerCase().contains(constraint.toString()))
+                                results.add(g);
+                        }
+                    }
+                    oReturn.values = results;
+                }
+                return oReturn;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults (CharSequence constraint,
+                    FilterResults results){
+
+                DataList = (List<String>) results.values;
+
+                notifyDataSetChanged();
+            }
+
+        };
     }
 }

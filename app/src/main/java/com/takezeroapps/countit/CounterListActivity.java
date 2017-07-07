@@ -519,22 +519,30 @@ public class CounterListActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.multicounter_list_drawer, menu);
-
         MenuItem item = menu.findItem(R.id.multicounter_search);
         final SearchView searchView = (SearchView)item.getActionView();
+
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
-
+                try {
+                    adapter.getFilter().filter(newText);
+                    return false;
+                }catch(Exception e)
+                {
+                    e.printStackTrace();
+                    Log.d("test", Log.getStackTraceString(new Exception()));
+                }
                 return false;
             }
+
         });
 
         return super.onCreateOptionsMenu(menu);
