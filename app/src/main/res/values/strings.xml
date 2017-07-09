@@ -51,7 +51,6 @@
     <string name="select_multiple">Select Multiple</string>
 
 
-
     <string name="new_c">New Counter</string>
     <string name="rename_mc">Rename Multicounter</string>
     <string name="delete_mc">Delete Multicounter</string>
@@ -141,8 +140,7 @@
     </string>
 
     <!--SORT MENU OPTIONS-->
-    <string-array
-        name="sort_menu_options_array">
+    <string-array name="sort_menu_options_array">
         <item>Name (Ascending)</item>
         <item>Name (Descending)</item>
         <item>Date Created (Recent First)</item>
@@ -154,5 +152,8 @@
 
     <string name="search_multicounter">Search Multicounter</string>
     <string name="search_empty">No match found</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
