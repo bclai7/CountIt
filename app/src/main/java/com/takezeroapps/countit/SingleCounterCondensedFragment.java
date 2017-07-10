@@ -448,8 +448,7 @@ public class SingleCounterCondensedFragment extends Fragment {
                 new ImageButton.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(final View view) {
-
-
+                        counterCount.performLongClick();
                         return true;
                     }
                 });

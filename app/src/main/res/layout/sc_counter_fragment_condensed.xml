@@ -21,11 +21,10 @@
         android:text="0"
         android:textColor="@android:color/black"
         android:textSize="35sp"
-        android:layout_alignBaseline="@+id/scounter_minus"
-        android:layout_alignBottom="@+id/scounter_minus"
+        android:paddingBottom="3.25dp"
+        android:layout_below="@+id/scounter_name"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-
 
     <ImageView
         android:id="@+id/horizontal_separator"
@@ -36,28 +35,27 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-
     <Button
         android:id="@+id/scounter_minus"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:text="-"
-        android:textSize="20sp"
+        android:textSize="50sp"
         android:gravity="center"
         android:background="?android:attr/selectableItemBackground"
-        android:layout_below="@+id/scounter_name"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <Button
         android:id="@+id/scounter_plus"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:text="+"
-        android:textSize="20sp"
+        android:textSize="50sp"
         android:gravity="center"
         android:background="?android:attr/selectableItemBackground"
-        android:layout_below="@+id/scounter_name"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
