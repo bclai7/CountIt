@@ -49,6 +49,7 @@
     <string name="sure_delete_2">multicounters?</string>
     <string name="confirmation_title">Confirmation</string>
     <string name="select_multiple">Select Multiple</string>
+    <string name="counter_options_title">Counter Options</string>
 
 
     <string name="new_c">New Counter</string>
