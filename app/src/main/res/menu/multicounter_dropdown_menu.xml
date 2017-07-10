@@ -21,5 +21,10 @@
         android:title="@string/reset_all_c"
         app:showAsAction="always"
         />
+    <item
+        android:id="@+id/switch_view"
+        android:title="@string/switch_view"
+        app:showAsAction="always"
+        />
 
 </menu>

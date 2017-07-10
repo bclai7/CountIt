@@ -55,6 +55,10 @@
     <string name="rename_mc">Rename Multicounter</string>
     <string name="delete_mc">Delete Multicounter</string>
     <string name="reset_all_c">Reset All Counters</string>
+    <string name="switch_view">Choose View</string>
+
+    <string name="full_view">Full View</string>
+    <string name="condensed_view">Condensed View</string>
 
 
     <string name="invalid_starting_count">Invalid starting count</string>

@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import Exceptions.NoCountEnteredException;
@@ -72,6 +73,16 @@ public class MainActivity extends AppCompatActivity
     public void onConfigurationChanged(Configuration config) {
         super.onConfigurationChanged(config);
         portraitMode=true;
+
+        //create sharedpref for counter view if it doesn't already exist
+        File f = new File("/data/data/com.takezeroapps.countit/shared_prefs/CounterView.xml");
+        if(!f.exists())
+        {
+            SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("CounterView", 0);
+            editor.commit();
+        }
 
         SharedPreferences sp = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor1 = sp.edit();

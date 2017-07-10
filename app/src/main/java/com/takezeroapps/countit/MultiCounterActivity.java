@@ -59,6 +59,7 @@ public class MultiCounterActivity extends AppCompatActivity {
     SingleCounterFragment testFragment = new SingleCounterFragment();
     boolean vibrateSetting, resetconfirmSetting, screenSetting;
     EditText counterEdit;
+    int viewOption=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +68,6 @@ public class MultiCounterActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         final String counterName = bundle.getString(CounterListActivity.MULTICOUNTER_NAME_KEY);
         setTitle(counterName);
-
-        //CounterListActivity.multicounterNameList = getCounterList();
 
         //load data into multi counter list
         File f = new File("/data/data/com.takezeroapps.countit/shared_prefs/MultiCounterList.xml");
@@ -81,6 +80,10 @@ public class MultiCounterActivity extends AppCompatActivity {
             }.getType();
             CounterListActivity.multicounterList = gson.fromJson(jsonMC, type);
         }
+
+        //retrieve counter view option
+        SharedPreferences sharedPref = MultiCounterActivity.this.getPreferences(Context.MODE_PRIVATE);
+        viewOption = sharedPref.getInt("CounterView", 0);
 
         for(Multicounter mc: CounterListActivity.multicounterList)
         {
@@ -125,6 +128,9 @@ public class MultiCounterActivity extends AppCompatActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
+        //retrieve counter view option
+        SharedPreferences sharedPref = MultiCounterActivity.this.getPreferences(Context.MODE_PRIVATE);
+        viewOption = sharedPref.getInt("CounterView", 0);
     }
 
     @Override
@@ -511,6 +517,50 @@ public class MultiCounterActivity extends AppCompatActivity {
                             finish();
                             startActivity(getIntent());
                         }
+                    }
+
+                    if (item.getItemId() == R.id.switch_view) {
+                        String names[] ={getResources().getString(R.string.full_view), getResources().getString(R.string.condensed_view)};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MultiCounterActivity.this);
+                        //Log.d("test", "ViewOption: "+viewOption);
+                        // Set the dialog title
+                        builder.setTitle(R.string.switch_view)
+                                // Specify the list array, the items to be selected by default (null for none),
+                                // and the listener through which to receive callbacks when items are selected
+                                .setSingleChoiceItems(names, viewOption,
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                //Log.d("test", "selection "+which+" was clicked");
+                                                viewOption=which;
+                                            }
+
+                                        })
+                                // Set the action buttons
+                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // User clicked OK, so save the mSelectedItems results somewhere
+                                        // or return them to the component that opened the dialog
+                                        //Log.d("test", "selection "+viewOption+" was accepted");
+
+                                        //save the counter view preference
+                                        SharedPreferences sharedPref = MultiCounterActivity.this.getPreferences(Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPref.edit();
+                                        editor.putInt("CounterView", viewOption);
+                                        editor.commit();
+
+                                        //change the counter view
+
+                                    }
+                                })
+                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int id) {
+                                    }
+                                });
+
+                        builder.create().show();
                     }
 
                     return false;
