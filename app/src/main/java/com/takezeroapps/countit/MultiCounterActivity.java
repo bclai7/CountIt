@@ -95,7 +95,6 @@ public class MultiCounterActivity extends AppCompatActivity {
         //load counter fragments
         try
         {
-            /*
             for (Counter c : current.counters) {
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -103,7 +102,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                 fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, c.getCounterId());
                 fragmentTransaction.commit();
                 fragmentManager.executePendingTransactions();
-            }*/
+            }
         }
         catch(Exception e)
         {
