@@ -94,17 +94,31 @@ public class MultiCounterActivity extends AppCompatActivity {
             }
         }
 
-        int cc = 0;
+        Log.d("test", "ViewOption onCreate: "+viewOption);
         //load counter fragments
         try
         {
-            for (Counter c : current.counters) {
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(current.getName(), c.getLabel(), c.getCount());
-                fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, c.getCounterId());
-                fragmentTransaction.commit();
-                fragmentManager.executePendingTransactions();
+            if(viewOption==0) //full counter view
+            {
+                for (Counter c : current.counters) {
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(current.getName(), c.getLabel(), c.getCount());
+                    fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, c.getCounterId());
+                    fragmentTransaction.commit();
+                    fragmentManager.executePendingTransactions();
+                }
+            }
+            else if(viewOption==1) //condensed counter view
+            {
+                for (Counter c : current.counters) {
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    SingleCounterCondensedFragment sc_condensed_fragment = SingleCounterCondensedFragment.newInstance(current.getName(), c.getLabel(), c.getCount());
+                    fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_condensed_fragment, c.getCounterId());
+                    fragmentTransaction.commit();
+                    fragmentManager.executePendingTransactions();
+                }
             }
         }
         catch(Exception e)
@@ -272,11 +286,20 @@ public class MultiCounterActivity extends AppCompatActivity {
                                             //save multicounter list
                                             saveMultiCounterList();
 
-                                            FragmentManager fragmentManager = getFragmentManager();
-                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(current.getName(), counterName, startCount);
-                                            fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, newCounter.getCounterId());
-                                            fragmentTransaction.commit();
+                                            if(viewOption==0) {
+                                                FragmentManager fragmentManager = getFragmentManager();
+                                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(current.getName(), counterName, startCount);
+                                                fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, newCounter.getCounterId());
+                                                fragmentTransaction.commit();
+                                            }
+                                            if(viewOption==1) {
+                                                FragmentManager fragmentManager = getFragmentManager();
+                                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                SingleCounterCondensedFragment sc__condensed_fragment = SingleCounterCondensedFragment.newInstance(current.getName(), counterName, startCount);
+                                                fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc__condensed_fragment, newCounter.getCounterId());
+                                                fragmentTransaction.commit();
+                                            }
 
                                         }
 
@@ -551,7 +574,9 @@ public class MultiCounterActivity extends AppCompatActivity {
                                         editor.commit();
 
                                         //change the counter view
-
+                                        saveMultiCounterList();
+                                        finish();
+                                        startActivity(getIntent());
                                     }
                                 })
                                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

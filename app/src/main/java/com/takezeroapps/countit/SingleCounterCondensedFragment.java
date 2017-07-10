@@ -1,109 +1,246 @@
 package com.takezeroapps.countit;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.os.Vibrator;
+import android.support.annotation.Nullable;
+import android.app.Fragment;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
+import com.google.gson.Gson;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SingleCounterCondensedFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SingleCounterCondensedFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SingleCounterCondensedFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    TextView counterName, counterCount;
+    Button plusButton, minusButton;
+    String mcName, cName;
+    int cCount, newNum;
+    boolean isNegative, vibrateSetting, resetconfirmSetting, screenSetting;
+    Counter currentSC;
+    Multicounter currentMC;
+    EditText counterEdit, input;
 
-    private OnFragmentInteractionListener mListener;
-
-    public SingleCounterCondensedFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SingleCounterCondensedFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SingleCounterCondensedFragment newInstance(String param1, String param2) {
-        SingleCounterCondensedFragment fragment = new SingleCounterCondensedFragment();
+    public static SingleCounterCondensedFragment newInstance(String mcName, String cName, int cCount) {
+        SingleCounterCondensedFragment myFragment = new SingleCounterCondensedFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+        args.putString("mcName", mcName);
+        args.putString("cName", cName);
+        args.putInt("cCount", cCount);
+        myFragment.setArguments(args);
+
+        return myFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.sc_counter_fragment_condensed, container, false);
+        //return inflater.inflate(R.layout.sc_counter_fragment_condensed, container, false);
+        View view = inflater.inflate(R.layout.sc_counter_fragment_condensed, container, false);
+        counterName=(TextView)view.findViewById(R.id.scounter_name);
+        counterCount=(TextView)view.findViewById(R.id.scounter_count);
+        plusButton=(Button)view.findViewById(R.id.scounter_plus);
+        minusButton=(Button)view.findViewById(R.id.scounter_minus);
+
+        final Vibrator vib = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        final long[] pattern = {0, 20, 150, 20}; //double vibration pattern for errors
+
+        //Addition Button
+        plusButton.setOnClickListener(
+                new Button.OnClickListener(){
+                    public void onClick(View v){
+                        int currAddCount=getCount();
+                        if((currAddCount + 1)>2147483646) //if next number would be higher than max print error
+                        {
+                            if(vibrateSetting)
+                                vib.vibrate(pattern, -1);
+                            Snackbar.make(v, R.string.max_num, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                        }
+                        else //else add to count
+                        {
+                            if(vibrateSetting)
+                                vib.vibrate(10);
+                            addCount();
+                            //Set modified times
+                            currentMC.setModifiedDateTime();
+                            currentMC.setModifiedTimeStamp();
+                        }
+                    }
+                }
+        );
+
+        //Subtraction button
+        minusButton.setOnClickListener(
+                new Button.OnClickListener(){
+                    public void onClick(View v){
+                        int currSubCount=getCount();
+                        if((currSubCount - 1) < -2147483647) //if next number would be lower than min print error
+                        {
+                            if(vibrateSetting)
+                                vib.vibrate(pattern, -1);
+                            Snackbar.make(v, R.string.min_num, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                        }
+                        else //else decrement
+                        {
+                            if(vibrateSetting)
+                                vib.vibrate(10);
+                            subCount();
+                            //Set modified times
+                            currentMC.setModifiedDateTime();
+                            currentMC.setModifiedTimeStamp();
+                        }
+                    }
+                }
+        );
+
+        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        try
+        {
+            mcName=getArguments().getString("mcName");
+            cName = getArguments().getString("cName");
+            cCount = getArguments().getInt("cCount");
+            counterName.setText(cName);
+            counterCount.setText(Integer.toString(cCount));
+
+            for(Multicounter m: CounterListActivity.multicounterList)
+            {
+                if(m.getName().equals(mcName))
+                {
+                    currentMC=m;
+                    for(Counter c: m.counters)
+                    {
+                        if(c.getLabel().equals(cName))
+                        {
+                            currentSC=c;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    //HELPER METHODS
+    public void setNewCounterName(String n)
+    {
+        currentSC.setLabel(n);
+        counterName.setText(n);
+        cName=n;
+    }
+
+    public boolean inSingleCounterList(String countN)
+    {
+        for(Counter c: currentMC.counters)
+        {
+            if(c.getLabel().equals(countN))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void deleteCounterFromMC()
+    {
+        currentMC.deleteCounter(cName);
+    }
+
+    public int getCount()
+    {
+        return Integer.parseInt(counterCount.getText().toString());
+    }
+    public void setCount(int num)
+    {
+        currentSC.setCount(num);
+        counterCount.setText(Integer.toString(currentSC.getCount()));
+    }
+
+    public void addCount()
+    {
+        //int num = Integer.valueOf(counterCount.getText().toString());
+        //num++;
+        currentSC.addCount();
+        counterCount.setText(Integer.toString(currentSC.getCount()));;
+    }
+    public void subCount()
+    {
+        //int num = Integer.valueOf(counterCount.getText().toString());
+        //num--;
+        currentSC.subCount();
+        counterCount.setText(Integer.toString(currentSC.getCount()));
+    }
+    public void resetCount()
+    {
+        setCount(0);
+    }
+
+    public void setLabel(String name)
+    {
+        counterName.setText(name);
+    }
+
+    public void deleteFragment() //fragment self-destructs
+    {
+        getActivity().getFragmentManager().beginTransaction().remove(SingleCounterCondensedFragment.this).commit();
+    }
+
+    public void saveMultiCounterList()
+    {
+        //save multicounter list
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        Gson gson = new Gson();
+        String jsonMC = gson.toJson(CounterListActivity.multicounterList);
+        editor.putString("MultiCounterList", jsonMC);
+        editor.commit();
+    }
+
+    public void removeCounterEditKeyboard()
+    {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
+    }
+
+    public void removeInputKeyboard()
+    {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
     }
 }
