@@ -552,8 +552,8 @@ public class SingleCounterCondensedFragment extends Fragment {
 
     public void deleteCounterFromMC()
     {
-        currentMC.deleteCounter(cName);
         MultiCounterActivity.fragTagList.remove(currentSC.getIndex());
+        currentMC.deleteCounter(cName);
     }
 
     public int getCount()

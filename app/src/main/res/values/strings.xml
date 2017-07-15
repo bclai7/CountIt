@@ -17,6 +17,7 @@
     <string name="too_low_message">Number entered is too low!</string>
     <string name="no_input_message">Nothing was entered!</string>
     <string name="make_negative_num">Make Negative</string>
+    <string name="make_count_negative_num">Make Count Negative</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="title_activity_drawer">DrawerActivity</string>

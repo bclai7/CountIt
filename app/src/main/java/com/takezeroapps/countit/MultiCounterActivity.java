@@ -64,6 +64,7 @@ public class MultiCounterActivity extends AppCompatActivity {
     int viewOption=0;
     LinearLayout lin;
     public static ArrayList<String> fragTagList;
+    boolean countIsNegative=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,6 +208,21 @@ public class MultiCounterActivity extends AppCompatActivity {
                             LinearLayout layout = new LinearLayout(context);
                             layout.setOrientation(LinearLayout.VERTICAL);
 
+                            final CharSequence[] negOptions = {MultiCounterActivity.this.getResources().getString(R.string.make_count_negative_num)}; //choices to select from, only one choice so it only has one element
+                            final ArrayList selectedItems=new ArrayList();
+
+                            builder.setMultiChoiceItems(negOptions, null, new DialogInterface.OnMultiChoiceClickListener() { //checkbox for negative number
+                                @Override
+                                public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                                    if (isChecked) {
+                                        countIsNegative=true; //if checkbox is checked, set the boolean value for negative number as true
+                                    }
+                                    else {
+                                        countIsNegative = false; //otherwise if checkbox is not checked, then keep value positive
+                                    }
+                                }
+                            });
+
                             //textview telling user to enter counter name
                             final TextView name = new TextView(context);
                             name.setText(R.string.set_counter_name);
@@ -270,6 +286,8 @@ public class MultiCounterActivity extends AppCompatActivity {
                                         if(cCount.getText().toString().equals("") || cCount.getText().toString().isEmpty() || cCount.getText().toString().length() == 0  || TextUtils.isEmpty(cCount.getText().toString())) throw new IllegalArgumentException();
 
                                         int startCount = Integer.parseInt(cCount.getText().toString()); // starting count entered by user
+                                        if(countIsNegative)
+                                            startCount=startCount*-1;
 
                                         if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
                                             Snackbar.make(getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
@@ -309,7 +327,8 @@ public class MultiCounterActivity extends AppCompatActivity {
                                                 fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc__condensed_fragment, newCounter.getCounterId());
                                                 fragmentTransaction.commit();
                                             }
-
+                                            fragTagList.add(newCounter.getCounterId());
+                                            
                                         }
 
                                     }
@@ -328,6 +347,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                             });
 
                             builder.show();
+                            countIsNegative=false;
                         }
                     }
                     if (item.getItemId() == R.id.rename_mc) {

@@ -449,32 +449,38 @@ public class SingleCounterFragment extends Fragment{
                                 }
                                 else if(position==2) //delete
                                 {
-                                    alert.dismiss();
-                                    AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
+                                    try {
+                                        alert.dismiss();
+                                        AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
 
-                                    deleteDialog.setMessage(R.string.delete_question)
-                                            .setTitle(R.string.delete_title);
-                                    deleteDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            // delete counter if "yes" is clicked
-                                            deleteCounterFromMC();
-                                            saveMultiCounterList();
-                                            deleteFragment();
+                                        deleteDialog.setMessage(R.string.delete_question)
+                                                .setTitle(R.string.delete_title);
+                                        deleteDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                // delete counter if "yes" is clicked
+                                                deleteCounterFromMC();
+                                                saveMultiCounterList();
+                                                deleteFragment();
 
-                                            //Set modified times
-                                            currentMC.setModifiedDateTime();
-                                            currentMC.setModifiedTimeStamp();
-                                        }
-                                    });
-                                    deleteDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            //cancel dialog if "no" is clicked
-                                            dialog.cancel();
-                                        }
-                                    });
+                                                //Set modified times
+                                                currentMC.setModifiedDateTime();
+                                                currentMC.setModifiedTimeStamp();
+                                            }
+                                        });
+                                        deleteDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                //cancel dialog if "no" is clicked
+                                                dialog.cancel();
+                                            }
+                                        });
 
-                                    AlertDialog dialog = deleteDialog.create();
-                                    deleteDialog.show();
+                                        AlertDialog dialog = deleteDialog.create();
+                                        deleteDialog.show();
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         });
@@ -673,8 +679,8 @@ public class SingleCounterFragment extends Fragment{
 
     public void deleteCounterFromMC()
     {
-        currentMC.deleteCounter(cName);
         MultiCounterActivity.fragTagList.remove(currentSC.getIndex());
+        currentMC.deleteCounter(cName);
     }
 
     public void setCount(int num)
