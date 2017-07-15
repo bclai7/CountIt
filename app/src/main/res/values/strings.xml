@@ -84,6 +84,9 @@
     <string name="delete_counter">Delete</string>
     <string name="details_counter">Details</string>
 
+    <string name="counter_up">Move Up</string>
+    <string name="counter_down">Move Down</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 

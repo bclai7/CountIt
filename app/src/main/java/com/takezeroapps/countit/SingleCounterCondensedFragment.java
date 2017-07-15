@@ -32,6 +32,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -54,6 +55,7 @@ public class SingleCounterCondensedFragment extends Fragment {
     Counter currentSC;
     Multicounter currentMC;
     EditText counterEdit, input;
+    SingleCounterCondensedFragment currFrag, prevFrag, nextFrag;
 
     public static SingleCounterCondensedFragment newInstance(String mcName, String cName, int cCount) {
         SingleCounterCondensedFragment myFragment = new SingleCounterCondensedFragment();
@@ -140,7 +142,17 @@ public class SingleCounterCondensedFragment extends Fragment {
                 public boolean onLongClick(final View view) {
                     final String item = (String) ((TextView) view).getText();
                     //create counterlist_dropdown_menu dialog
-                    String names[] ={getResources().getString(R.string.change_count), getResources().getString(R.string.reset_title), getResources().getString(R.string.rename_counter), getResources().getString(R.string.delete_counter), };
+                    //option list
+                    String names[] ={
+                            getResources().getString(R.string.change_count),
+                            "addby filler",
+                            "color filler",
+                            getResources().getString(R.string.reset_title),
+                            getResources().getString(R.string.rename_counter),
+                            getResources().getString(R.string.delete_counter),
+                            getResources().getString(R.string.counter_up),
+                            getResources().getString(R.string.counter_down)
+                    };
                     final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                     LayoutInflater inflater = getActivity().getLayoutInflater();
                     View convertView = (View) inflater.inflate(R.layout.options_popup_list, null);
@@ -256,7 +268,17 @@ public class SingleCounterCondensedFragment extends Fragment {
                                 imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
                             }
-                            else if(position == 1) //reset count
+                            else if(position==1) //increase/decrease by
+                            {
+                                alert.dismiss();
+
+                            }
+                            else if(position==2) //change color
+                            {
+                                alert.dismiss();
+
+                            }
+                            else if(position == 3) //reset count
                             {
                                 alert.dismiss();
                                 if(vibrateSetting)
@@ -300,7 +322,7 @@ public class SingleCounterCondensedFragment extends Fragment {
                                     currentMC.setModifiedTimeStamp();
                                 }
                             }
-                            else if(position==2) //rename
+                            else if(position==4) //rename
                             {
                                 alert.dismiss();
                                 //create dialog
@@ -411,7 +433,7 @@ public class SingleCounterCondensedFragment extends Fragment {
                                 InputMethodManager imm2 = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                             }
-                            else if(position==3) //delete
+                            else if(position==5) //delete
                             {
                                 alert.dismiss();
                                 AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
@@ -439,6 +461,124 @@ public class SingleCounterCondensedFragment extends Fragment {
 
                                 AlertDialog dialog = deleteDialog.create();
                                 deleteDialog.show();
+                            }
+                            else if(position==6) //move up
+                            {
+                                alert.dismiss();
+                                for(Counter cn: currentMC.counters)
+                                {
+                                    if(currentSC.getIndex()-1 < 0) //if index out of bounds
+                                    {
+                                        Toast.makeText(getActivity(), R.string.already_at_top, Toast.LENGTH_SHORT).show();
+                                        break;
+                                    }
+                                    else if(cn.getIndex() == (currentSC.getIndex()-1)) //if the index of the counter is the one before current
+                                    {
+                                        try {
+
+                                            //prev counter info
+                                            int prevIndex = cn.getIndex();
+                                            String prevName = cn.getLabel();
+                                            int prevCount = cn.getCount();
+                                            String prevFragId = MultiCounterActivity.fragTagList.get(prevIndex);
+                                            prevFrag = (SingleCounterCondensedFragment) getFragmentManager().findFragmentByTag(prevFragId);
+
+                                            //curr counter info
+                                            int currIndex = currentSC.getIndex();
+                                            String currName = currentSC.getLabel();
+                                            int currCount = currentSC.getCount();
+                                            String currFragId = MultiCounterActivity.fragTagList.get(currIndex);
+                                            currFrag = (SingleCounterCondensedFragment) getFragmentManager().findFragmentByTag(currFragId);
+
+                                            //Collections.swap(MultiCounterActivity.fragTagList, prevIndex, currIndex);
+
+                                            //set prev info to curr info
+                                            currentSC.setLabel(prevName);
+                                            currentSC.setCount(prevCount);
+                                            currentSC.setIndex(currIndex);
+                                            //set curr fragment
+                                            currFrag.setCount(prevCount);
+                                            currFrag.setNewCounterName(prevName);
+
+                                            //copy prev counter info into curr counter variable
+                                            cn.setLabel(currName);
+                                            cn.setCount(currCount);
+                                            cn.setIndex(prevIndex);
+                                            //store fragment info
+                                            prevFrag.setNewCounterName(currName);
+                                            prevFrag.setCount(currCount);
+
+                                            saveMultiCounterList();
+
+                                            break;
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(position==7) //move down
+                            {
+                                alert.dismiss();
+                                for(Counter cn: currentMC.counters)
+                                {
+                                    if(currentSC.getIndex()+1 > (currentMC.counters.size()-1)) //if index out of bounds
+                                    {
+                                        Toast.makeText(getActivity(), R.string.already_at_bottom, Toast.LENGTH_SHORT).show();
+                                        break;
+                                    }
+                                    else if(cn.getIndex() == (currentSC.getIndex()+1)) //if the index of the counter is the one after current
+                                    {
+                                        try {
+
+                                            //prev counter info
+                                            int nextIndex = cn.getIndex();
+                                            String nextName = cn.getLabel();
+                                            int nextCount = cn.getCount();
+                                            String nextFragId = MultiCounterActivity.fragTagList.get(nextIndex);
+                                            nextFrag = (SingleCounterCondensedFragment) getFragmentManager().findFragmentByTag(nextFragId);
+
+                                            //curr counter info
+                                            int currIndex = currentSC.getIndex();
+                                            String currName = currentSC.getLabel();
+                                            int currCount = currentSC.getCount();
+                                            String currFragId = MultiCounterActivity.fragTagList.get(currIndex);
+                                            currFrag = (SingleCounterCondensedFragment) getFragmentManager().findFragmentByTag(currFragId);
+
+                                            //Collections.swap(MultiCounterActivity.fragTagList, prevIndex, currIndex);
+
+                                            //set prev info to curr info
+                                            currentSC.setLabel(nextName);
+                                            currentSC.setCount(nextCount);
+                                            currentSC.setIndex(currIndex);
+                                            //set curr fragment
+                                            currFrag.setCount(nextCount);
+                                            currFrag.setNewCounterName(nextName);
+
+                                            //copy prev counter info into curr counter variable
+                                            cn.setLabel(currName);
+                                            cn.setCount(currCount);
+                                            cn.setIndex(nextIndex);
+                                            //store fragment info
+                                            nextFrag.setNewCounterName(currName);
+                                            nextFrag.setCount(currCount);
+
+                                            saveMultiCounterList();
+
+                                            break;
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            e.printStackTrace();
+                                        }
+
+                                        saveMultiCounterList();
+
+                                        break;
+                                    }
+                                }
                             }
                         }
                     });

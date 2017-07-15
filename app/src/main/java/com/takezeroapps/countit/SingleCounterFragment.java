@@ -222,7 +222,13 @@ public class SingleCounterFragment extends Fragment{
                     public boolean onLongClick(final View view) {
                         final String item = (String) ((TextView) view).getText();
                         //create counterlist_dropdown_menu dialog
-                        String names[] ={getResources().getString(R.string.change_count), getResources().getString(R.string.rename_counter), getResources().getString(R.string.delete_counter), };
+                        String names[] ={
+                                getResources().getString(R.string.change_count),
+                                "addby filler",
+                                "color filler",
+                                getResources().getString(R.string.rename_counter),
+                                getResources().getString(R.string.delete_counter),
+                        };
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                         LayoutInflater inflater = getActivity().getLayoutInflater();
                         View convertView = (View) inflater.inflate(R.layout.options_popup_list, null);
@@ -336,7 +342,16 @@ public class SingleCounterFragment extends Fragment{
                                     InputMethodManager imm2 = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                                     imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                                 }
-                                else if(position==1) //rename
+                                else if(position==1) //increase/decrease by
+                                {
+                                    alert.dismiss();
+
+                                }
+                                else if(position==2) //color
+                                {
+                                    alert.dismiss();
+                                }
+                                else if(position==3) //rename
                                 {
                                     alert.dismiss();
                                     //create dialog
@@ -447,7 +462,7 @@ public class SingleCounterFragment extends Fragment{
                                     InputMethodManager imm2 = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                                     imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                                 }
-                                else if(position==2) //delete
+                                else if(position==4) //delete
                                 {
                                     try {
                                         alert.dismiss();
