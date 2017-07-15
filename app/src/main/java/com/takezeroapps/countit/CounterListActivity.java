@@ -869,12 +869,18 @@ public class CounterListActivity extends AppCompatActivity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String selected = (String) (listView.getItemAtPosition(position));
-                    Bundle bundle = new Bundle();
-                    bundle.putString(MULTICOUNTER_NAME_KEY, selected);
-                    Intent intent = new Intent(CounterListActivity.this, MultiCounterActivity.class);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    try {
+                        String selected = (String) (listView.getItemAtPosition(position));
+                        Bundle bundle = new Bundle();
+                        bundle.putString(MULTICOUNTER_NAME_KEY, selected);
+                        Intent intent = new Intent(CounterListActivity.this, MultiCounterActivity.class);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
             });
 

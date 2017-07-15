@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,13 +59,15 @@ public class SingleCounterFragment extends Fragment{
     LinearLayout lin;
     Counter tempCounter;
     SingleCounterFragment prevFrag, currFrag, nextFrag;
+    String incdecQ; //string that stores whether the selected option is "increase" or "decrease" when selecting the corresponding option in the longClick menu of a counter
+    public boolean increaseBool;
 
     public static SingleCounterFragment newInstance(String mcName, String cName, int cCount) {
         SingleCounterFragment myFragment = new SingleCounterFragment();
         Bundle args = new Bundle();
         args.putString("mcName", mcName);
         args.putString("cName", cName);
-        args.putInt("cCount", cCount);
+        args.putInt("cunt", cCount);
         myFragment.setArguments(args);
 
         return myFragment;
@@ -114,6 +117,8 @@ public class SingleCounterFragment extends Fragment{
         resetButton=(ImageButton)view.findViewById(R.id.scounter_reset);
         editCounterName=(ImageButton)view.findViewById(R.id.edit_counter_name);
         deleteCounter=(ImageButton)view.findViewById(R.id.delete_counter);
+
+        final String incdecOptions[] = {getActivity().getResources().getString(R.string.increase), getActivity().getResources().getString(R.string.decrease)};
 
         arrowUp=(ImageButton)view.findViewById(R.id.arrow_up);
         arrowDown=(ImageButton)view.findViewById(R.id.arrow_down);
@@ -344,8 +349,87 @@ public class SingleCounterFragment extends Fragment{
                                 }
                                 else if(position==1) //increase/decrease by
                                 {
-                                    alert.dismiss();
+                                    try {
+                                        alert.dismiss();
+                                        incdecQ = getActivity().getResources().getString(R.string.increase_by);
+                                        //create dialog
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                        builder.setTitle(R.string.inc_dec_by);
+                                        Context context = getActivity(); //store context in a variable
+                                        LinearLayout layout = new LinearLayout(context);
+                                        layout.setOrientation(LinearLayout.VERTICAL);
 
+                                        //textview telling user to select "increase or decrease"
+                                        final TextView incdecText = new TextView(context);
+                                        incdecText.setText(R.string.select);
+                                        incdecText.setTextSize(16);
+                                        incdecText.setTextColor(BLACK);
+                                        layout.addView(incdecText);
+
+                                        //dropdown menu with increase/decrease
+                                        //dropdown for initial number of counters
+                                        final ArrayAdapter<String> adp = new ArrayAdapter<String>(getActivity(),
+                                                R.layout.spinner_item_custom, incdecOptions);
+                                        final Spinner sp = new Spinner(getActivity());
+                                        sp.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                                        sp.setAdapter(adp);
+                                        layout.addView(sp);
+
+                                        //textview to create a space in between fields
+                                        final TextView space = new TextView(context);
+                                        space.setText("");
+                                        space.setTextSize(16);
+                                        layout.addView(space);
+
+                                        //textview telling user to enter amount
+                                        final TextView amount = new TextView(context);
+                                        amount.setText(incdecQ);
+                                        amount.setTextSize(16);
+                                        amount.setTextColor(BLACK);
+                                        layout.addView(amount);
+
+                                        //Text input for inc/dec amount
+                                        final EditText incdecInput = new EditText(context);
+                                        incdecInput.setHint(R.string.amount);
+                                        incdecInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+                                        incdecInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                                        layout.addView(incdecInput);
+
+                                        layout.setPadding(60, 50, 60, 70);
+                                        builder.setView(layout);
+
+                                        builder.create();
+
+                                        sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                            @Override
+                                            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                                                // your code here
+                                                if (sp.getSelectedItem().toString().equals(getActivity().getResources().getString(R.string.increase))) {
+                                                    incdecQ = getActivity().getResources().getString(R.string.increase_by);
+                                                    increaseBool = true;
+
+                                                } else if (sp.getSelectedItem().toString().equals(getActivity().getResources().getString(R.string.decrease))) {
+                                                    incdecQ = getActivity().getResources().getString(R.string.decrease_by);
+                                                    increaseBool = false;
+                                                }
+
+                                                amount.setText(incdecQ);
+                                            }
+
+                                            @Override
+                                            public void onNothingSelected(AdapterView<?> parentView) {
+                                                // your code here
+                                            }
+
+                                        });
+
+                                        builder.show();
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.printStackTrace();
+                                    }
                                 }
                                 else if(position==2) //color
                                 {

@@ -86,6 +86,13 @@
 
     <string name="counter_up">Move Up</string>
     <string name="counter_down">Move Down</string>
+    <string name="inc_dec_by">Increase/Decrease By</string>
+    <string name="select">Select</string>
+    <string name="amount">Amount</string>
+    <string name="increase">Increase</string>
+    <string name="decrease">Decrease</string>
+    <string name="increase_by">Increase By</string>
+    <string name="decrease_by">Decrease By</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
