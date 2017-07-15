@@ -12,13 +12,15 @@ public class Counter {
     String multicounterName; //name of the multicounter it belongs to
     //public Fragment fragment;
     String counterId; //id of counter for when there is two counters from different multicounters that have the same label name. The ID will consist of the Multicounter Name + the counter label
+    int index;
 
-    public Counter(String multicounterName, String label, int count)
+    public Counter(String multicounterName, String label, int count, int index)
     {
         this.multicounterName=multicounterName;
         this.label=label;
         this.count=count;
         counterId = this.multicounterName+this.label;
+        this.index=index;
     }
 
     public void setLabel(String label)
@@ -81,6 +83,16 @@ public class Counter {
     public String getMultiCounterName()
     {
         return multicounterName;
+    }
+
+    public void setIndex(int index)
+    {
+        this.index=index;
+    }
+
+    public int getIndex()
+    {
+        return index;
     }
 
 }

@@ -10,6 +10,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -186,6 +187,7 @@ public class MainActivity extends AppCompatActivity
                         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
                         input.setHint(R.string.enter_new_count);
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(10)});
                         counterChanger.setView(input);
 
                         // Set up the buttons

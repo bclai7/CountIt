@@ -13,10 +13,10 @@ import android.support.design.widget.Snackbar;
 //import android.support.v4.app.Fragment;
 import android.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +27,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import Exceptions.NoCountEnteredException;
 
@@ -43,13 +45,16 @@ public class SingleCounterFragment extends Fragment{
 
     TextView counterName, counterCount;
     Button plusButton, minusButton;
-    ImageButton resetButton, editCounterName, deleteCounter;
+    ImageButton resetButton, editCounterName, deleteCounter, arrowUp, arrowDown;
     String mcName, cName;
     int cCount, newNum;
     boolean isNegative, vibrateSetting, resetconfirmSetting, screenSetting;
     Counter currentSC;
     Multicounter currentMC;
     EditText counterEdit, input;
+    LinearLayout lin;
+    Counter tempCounter;
+    SingleCounterFragment prevFrag, currFrag, nextFrag;
 
     public static SingleCounterFragment newInstance(String mcName, String cName, int cCount) {
         SingleCounterFragment myFragment = new SingleCounterFragment();
@@ -106,6 +111,9 @@ public class SingleCounterFragment extends Fragment{
         resetButton=(ImageButton)view.findViewById(R.id.scounter_reset);
         editCounterName=(ImageButton)view.findViewById(R.id.edit_counter_name);
         deleteCounter=(ImageButton)view.findViewById(R.id.delete_counter);
+
+        arrowUp=(ImageButton)view.findViewById(R.id.arrow_up);
+        arrowDown=(ImageButton)view.findViewById(R.id.arrow_down);
 
         final Vibrator vib = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         final long[] pattern = {0, 20, 150, 20}; //double vibration pattern for errors
@@ -225,6 +233,7 @@ public class SingleCounterFragment extends Fragment{
                         //Text input for counter name
                         counterEdit = new EditText(context);
                         counterEdit.setHint(cName);
+                        counterEdit.setFilters(new InputFilter[] {new InputFilter.LengthFilter(20)});
                         layout.addView(counterEdit);
                         //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
                         counterEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -367,6 +376,7 @@ public class SingleCounterFragment extends Fragment{
 
                         // Specify the type of input expected; this, for example, sets the input as a number, and will use the numpad
                         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                        input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(10)});
                         counterChanger.setView(input);
 
                         // Set up the buttons
@@ -454,6 +464,131 @@ public class SingleCounterFragment extends Fragment{
                 }
         );
 
+        arrowUp.setOnClickListener(
+                new Button.OnClickListener(){
+                    public void onClick(View v){
+
+                        for(Counter cn: currentMC.counters)
+                        {
+                            if(currentSC.getIndex()-1 < 0) //if index out of bounds
+                            {
+                                Toast.makeText(getActivity(), R.string.already_at_top, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            else if(cn.getIndex() == (currentSC.getIndex()-1)) //if the index of the counter is the one before current
+                            {
+                                try {
+
+                                    //prev counter info
+                                    int prevIndex = cn.getIndex();
+                                    String prevName = cn.getLabel();
+                                    int prevCount = cn.getCount();
+                                    String prevFragId = MultiCounterActivity.fragTagList.get(prevIndex);
+                                    prevFrag = (SingleCounterFragment) getFragmentManager().findFragmentByTag(prevFragId);
+
+                                    //curr counter info
+                                    int currIndex = currentSC.getIndex();
+                                    String currName = currentSC.getLabel();
+                                    int currCount = currentSC.getCount();
+                                    String currFragId = MultiCounterActivity.fragTagList.get(currIndex);
+                                    currFrag = (SingleCounterFragment) getFragmentManager().findFragmentByTag(currFragId);
+
+                                    //Collections.swap(MultiCounterActivity.fragTagList, prevIndex, currIndex);
+
+                                    //set prev info to curr info
+                                    currentSC.setLabel(prevName);
+                                    currentSC.setCount(prevCount);
+                                    currentSC.setIndex(currIndex);
+                                    //set curr fragment
+                                    currFrag.setCount(prevCount);
+                                    currFrag.setNewCounterName(prevName);
+
+                                    //copy prev counter info into curr counter variable
+                                    cn.setLabel(currName);
+                                    cn.setCount(currCount);
+                                    cn.setIndex(prevIndex);
+                                    //store fragment info
+                                    prevFrag.setNewCounterName(currName);
+                                    prevFrag.setCount(currCount);
+
+                                    saveMultiCounterList();
+
+                                    break;
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+        );
+
+        arrowDown.setOnClickListener(
+                new Button.OnClickListener(){
+                    public void onClick(View v){
+                        for(Counter cn: currentMC.counters)
+                        {
+                            if(currentSC.getIndex()+1 > (currentMC.counters.size()-1)) //if index out of bounds
+                            {
+                                Toast.makeText(getActivity(), R.string.already_at_bottom, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            else if(cn.getIndex() == (currentSC.getIndex()+1)) //if the index of the counter is the one after current
+                            {
+                                try {
+
+                                    //prev counter info
+                                    int nextIndex = cn.getIndex();
+                                    String nextName = cn.getLabel();
+                                    int nextCount = cn.getCount();
+                                    String nextFragId = MultiCounterActivity.fragTagList.get(nextIndex);
+                                    nextFrag = (SingleCounterFragment) getFragmentManager().findFragmentByTag(nextFragId);
+
+                                    //curr counter info
+                                    int currIndex = currentSC.getIndex();
+                                    String currName = currentSC.getLabel();
+                                    int currCount = currentSC.getCount();
+                                    String currFragId = MultiCounterActivity.fragTagList.get(currIndex);
+                                    currFrag = (SingleCounterFragment) getFragmentManager().findFragmentByTag(currFragId);
+
+                                    //Collections.swap(MultiCounterActivity.fragTagList, prevIndex, currIndex);
+
+                                    //set prev info to curr info
+                                    currentSC.setLabel(nextName);
+                                    currentSC.setCount(nextCount);
+                                    currentSC.setIndex(currIndex);
+                                    //set curr fragment
+                                    currFrag.setCount(nextCount);
+                                    currFrag.setNewCounterName(nextName);
+
+                                    //copy prev counter info into curr counter variable
+                                    cn.setLabel(currName);
+                                    cn.setCount(currCount);
+                                    cn.setIndex(nextIndex);
+                                    //store fragment info
+                                    nextFrag.setNewCounterName(currName);
+                                    nextFrag.setCount(currCount);
+
+                                    saveMultiCounterList();
+
+                                    break;
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
+
+                                saveMultiCounterList();
+
+                                break;
+                            }
+                        }
+                    }
+                }
+        );
+
         return view;
     }
 
@@ -509,16 +644,19 @@ public class SingleCounterFragment extends Fragment{
     public void deleteCounterFromMC()
     {
         currentMC.deleteCounter(cName);
+        MultiCounterActivity.fragTagList.remove(currentSC.getIndex());
+    }
+
+    public void setCount(int num)
+    {
+        currentSC.setCount(num);
+        counterCount.setText(Integer.toString(currentSC.getCount()));
+        cCount=num;
     }
 
     public int getCount()
     {
         return Integer.parseInt(counterCount.getText().toString());
-    }
-    public void setCount(int num)
-    {
-        currentSC.setCount(num);
-        counterCount.setText(Integer.toString(currentSC.getCount()));
     }
 
     public void addCount()
@@ -527,6 +665,8 @@ public class SingleCounterFragment extends Fragment{
         //num++;
         currentSC.addCount();
         counterCount.setText(Integer.toString(currentSC.getCount()));;
+        cCount=currentSC.getCount();
+
     }
     public void subCount()
     {
@@ -534,15 +674,12 @@ public class SingleCounterFragment extends Fragment{
         //num--;
         currentSC.subCount();
         counterCount.setText(Integer.toString(currentSC.getCount()));
+        cCount=currentSC.getCount();
     }
+
     public void resetCount()
     {
         setCount(0);
-    }
-
-    public void setLabel(String name)
-    {
-        counterName.setText(name);
     }
 
     public void deleteFragment() //fragment self-destructs
@@ -571,6 +708,14 @@ public class SingleCounterFragment extends Fragment{
     {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+    }
+
+    public void swapItems(ArrayList<String> itemList, int x, int y)
+    {
+        String s = itemList.get(x);
+
+        itemList.set(x, itemList.get(y));
+        itemList.set(y, s);
     }
 
 }

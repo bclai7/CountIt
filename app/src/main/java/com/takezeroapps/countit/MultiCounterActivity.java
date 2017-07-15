@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.text.Html;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -24,6 +25,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -60,6 +62,8 @@ public class MultiCounterActivity extends AppCompatActivity {
     boolean vibrateSetting, resetconfirmSetting, screenSetting;
     EditText counterEdit;
     int viewOption=0;
+    LinearLayout lin;
+    public static ArrayList<String> fragTagList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +72,7 @@ public class MultiCounterActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         final String counterName = bundle.getString(CounterListActivity.MULTICOUNTER_NAME_KEY);
         setTitle(counterName);
+        fragTagList=new ArrayList<String>();
 
         //load data into multi counter list
         File f = new File("/data/data/com.takezeroapps.countit/shared_prefs/MultiCounterList.xml");
@@ -84,7 +89,6 @@ public class MultiCounterActivity extends AppCompatActivity {
         //retrieve counter view option
         SharedPreferences sharedPref = MultiCounterActivity.this.getPreferences(Context.MODE_PRIVATE);
         viewOption = sharedPref.getInt("CounterView", 0);
-
         for(Multicounter mc: CounterListActivity.multicounterList)
         {
             if(mc.getName().equals(counterName))
@@ -94,13 +98,13 @@ public class MultiCounterActivity extends AppCompatActivity {
             }
         }
 
-        Log.d("test", "ViewOption onCreate: "+viewOption);
+        ViewGroup linLay = (ViewGroup)findViewById(R.id.mc_linear_scroll_layout);
+
         //load counter fragments
         try
         {
-            if(viewOption==0) //full counter view
-            {
-                for (Counter c : current.counters) {
+            for (Counter c : current.counters) {
+                if(viewOption==0) {
                     FragmentManager fragmentManager = getFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(current.getName(), c.getLabel(), c.getCount());
@@ -108,10 +112,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                     fragmentTransaction.commit();
                     fragmentManager.executePendingTransactions();
                 }
-            }
-            else if(viewOption==1) //condensed counter view
-            {
-                for (Counter c : current.counters) {
+                else if(viewOption==1) {
                     FragmentManager fragmentManager = getFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     SingleCounterCondensedFragment sc_condensed_fragment = SingleCounterCondensedFragment.newInstance(current.getName(), c.getLabel(), c.getCount());
@@ -119,7 +120,13 @@ public class MultiCounterActivity extends AppCompatActivity {
                     fragmentTransaction.commit();
                     fragmentManager.executePendingTransactions();
                 }
+
+                fragTagList.add(c.getCounterId()); //add to list of fragment tags
+
             }
+
+            //Log.d("test", "Child Count: "+((ViewGroup)findViewById(R.id.mc_linear_scroll_layout)).getChildCount());
+
         }
         catch(Exception e)
         {
@@ -210,6 +217,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                             //Text input for counter name
                             final EditText cName = new EditText(context);
                             cName.setHint(R.string.name_hint);
+                            cName.setFilters(new InputFilter[] {new InputFilter.LengthFilter(20)});
                             layout.addView(cName);
                             //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
                             cName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -241,6 +249,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                             //Text input for counter name
                             final EditText cCount = new EditText(context);
                             cCount.setHint(R.string.count_hint);
+                            cCount.setFilters(new InputFilter[] {new InputFilter.LengthFilter(10)});
                             layout.addView(cCount);
 
                             //bring up number pad
@@ -276,7 +285,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                                             dialog.cancel();
                                         } else {
                                             //create new counter and add to multicounter
-                                            Counter newCounter = new Counter(current.getName(), counterName, startCount);
+                                            Counter newCounter = new Counter(current.getName(), counterName, startCount, current.counters.size());
                                             current.counters.add(newCounter);
 
                                             //set modified times
@@ -338,6 +347,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                         //Text input for counter name
                         counterEdit = new EditText(context);
                         counterEdit.setHint(current.getName());
+                        counterEdit.setFilters(new InputFilter[] {new InputFilter.LengthFilter(40)});
                         layout.addView(counterEdit);
                         //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
                         counterEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {

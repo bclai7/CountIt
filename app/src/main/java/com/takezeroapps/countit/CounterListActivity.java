@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.text.Html;
+import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
@@ -185,9 +186,10 @@ public class CounterListActivity extends AppCompatActivity {
                             name.setTextColor(BLACK);
                             layout.addView(name);
 
-                            //Text input for counter name
+                            //Text input for multicounter counter name
                             counterEdit = new EditText(context);
                             counterEdit.setHint(item);
+                            counterEdit.setFilters(new InputFilter[] {new InputFilter.LengthFilter(40)});
                             layout.addView(counterEdit);
                             //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
                             counterEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -605,9 +607,10 @@ public class CounterListActivity extends AppCompatActivity {
                             name.setTextColor(BLACK);
                             layout.addView(name);
 
-                            //Text input for counter name
+                            //Text input for multicounter name
                             final EditText input = new EditText(context);
                             input.setHint(R.string.name_hint);
+                            input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(40)});
                             layout.addView(input);
                             //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
                             input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -927,6 +930,7 @@ public class CounterListActivity extends AppCompatActivity {
                                 //Text input for counter name
                                 counterEdit = new EditText(context);
                                 counterEdit.setHint(item);
+                                counterEdit.setFilters(new InputFilter[] {new InputFilter.LengthFilter(40)});
                                 layout.addView(counterEdit);
                                 //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
                                 counterEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {

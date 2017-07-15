@@ -14,6 +14,7 @@ import android.app.Fragment;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -171,6 +172,7 @@ public class SingleCounterCondensedFragment extends Fragment {
 
                                 // Specify the type of input expected; this, for example, sets the input as a number, and will use the numpad
                                 input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                                input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(10)});
                                 counterChanger.setView(input);
 
                                 // Set up the buttons
@@ -318,6 +320,7 @@ public class SingleCounterCondensedFragment extends Fragment {
                                 //Text input for counter name
                                 counterEdit = new EditText(context);
                                 counterEdit.setHint(cName);
+                                counterEdit.setFilters(new InputFilter[] {new InputFilter.LengthFilter(20)});
                                 layout.addView(counterEdit);
                                 //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
                                 counterEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -550,6 +553,7 @@ public class SingleCounterCondensedFragment extends Fragment {
     public void deleteCounterFromMC()
     {
         currentMC.deleteCounter(cName);
+        MultiCounterActivity.fragTagList.remove(currentSC.getIndex());
     }
 
     public int getCount()
@@ -560,6 +564,7 @@ public class SingleCounterCondensedFragment extends Fragment {
     {
         currentSC.setCount(num);
         counterCount.setText(Integer.toString(currentSC.getCount()));
+        cCount=num;
     }
 
     public void addCount()

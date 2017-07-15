@@ -50,7 +50,8 @@
     <string name="confirmation_title">Confirmation</string>
     <string name="select_multiple">Select Multiple</string>
     <string name="counter_options_title">Counter Options</string>
-
+    <string name="already_at_top">Already at top of list</string>
+    <string name="already_at_bottom">Already at bottom of list</string>
 
     <string name="new_c">New Counter</string>
     <string name="rename_mc">Rename Multicounter</string>

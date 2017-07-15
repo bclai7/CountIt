@@ -12,8 +12,8 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:text="Counter Name"
         android:gravity="center"
+        android:text="WWWWWWWWWWWWWWWWWWWW"
         android:textColor="@android:color/black"
         android:textSize="16sp" />
 
@@ -102,5 +102,25 @@
         android:layout_marginStart="11dp"
         android:background="?android:attr/selectableItemBackground"
         app:srcCompat="@drawable/ic_action_edit" />
+
+    <ImageButton
+        android:id="@+id/arrow_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/edit_counter_name"
+        android:background="?android:attr/selectableItemBackground"
+        app:srcCompat="@drawable/ic_arrow_up" />
+
+    <ImageButton
+        android:id="@+id/arrow_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/scounter_count"
+        android:layout_alignLeft="@+id/delete_counter"
+        android:layout_alignStart="@+id/delete_counter"
+        android:background="?android:attr/selectableItemBackground"
+        app:srcCompat="@drawable/ic_arrow_down" />
 
 </RelativeLayout>
