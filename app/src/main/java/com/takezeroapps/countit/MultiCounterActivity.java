@@ -235,6 +235,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                             cName.setHint(R.string.name_hint);
                             cName.setFilters(new InputFilter[] {new InputFilter.LengthFilter(20)});
                             layout.addView(cName);
+
                             //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
                             cName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
@@ -245,9 +246,12 @@ public class MultiCounterActivity extends AppCompatActivity {
                                         cName.setSingleLine(true);
                                         cName.setMaxLines(1);
                                         cName.setLines(1);
+                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.showSoftInput(cName, InputMethodManager.SHOW_IMPLICIT);
                                     }
                                 }
                             });
+
 
                             //textview to create a space in between fields
                             final TextView space = new TextView(context);
@@ -328,7 +332,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                                                 fragmentTransaction.commit();
                                             }
                                             fragTagList.add(newCounter.getCounterId());
-                                            
+
                                         }
 
                                     }
