@@ -29,6 +29,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,12 +58,11 @@ public class SingleCounterFragment extends Fragment{
     boolean isNegative, vibrateSetting, resetconfirmSetting, screenSetting;
     Counter currentSC;
     Multicounter currentMC;
-    EditText counterEdit, input;
+    EditText counterEdit, input, incdecInput;
     LinearLayout lin;
     Counter tempCounter;
     SingleCounterFragment prevFrag, currFrag, nextFrag;
     String incdecQ; //string that stores whether the selected option is "increase" or "decrease" when selecting the corresponding option in the longClick menu of a counter
-    public boolean increaseBool;
 
     public static SingleCounterFragment newInstance(String mcName, String cName, int cCount) {
         SingleCounterFragment myFragment = new SingleCounterFragment();
@@ -369,12 +370,18 @@ public class SingleCounterFragment extends Fragment{
 
                                         //dropdown menu with increase/decrease
                                         //dropdown for initial number of counters
-                                        final ArrayAdapter<String> adp = new ArrayAdapter<String>(getActivity(),
-                                                R.layout.spinner_item_custom, incdecOptions);
-                                        final Spinner sp = new Spinner(getActivity());
-                                        sp.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                                        sp.setAdapter(adp);
-                                        layout.addView(sp);
+                                        final RadioGroup rg = new RadioGroup(getActivity());
+                                        rg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                                        for(int p=0; p<2; p++)
+                                        {
+                                            RadioButton rb = new RadioButton(getActivity());
+                                            rb.setText(incdecOptions[p]);
+                                            rb.setTextSize(16);
+                                            rb.setId(p);
+                                            rg.addView(rb);
+                                        }
+
+                                        layout.addView(rg);
 
                                         //textview to create a space in between fields
                                         final TextView space = new TextView(context);
@@ -390,7 +397,7 @@ public class SingleCounterFragment extends Fragment{
                                         layout.addView(amount);
 
                                         //Text input for inc/dec amount
-                                        final EditText incdecInput = new EditText(context);
+                                        incdecInput = new EditText(context);
                                         incdecInput.setHint(R.string.amount);
                                         incdecInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
                                         incdecInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
@@ -401,37 +408,43 @@ public class SingleCounterFragment extends Fragment{
 
                                         builder.create();
 
-                                        sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+                                        {
                                             @Override
-                                            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                                                // your code here
-                                                if (sp.getSelectedItem().toString().equals(getActivity().getResources().getString(R.string.increase))) {
+                                            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                                                // checkedId is the RadioButton selected
+                                                View radioButton = rg.findViewById(checkedId);
+                                                int index = rg.indexOfChild(radioButton);
+
+                                                if(rg.getCheckedRadioButtonId() == 0)
+                                                {
                                                     incdecQ = getActivity().getResources().getString(R.string.increase_by);
-                                                    increaseBool = true;
-
-                                                } else if (sp.getSelectedItem().toString().equals(getActivity().getResources().getString(R.string.decrease))) {
-                                                    incdecQ = getActivity().getResources().getString(R.string.decrease_by);
-                                                    increaseBool = false;
                                                 }
-
+                                                else if(rg.getCheckedRadioButtonId() == 1)
+                                                {
+                                                    incdecQ = getActivity().getResources().getString(R.string.decrease_by);
+                                                }
                                                 amount.setText(incdecQ);
                                             }
-
-                                            @Override
-                                            public void onNothingSelected(AdapterView<?> parentView) {
-                                                // your code here
-                                            }
-
                                         });
 
                                         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
 
-                                                int incdecInt = Integer.parseInt(incdecInput.getText().toString()); //input text - the user defined multi-counter name
-                                                String optionIncDec = sp.getSelectedItem().toString(); // initial count entered by user
+                                                //increase/decrease by required amount
+                                                int incdecAmount = Integer.parseInt(incdecInput.getText().toString()); //the amount to be decrement/incremeneted by
 
-                                                //increase/decrease by required amount (check to make sure the result is a valid number)
+                                                if(rg.getCheckedRadioButtonId() == 0)
+                                                {
+                                                    //INCREASE by
+
+                                                }
+                                                else if(rg.getCheckedRadioButtonId() == 1)
+                                                {
+                                                    //DECREASE by
+
+                                                }
 
                                             }
                                         });
@@ -442,7 +455,23 @@ public class SingleCounterFragment extends Fragment{
                                             }
                                         });
 
+                                        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                                            @Override
+                                            public void onCancel(DialogInterface dialog) {
+                                                //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
+                                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                                                imm.hideSoftInputFromWindow(incdecInput.getWindowToken(), 0);
+
+                                            }
+                                        });
+
                                         builder.show();
+                                        rg.check(rg.getChildAt(0).getId());
+                                        incdecInput.requestFocus();
+                                        InputMethodManager imm2 = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
                                     }
                                     catch (Exception e)
@@ -756,6 +785,8 @@ public class SingleCounterFragment extends Fragment{
             imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
         if(input != null)
             imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+        if(incdecInput != null)
+            imm.hideSoftInputFromWindow(incdecInput.getWindowToken(), 0);
     }
 
     @Override

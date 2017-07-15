@@ -90,8 +90,8 @@
     <string name="change_color">Change Color</string>
     <string name="select">Select</string>
     <string name="amount">Amount</string>
-    <string name="increase">Increase</string>
-    <string name="decrease">Decrease</string>
+    <string name="increase">Increase (+)</string>
+    <string name="decrease">Decrease (-)</string>
     <string name="increase_by">Increase By</string>
     <string name="decrease_by">Decrease By</string>
 
