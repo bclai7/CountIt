@@ -22,10 +22,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -212,253 +215,280 @@ public class SingleCounterFragment extends Fragment{
                 }
         );
 
-        editCounterName.setOnClickListener(
-                new ImageButton.OnClickListener(){
-                    public void onClick(View v){
-
-                        //create dialog
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setTitle(R.string.rename_single_counter);
-                        Context context = getActivity(); //store context in a variable
-                        LinearLayout layout = new LinearLayout(context);
-                        layout.setOrientation(LinearLayout.VERTICAL);
-
-                        //textview telling user to enter counter name
-                        final TextView name = new TextView(context);
-                        name.setText(R.string.set_counter_name);
-                        name.setTextSize(16);
-                        name.setTextColor(BLACK);
-                        layout.addView(name);
-
-                        //Text input for counter name
-                        counterEdit = new EditText(context);
-                        counterEdit.setHint(cName);
-                        counterEdit.setFilters(new InputFilter[] {new InputFilter.LengthFilter(20)});
-                        layout.addView(counterEdit);
-                        //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
-                        counterEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-                            @Override
-                            public void onFocusChange(View v, boolean hasFocus) {
-                                // TODO Auto-generated method stub
-                                if (hasFocus) {
-                                    counterEdit.setSingleLine(true);
-                                    counterEdit.setMaxLines(1);
-                                    counterEdit.setLines(1);
-                                }
-                            }
-                        });
-
-                        layout.setPadding(60, 50, 60, 10);
-
-                        builder.setView(layout);
-
-                        builder.create();
-
-                        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                try {
-                                    String counterName = counterEdit.getText().toString(); //input text - the user defined counter name
-
-                                    if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
-                                        if(vibrateSetting)
-                                            vib.vibrate(pattern, -1);
-                                        Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                                        dialog.cancel();
-                                        removeCounterEditKeyboard();
-                                    } else if (inSingleCounterList(counterName)) {
-                                        if(vibrateSetting)
-                                            vib.vibrate(pattern, -1);
-                                        Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                                        dialog.cancel();
-                                        removeCounterEditKeyboard();
-                                    } else if (counterName.length() > 20) {
-                                        if(vibrateSetting)
-                                            vib.vibrate(pattern, -1);
-                                        Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.sc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                                        dialog.cancel();
-                                        removeCounterEditKeyboard();
-                                    } else {
-                                        //find current counter and set the name to the new name
-                                        setNewCounterName(counterName); //sets new countername in the counter object as well as the textview
-
-                                        //Set modified times
-                                        currentMC.setModifiedDateTime();
-                                        currentMC.setModifiedTimeStamp();
-
-                                        //save multicounter list
-                                        saveMultiCounterList();
-                                        removeCounterEditKeyboard();
-                                    }
-
-                                }
-                                catch (IllegalArgumentException e)
-                                {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-
-                        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-
-                            @Override
-                            public void onCancel(DialogInterface dialog) {
-                                //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
-                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-                                imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
-
-                            }
-                        });
-
-                        builder.show();
-
-                        counterEdit.requestFocus();
-                        InputMethodManager imm2 = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                    }
-                }
-        );
-
-        deleteCounter.setOnClickListener(
-                new ImageButton.OnClickListener(){
-                    public void onClick(View v){
-                        AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
-
-                        deleteDialog.setMessage(R.string.delete_question)
-                                .setTitle(R.string.delete_title);
-                        deleteDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // delete counter if "yes" is clicked
-                                deleteCounterFromMC();
-                                saveMultiCounterList();
-                                deleteFragment();
-
-                                //Set modified times
-                                currentMC.setModifiedDateTime();
-                                currentMC.setModifiedTimeStamp();
-                            }
-                        });
-                        deleteDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //cancel dialog if "no" is clicked
-                                dialog.cancel();
-                            }
-                        });
-
-                        AlertDialog dialog = deleteDialog.create();
-                        deleteDialog.show();
-                    }
-                }
-        );
 
         counterCount.setOnLongClickListener(
                 new ImageButton.OnLongClickListener(){
                     @Override
                     public boolean onLongClick(final View view) {
-                        final int currcount = getCount();
+                        final String item = (String) ((TextView) view).getText();
+                        //create counterlist_dropdown_menu dialog
+                        String names[] ={getResources().getString(R.string.change_count), getResources().getString(R.string.rename_counter), getResources().getString(R.string.delete_counter), };
+                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                        LayoutInflater inflater = getActivity().getLayoutInflater();
+                        View convertView = (View) inflater.inflate(R.layout.options_popup_list, null);
+                        alertDialog.setView(convertView);
+                        alertDialog.setTitle(R.string.counter_options_title);
+                        ListView lv = (ListView) convertView.findViewById(R.id.listView1);
+                        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,names);
+                        lv.setAdapter(adapter1);
+                        final AlertDialog alert = alertDialog.create();
+                        alert.show();
 
-                        final CharSequence[] negOptions = {getActivity().getResources().getString(R.string.make_negative_num)}; //choices to select from, only one choice so it only has one element
-                        final ArrayList selectedItems=new ArrayList();
-
-                        final AlertDialog.Builder counterChanger = new AlertDialog.Builder(getActivity());
-                        counterChanger.setTitle(R.string.change_count); //set title
-
-                        // Set up the input
-                        input = new EditText(getActivity());
-
-                        // Specify the type of input expected; this, for example, sets the input as a number, and will use the numpad
-                        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
-                        input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(10)});
-                        counterChanger.setView(input);
-
-                        // Set up the buttons
-                        counterChanger.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                try {
-                                    String input_string = input.getText().toString().trim();
-
-                                    if (input_string.isEmpty() || input_string.length() == 0 || input_string.equals("") || TextUtils.isEmpty(input_string)) //check if input is empty
-                                    {
-                                        throw new NoCountEnteredException();
-                                    } else //if string is not empty, convert to int
-                                    {
-                                        newNum = Integer.valueOf(input.getText().toString());//get integer value of new number
-                                    }
-
-                                    if (isNegative) {
-                                        setCount(-1 * newNum); //if isNegative checkbox is checked, make the number negative
-                                    }
-                                    else {
-                                        setCount(newNum); //if checkbox is not checked, keep number the same
-                                    }
-
-                                    removeInputKeyboard();
-                                }
-                                catch (NoCountEnteredException e1)
+                            public void onItemClick(AdapterView<?> parent, View viewIn, int position, long id) {
+                                if(position == 0) //change count
                                 {
-                                    if(vibrateSetting)
-                                        vib.vibrate(pattern, -1);
-                                    Snackbar.make(view, R.string.no_input_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
-                                    newNum = getCount(); //set new count back to old count (or else manually setting a real number > resetting count > entering blank input = count being the original real number instead of 0 after the reset)
-                                    dialog.cancel();
-                                    removeInputKeyboard();
+                                    alert.dismiss();
+                                    final int currcount = getCount();
+
+                                    final CharSequence[] negOptions = {getActivity().getResources().getString(R.string.make_negative_num)}; //choices to select from, only one choice so it only has one element
+                                    final ArrayList selectedItems=new ArrayList();
+
+                                    final AlertDialog.Builder counterChanger = new AlertDialog.Builder(getActivity());
+                                    counterChanger.setTitle(R.string.change_count); //set title
+
+                                    // Set up the input
+                                    input = new EditText(getActivity());
+
+                                    // Specify the type of input expected; this, for example, sets the input as a number, and will use the numpad
+                                    input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                                    input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(10)});
+                                    counterChanger.setView(input);
+
+                                    // Set up the buttons
+                                    counterChanger.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            try {
+                                                String input_string = input.getText().toString().trim();
+
+                                                if (input_string.isEmpty() || input_string.length() == 0 || input_string.equals("") || TextUtils.isEmpty(input_string)) //check if input is empty
+                                                {
+                                                    throw new NoCountEnteredException();
+                                                } else //if string is not empty, convert to int
+                                                {
+                                                    newNum = Integer.valueOf(input.getText().toString());//get integer value of new number
+                                                }
+
+                                                if (isNegative) {
+                                                    setCount(-1 * newNum); //if isNegative checkbox is checked, make the number negative
+                                                }
+                                                else {
+                                                    setCount(newNum); //if checkbox is not checked, keep number the same
+                                                }
+
+                                                removeInputKeyboard();
+                                            }
+                                            catch (NoCountEnteredException e1)
+                                            {
+                                                if(vibrateSetting)
+                                                    vib.vibrate(pattern, -1);
+                                                Snackbar.make(view, R.string.no_input_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                                newNum = getCount(); //set new count back to old count (or else manually setting a real number > resetting count > entering blank input = count being the original real number instead of 0 after the reset)
+                                                dialog.cancel();
+                                                removeInputKeyboard();
+                                            }
+                                            catch (Exception e2)
+                                            {
+                                                if (vibrateSetting)
+                                                    vib.vibrate(pattern, -1);
+                                                Snackbar.make(view, R.string.invalid_number_entered, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                                dialog.cancel();
+
+                                                removeInputKeyboard();
+                                            }
+                                        }
+                                    });
+                                    counterChanger.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel(); //cancel dialog and do not save changes when "cancel" button is clicked
+                                        }
+                                    });
+                                    counterChanger.setMultiChoiceItems(negOptions, null, new DialogInterface.OnMultiChoiceClickListener() { //checkbox for negative number
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                                            if (isChecked) {
+                                                isNegative=true; //if checkbox is checked, set the boolean value for negative number as true
+                                            }
+                                            else
+                                                isNegative=false; //otherwise if checkbox is not checked, then keep value positive
+                                        }
+                                    });
+
+                                    counterChanger.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                                        @Override
+                                        public void onCancel(DialogInterface dialog) {
+                                            //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
+                                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                                            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+
+                                        }
+                                    });
+
+                                    counterChanger.show(); //show dialog
+                                    isNegative=false; //sets negative flag back to false after dialog is closed. This is so the input doesn't stay negative on each new change by the user
+
+                                    input.requestFocus();
+                                    InputMethodManager imm2 = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                                 }
-                                catch (Exception e2)
+                                else if(position==1) //rename
                                 {
-                                    if (vibrateSetting)
-                                        vib.vibrate(pattern, -1);
-                                    Snackbar.make(view, R.string.invalid_number_entered, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
-                                    dialog.cancel();
+                                    alert.dismiss();
+                                    //create dialog
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                    builder.setTitle(R.string.rename_single_counter);
+                                    Context context = getActivity(); //store context in a variable
+                                    LinearLayout layout = new LinearLayout(context);
+                                    layout.setOrientation(LinearLayout.VERTICAL);
 
-                                    removeInputKeyboard();
+                                    //textview telling user to enter counter name
+                                    final TextView name = new TextView(context);
+                                    name.setText(R.string.set_counter_name);
+                                    name.setTextSize(16);
+                                    name.setTextColor(BLACK);
+                                    layout.addView(name);
+
+                                    //Text input for counter name
+                                    counterEdit = new EditText(context);
+                                    counterEdit.setHint(cName);
+                                    counterEdit.setFilters(new InputFilter[] {new InputFilter.LengthFilter(20)});
+                                    layout.addView(counterEdit);
+                                    //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
+                                    counterEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+                                        @Override
+                                        public void onFocusChange(View v, boolean hasFocus) {
+                                            // TODO Auto-generated method stub
+                                            if (hasFocus) {
+                                                counterEdit.setSingleLine(true);
+                                                counterEdit.setMaxLines(1);
+                                                counterEdit.setLines(1);
+                                            }
+                                        }
+                                    });
+
+                                    layout.setPadding(60, 50, 60, 10);
+
+                                    builder.setView(layout);
+
+                                    builder.create();
+
+                                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            try {
+                                                String counterName = counterEdit.getText().toString(); //input text - the user defined counter name
+
+                                                if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
+                                                    if(vibrateSetting)
+                                                        vib.vibrate(pattern, -1);
+                                                    Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                                    dialog.cancel();
+                                                    removeCounterEditKeyboard();
+                                                } else if (inSingleCounterList(counterName)) {
+                                                    if(vibrateSetting)
+                                                        vib.vibrate(pattern, -1);
+                                                    Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                                    dialog.cancel();
+                                                    removeCounterEditKeyboard();
+                                                } else if (counterName.length() > 20) {
+                                                    if(vibrateSetting)
+                                                        vib.vibrate(pattern, -1);
+                                                    Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), R.string.sc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                                    dialog.cancel();
+                                                    removeCounterEditKeyboard();
+                                                } else {
+                                                    //find current counter and set the name to the new name
+                                                    setNewCounterName(counterName); //sets new countername in the counter object as well as the textview
+
+                                                    //Set modified times
+                                                    currentMC.setModifiedDateTime();
+                                                    currentMC.setModifiedTimeStamp();
+
+                                                    //save multicounter list
+                                                    saveMultiCounterList();
+                                                    removeCounterEditKeyboard();
+                                                }
+
+                                            }
+                                            catch (IllegalArgumentException e)
+                                            {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
+                                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    });
+
+                                    builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                                        @Override
+                                        public void onCancel(DialogInterface dialog) {
+                                            //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
+                                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                                            imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
+
+                                        }
+                                    });
+
+                                    builder.show();
+
+                                    counterEdit.requestFocus();
+                                    InputMethodManager imm2 = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                }
+                                else if(position==2) //delete
+                                {
+                                    alert.dismiss();
+                                    AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
+
+                                    deleteDialog.setMessage(R.string.delete_question)
+                                            .setTitle(R.string.delete_title);
+                                    deleteDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            // delete counter if "yes" is clicked
+                                            deleteCounterFromMC();
+                                            saveMultiCounterList();
+                                            deleteFragment();
+
+                                            //Set modified times
+                                            currentMC.setModifiedDateTime();
+                                            currentMC.setModifiedTimeStamp();
+                                        }
+                                    });
+                                    deleteDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            //cancel dialog if "no" is clicked
+                                            dialog.cancel();
+                                        }
+                                    });
+
+                                    AlertDialog dialog = deleteDialog.create();
+                                    deleteDialog.show();
                                 }
                             }
                         });
-                        counterChanger.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel(); //cancel dialog and do not save changes when "cancel" button is clicked
-                            }
-                        });
-                        counterChanger.setMultiChoiceItems(negOptions, null, new DialogInterface.OnMultiChoiceClickListener() { //checkbox for negative number
-                            @Override
-                            public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
-                                if (isChecked) {
-                                    isNegative=true; //if checkbox is checked, set the boolean value for negative number as true
-                                }
-                                else
-                                    isNegative=false; //otherwise if checkbox is not checked, then keep value positive
-                            }
-                        });
 
-                        counterChanger.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        return true;
+                    }
+                }
+        );
 
-                            @Override
-                            public void onCancel(DialogInterface dialog) {
-                                //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
-                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-                                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-
-                            }
-                        });
-
-                        counterChanger.show(); //show dialog
-                        isNegative=false; //sets negative flag back to false after dialog is closed. This is so the input doesn't stay negative on each new change by the user
-
-                        input.requestFocus();
-                        InputMethodManager imm2 = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-
+        counterName.setOnLongClickListener(
+                new ImageButton.OnLongClickListener(){
+                    @Override
+                    public boolean onLongClick(final View view) {
+                        counterCount.performLongClick();
                         return true;
                     }
                 }
@@ -708,14 +738,6 @@ public class SingleCounterFragment extends Fragment{
     {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-    }
-
-    public void swapItems(ArrayList<String> itemList, int x, int y)
-    {
-        String s = itemList.get(x);
-
-        itemList.set(x, itemList.get(y));
-        itemList.set(y, s);
     }
 
 }
