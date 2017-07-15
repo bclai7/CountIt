@@ -87,6 +87,7 @@
     <string name="counter_up">Move Up</string>
     <string name="counter_down">Move Down</string>
     <string name="inc_dec_by">Increase/Decrease By</string>
+    <string name="change_color">Change Color</string>
     <string name="select">Select</string>
     <string name="amount">Amount</string>
     <string name="increase">Increase</string>

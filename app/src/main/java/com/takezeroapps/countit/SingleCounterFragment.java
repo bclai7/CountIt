@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import Exceptions.NoCountEnteredException;
@@ -229,8 +230,8 @@ public class SingleCounterFragment extends Fragment{
                         //create counterlist_dropdown_menu dialog
                         String names[] ={
                                 getResources().getString(R.string.change_count),
-                                "addby filler",
-                                "color filler",
+                                getResources().getString(R.string.inc_dec_by),
+                                getResources().getString(R.string.change_color),
                                 getResources().getString(R.string.rename_counter),
                                 getResources().getString(R.string.delete_counter),
                         };
@@ -395,7 +396,7 @@ public class SingleCounterFragment extends Fragment{
                                         incdecInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
                                         layout.addView(incdecInput);
 
-                                        layout.setPadding(60, 50, 60, 70);
+                                        layout.setPadding(60, 50, 60, 30);
                                         builder.setView(layout);
 
                                         builder.create();
@@ -421,6 +422,24 @@ public class SingleCounterFragment extends Fragment{
                                                 // your code here
                                             }
 
+                                        });
+
+                                        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                int incdecInt = Integer.parseInt(incdecInput.getText().toString()); //input text - the user defined multi-counter name
+                                                String optionIncDec = sp.getSelectedItem().toString(); // initial count entered by user
+
+                                                //increase/decrease by required amount (check to make sure the result is a valid number)
+
+                                            }
+                                        });
+                                        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.cancel();
+                                            }
                                         });
 
                                         builder.show();

@@ -180,7 +180,6 @@ public class MultiCounterActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    // plus sign button (to add counter)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

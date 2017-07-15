@@ -145,8 +145,8 @@ public class SingleCounterCondensedFragment extends Fragment {
                     //option list
                     String names[] ={
                             getResources().getString(R.string.change_count),
-                            "addby filler",
-                            "color filler",
+                            getResources().getString(R.string.inc_dec_by),
+                            getResources().getString(R.string.change_color),
                             getResources().getString(R.string.reset_title),
                             getResources().getString(R.string.rename_counter),
                             getResources().getString(R.string.delete_counter),
