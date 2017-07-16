@@ -108,6 +108,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                 if(viewOption==0) {
                     FragmentManager fragmentManager = getFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    Log.d("test", c.getLabel()+"before: "+c.getCount());
                     SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(current.getName(), c.getLabel(), c.getCount());
                     fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, c.getCounterId());
                     fragmentTransaction.commit();

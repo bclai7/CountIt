@@ -44,9 +44,19 @@ public class Counter {
         count++;
     }
 
+    public void increaseCount(int amount)
+    {
+        count=count+amount;
+    }
+
     public void subCount()
     {
         count--;
+    }
+
+    public void decreaseCount(int amount)
+    {
+        count = count-amount;
     }
 
     public void resetCount()

@@ -31,6 +31,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,8 +56,9 @@ public class SingleCounterCondensedFragment extends Fragment {
     boolean isNegative, vibrateSetting, resetconfirmSetting, screenSetting;
     Counter currentSC;
     Multicounter currentMC;
-    EditText counterEdit, input;
+    EditText counterEdit, input, incdecInput;
     SingleCounterCondensedFragment currFrag, prevFrag, nextFrag;
+    String incdecQ;
 
     public static SingleCounterCondensedFragment newInstance(String mcName, String cName, int cCount) {
         SingleCounterCondensedFragment myFragment = new SingleCounterCondensedFragment();
@@ -84,6 +87,8 @@ public class SingleCounterCondensedFragment extends Fragment {
         counterCount=(TextView)view.findViewById(R.id.scounter_count);
         plusButton=(Button)view.findViewById(R.id.scounter_plus);
         minusButton=(Button)view.findViewById(R.id.scounter_minus);
+
+        final String incdecOptions[] = {getActivity().getResources().getString(R.string.increase), getActivity().getResources().getString(R.string.decrease)};
 
         final Vibrator vib = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         final long[] pattern = {0, 20, 150, 20}; //double vibration pattern for errors
@@ -271,6 +276,181 @@ public class SingleCounterCondensedFragment extends Fragment {
                             else if(position==1) //increase/decrease by
                             {
                                 alert.dismiss();
+                                try {
+                                    alert.dismiss();
+                                    incdecQ = getActivity().getResources().getString(R.string.increase_by);
+                                    //create dialog
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                    builder.setTitle(R.string.inc_dec_by);
+                                    Context context = getActivity(); //store context in a variable
+                                    LinearLayout layout = new LinearLayout(context);
+                                    layout.setOrientation(LinearLayout.VERTICAL);
+
+                                    //textview telling user to select "increase or decrease"
+                                    final TextView incdecText = new TextView(context);
+                                    incdecText.setText(R.string.select);
+                                    incdecText.setTextSize(16);
+                                    incdecText.setTextColor(BLACK);
+                                    layout.addView(incdecText);
+
+                                    //dropdown menu with increase/decrease
+                                    //dropdown for initial number of counters
+                                    final RadioGroup rg = new RadioGroup(getActivity());
+                                    rg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                                    for(int p=0; p<2; p++)
+                                    {
+                                        RadioButton rb = new RadioButton(getActivity());
+                                        rb.setText(incdecOptions[p]);
+                                        rb.setTextSize(16);
+                                        rb.setId(p);
+                                        rg.addView(rb);
+                                    }
+
+                                    layout.addView(rg);
+
+                                    //textview to create a space in between fields
+                                    final TextView space = new TextView(context);
+                                    space.setText("");
+                                    space.setTextSize(16);
+                                    layout.addView(space);
+
+                                    //textview telling user to enter amount
+                                    final TextView amount = new TextView(context);
+                                    amount.setText(incdecQ);
+                                    amount.setTextSize(16);
+                                    amount.setTextColor(BLACK);
+                                    layout.addView(amount);
+
+                                    //Text input for inc/dec amount
+                                    incdecInput = new EditText(context);
+                                    incdecInput.setHint(R.string.amount);
+                                    incdecInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+                                    incdecInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                                    layout.addView(incdecInput);
+
+                                    layout.setPadding(60, 50, 60, 30);
+                                    builder.setView(layout);
+
+                                    builder.create();
+
+                                    rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+                                    {
+                                        @Override
+                                        public void onCheckedChanged(RadioGroup group, int checkedId) {
+                                            // checkedId is the RadioButton selected
+                                            View radioButton = rg.findViewById(checkedId);
+                                            int index = rg.indexOfChild(radioButton);
+
+                                            if(rg.getCheckedRadioButtonId() == 0)
+                                            {
+                                                incdecQ = getActivity().getResources().getString(R.string.increase_by);
+                                            }
+                                            else if(rg.getCheckedRadioButtonId() == 1)
+                                            {
+                                                incdecQ = getActivity().getResources().getString(R.string.decrease_by);
+                                            }
+                                            amount.setText(incdecQ);
+                                        }
+                                    });
+
+                                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            int incdecAmount = 0;
+                                            try {
+                                                //increase/decrease by required amount
+                                                String input_string = incdecText.getText().toString().trim();
+
+                                                if (input_string.isEmpty() || input_string.length() == 0 || input_string.equals("") || TextUtils.isEmpty(input_string)) //check if input is empty
+                                                {
+                                                    throw new NoCountEnteredException();
+                                                }
+                                                else //if string is not empty, convert to int
+                                                {
+                                                    incdecAmount = Integer.parseInt(incdecInput.getText().toString()); //the amount to be decrement/incremented by
+                                                }
+
+                                                if (rg.getCheckedRadioButtonId() == 0) //increase
+                                                {
+                                                    //INCREASE by
+                                                    int currCount=getCount();
+                                                    if(vibrateSetting)
+                                                        vib.vibrate(10);
+                                                    increaseCount(incdecAmount);
+                                                    //Set modified times
+                                                    currentMC.setModifiedDateTime();
+                                                    currentMC.setModifiedTimeStamp();
+
+                                                }
+                                                else if (rg.getCheckedRadioButtonId() == 1) //decrease
+                                                {
+                                                    //DECREASE by
+                                                    int currCount=getCount();
+                                                    if(vibrateSetting)
+                                                        vib.vibrate(10);
+                                                    decreaseCount(incdecAmount);
+                                                    //Set modified times
+                                                    currentMC.setModifiedDateTime();
+                                                    currentMC.setModifiedTimeStamp();
+
+                                                }
+
+                                                //remove keyboard
+                                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                imm.hideSoftInputFromWindow(incdecInput.getWindowToken(), 0);
+                                            }
+                                            catch (NoCountEnteredException e1)
+                                            {
+                                                if(vibrateSetting)
+                                                    vib.vibrate(pattern, -1);
+                                                Snackbar.make(view, R.string.no_input_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                                dialog.cancel();
+                                            }
+                                            catch (Exception e2)
+                                            {
+                                                if (vibrateSetting)
+                                                    vib.vibrate(pattern, -1);
+                                                Snackbar.make(view, R.string.invalid_number_entered, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                                dialog.cancel();
+
+                                                //remove keyboard
+                                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                imm.hideSoftInputFromWindow(incdecInput.getWindowToken(), 0);
+                                            }
+
+
+                                        }
+                                    });
+                                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    });
+
+                                    builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                                        @Override
+                                        public void onCancel(DialogInterface dialog) {
+                                            //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
+                                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                                            imm.hideSoftInputFromWindow(incdecInput.getWindowToken(), 0);
+
+                                        }
+                                    });
+
+                                    builder.show();
+                                    rg.check(rg.getChildAt(0).getId());
+                                    incdecInput.requestFocus();
+                                    InputMethodManager imm2 = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
 
                             }
                             else if(position==2) //change color
@@ -651,6 +831,8 @@ public class SingleCounterCondensedFragment extends Fragment {
             imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
         if(input != null)
             imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+        if(incdecInput != null)
+            imm.hideSoftInputFromWindow(incdecInput.getWindowToken(), 0);
     }
 
     @Override
@@ -721,6 +903,21 @@ public class SingleCounterCondensedFragment extends Fragment {
         currentSC.subCount();
         counterCount.setText(Integer.toString(currentSC.getCount()));
     }
+
+    public void increaseCount(int amount)
+    {
+        currentSC.increaseCount(amount);
+        counterCount.setText(Integer.toString(currentSC.getCount()));
+        cCount=currentSC.getCount();
+    }
+
+    public void decreaseCount(int amount)
+    {
+        currentSC.decreaseCount(amount);
+        counterCount.setText(Integer.toString(currentSC.getCount()));
+        cCount=currentSC.getCount();
+    }
+
     public void resetCount()
     {
         setCount(0);

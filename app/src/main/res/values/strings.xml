@@ -94,6 +94,8 @@
     <string name="decrease">Decrease (-)</string>
     <string name="increase_by">Increase By</string>
     <string name="decrease_by">Decrease By</string>
+    <string name="exceed_max">Number would be too high</string>
+    <string name="exceed_min">Number would be too low</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

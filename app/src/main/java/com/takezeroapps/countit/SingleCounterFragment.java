@@ -69,7 +69,7 @@ public class SingleCounterFragment extends Fragment{
         Bundle args = new Bundle();
         args.putString("mcName", mcName);
         args.putString("cName", cName);
-        args.putInt("cunt", cCount);
+        args.putInt("cCount", cCount);
         myFragment.setArguments(args);
 
         return myFragment;
@@ -84,6 +84,7 @@ public class SingleCounterFragment extends Fragment{
             cName = getArguments().getString("cName");
             cCount = getArguments().getInt("cCount");
             counterName.setText(cName);
+            Log.d("test", cName+"after: "+cCount);
             counterCount.setText(Integer.toString(cCount));
 
             for(Multicounter m: CounterListActivity.multicounterList)
@@ -431,20 +432,68 @@ public class SingleCounterFragment extends Fragment{
                                         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
+                                                int incdecAmount = 0;
+                                                try {
+                                                    //increase/decrease by required amount
+                                                    String input_string = incdecText.getText().toString().trim();
 
-                                                //increase/decrease by required amount
-                                                int incdecAmount = Integer.parseInt(incdecInput.getText().toString()); //the amount to be decrement/incremeneted by
+                                                    if (input_string.isEmpty() || input_string.length() == 0 || input_string.equals("") || TextUtils.isEmpty(input_string)) //check if input is empty
+                                                    {
+                                                        throw new NoCountEnteredException();
+                                                    }
+                                                    else //if string is not empty, convert to int
+                                                    {
+                                                        incdecAmount = Integer.parseInt(incdecInput.getText().toString()); //the amount to be decrement/incremented by
+                                                    }
 
-                                                if(rg.getCheckedRadioButtonId() == 0)
-                                                {
-                                                    //INCREASE by
+                                                    if (rg.getCheckedRadioButtonId() == 0) //increase
+                                                    {
+                                                        //INCREASE by
+                                                        int currCount=getCount();
+                                                        if(vibrateSetting)
+                                                            vib.vibrate(10);
+                                                        increaseCount(incdecAmount);
+                                                        //Set modified times
+                                                        currentMC.setModifiedDateTime();
+                                                        currentMC.setModifiedTimeStamp();
 
+                                                    }
+                                                    else if (rg.getCheckedRadioButtonId() == 1) //decrease
+                                                    {
+                                                        //DECREASE by
+                                                        int currCount=getCount();
+                                                        if(vibrateSetting)
+                                                            vib.vibrate(10);
+                                                        decreaseCount(incdecAmount);
+                                                        //Set modified times
+                                                        currentMC.setModifiedDateTime();
+                                                        currentMC.setModifiedTimeStamp();
+
+                                                    }
+
+                                                    //remove keyboard
+                                                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                    imm.hideSoftInputFromWindow(incdecInput.getWindowToken(), 0);
                                                 }
-                                                else if(rg.getCheckedRadioButtonId() == 1)
+                                                catch (NoCountEnteredException e1)
                                                 {
-                                                    //DECREASE by
-
+                                                    if(vibrateSetting)
+                                                        vib.vibrate(pattern, -1);
+                                                    Snackbar.make(view, R.string.no_input_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                                    dialog.cancel();
                                                 }
+                                                catch (Exception e2)
+                                                {
+                                                    if (vibrateSetting)
+                                                        vib.vibrate(pattern, -1);
+                                                    Snackbar.make(view, R.string.invalid_number_entered, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                                    dialog.cancel();
+
+                                                    //remove keyboard
+                                                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                    imm.hideSoftInputFromWindow(incdecInput.getWindowToken(), 0);
+                                                }
+
 
                                             }
                                         });
@@ -844,7 +893,7 @@ public class SingleCounterFragment extends Fragment{
         return Integer.parseInt(counterCount.getText().toString());
     }
 
-    public void addCount()
+    public void addCount() //increase by 1
     {
         //int num = Integer.valueOf(counterCount.getText().toString());
         //num++;
@@ -853,11 +902,26 @@ public class SingleCounterFragment extends Fragment{
         cCount=currentSC.getCount();
 
     }
-    public void subCount()
+
+    public void subCount() //decrease by 1
     {
         //int num = Integer.valueOf(counterCount.getText().toString());
         //num--;
         currentSC.subCount();
+        counterCount.setText(Integer.toString(currentSC.getCount()));
+        cCount=currentSC.getCount();
+    }
+
+    public void increaseCount(int amount) //increase by a specified amount
+    {
+        currentSC.increaseCount(amount);
+        counterCount.setText(Integer.toString(currentSC.getCount()));
+        cCount=currentSC.getCount();
+    }
+
+    public void decreaseCount(int amount) //decrease by a specified amount
+    {
+        currentSC.decreaseCount(amount);
         counterCount.setText(Integer.toString(currentSC.getCount()));
         cCount=currentSC.getCount();
     }
