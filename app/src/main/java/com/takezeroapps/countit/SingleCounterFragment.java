@@ -849,7 +849,7 @@ public class SingleCounterFragment extends Fragment{
                                     currentSC.setLabel(prevName);
                                     currentSC.setCount(prevCount);
                                     currentSC.setIndex(currIndex);
-                                    
+                                    currentSC.setColor(prevColor);
                                     //set curr fragment
                                     currFrag.setCount(prevCount);
                                     currFrag.setNewCounterName(prevName);
@@ -858,9 +858,87 @@ public class SingleCounterFragment extends Fragment{
                                     cn.setLabel(currName);
                                     cn.setCount(currCount);
                                     cn.setIndex(prevIndex);
+                                    cn.setColor(currColor);
                                     //store fragment info
                                     prevFrag.setNewCounterName(currName);
                                     prevFrag.setCount(currCount);
+
+                                    //SET CURRENT COLOR BACKGROUND
+                                    if(currentSC.getColor().equals("WHITE")) //WHITE
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.WHITE);
+                                    }
+                                    else if(currentSC.getColor().equals("RED")) //RED
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.RED);
+                                    }
+                                    else if(currentSC.getColor().equals("BLUE")) //BLUE
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.BLUE);
+                                    }
+                                    else if(currentSC.getColor().equals("GREEN")) //GREEN
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.GREEN);
+                                    }
+                                    else if(currentSC.getColor().equals("YELLOW")) //YELLOW
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.YELLOW);
+                                    }
+                                    else if(currentSC.getColor().equals("ORANGE")) //ORANGE
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.parseColor("ORANGE"));
+                                    }
+                                    else if(currentSC.getColor().equals("PURPLE")) //PURPLE
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.parseColor("#990099"));
+                                    }
+                                    else if(currentSC.getColor().equals("PINK")) //PINK
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.parseColor("#ff99cc"));
+                                    }
+                                    else if(currentSC.getColor().equals("GRAY")) //GRAY
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.GRAY);
+                                    }
+
+
+                                    //SET PREV COLOR BACKGROUND
+                                    if(cn.getColor().equals("WHITE")) //WHITE
+                                    {
+                                        prevFrag.getView().setBackgroundColor(Color.WHITE);
+                                    }
+                                    else if(cn.getColor().equals("RED")) //RED
+                                    {
+                                        prevFrag.getView().setBackgroundColor(Color.RED);
+                                    }
+                                    else if(cn.getColor().equals("BLUE")) //BLUE
+                                    {
+                                        prevFrag.getView().setBackgroundColor(Color.BLUE);
+                                    }
+                                    else if(cn.getColor().equals("GREEN")) //GREEN
+                                    {
+                                        prevFrag.getView().setBackgroundColor(Color.GREEN);
+                                    }
+                                    else if(cn.getColor().equals("YELLOW")) //YELLOW
+                                    {
+                                        prevFrag.getView().setBackgroundColor(Color.YELLOW);
+                                    }
+                                    else if(cn.getColor().equals("ORANGE")) //ORANGE
+                                    {
+                                        prevFrag.getView().setBackgroundColor(Color.parseColor("ORANGE"));
+                                    }
+                                    else if(cn.getColor().equals("PURPLE")) //PURPLE
+                                    {
+                                        prevFrag.getView().setBackgroundColor(Color.parseColor("#990099"));
+                                    }
+                                    else if(cn.getColor().equals("PINK")) //PINK
+                                    {
+                                        prevFrag.getView().setBackgroundColor(Color.parseColor("#ff99cc"));
+                                    }
+                                    else if(cn.getColor().equals("GRAY")) //GRAY
+                                    {
+                                        prevFrag.getView().setBackgroundColor(Color.GRAY);
+                                    }
 
                                     saveMultiCounterList();
 
@@ -894,6 +972,7 @@ public class SingleCounterFragment extends Fragment{
                                     int nextIndex = cn.getIndex();
                                     String nextName = cn.getLabel();
                                     int nextCount = cn.getCount();
+                                    String nextColor = cn.getColor();
                                     String nextFragId = MultiCounterActivity.fragTagList.get(nextIndex);
                                     nextFrag = (SingleCounterFragment) getFragmentManager().findFragmentByTag(nextFragId);
 
@@ -901,6 +980,7 @@ public class SingleCounterFragment extends Fragment{
                                     int currIndex = currentSC.getIndex();
                                     String currName = currentSC.getLabel();
                                     int currCount = currentSC.getCount();
+                                    String currColor = currentSC.getColor();
                                     String currFragId = MultiCounterActivity.fragTagList.get(currIndex);
                                     currFrag = (SingleCounterFragment) getFragmentManager().findFragmentByTag(currFragId);
 
@@ -910,6 +990,7 @@ public class SingleCounterFragment extends Fragment{
                                     currentSC.setLabel(nextName);
                                     currentSC.setCount(nextCount);
                                     currentSC.setIndex(currIndex);
+                                    currentSC.setColor(nextColor);
                                     //set curr fragment
                                     currFrag.setCount(nextCount);
                                     currFrag.setNewCounterName(nextName);
@@ -918,9 +999,86 @@ public class SingleCounterFragment extends Fragment{
                                     cn.setLabel(currName);
                                     cn.setCount(currCount);
                                     cn.setIndex(nextIndex);
+                                    cn.setColor(currColor);
                                     //store fragment info
                                     nextFrag.setNewCounterName(currName);
                                     nextFrag.setCount(currCount);
+
+                                    //SET CURRENT COLOR BACKGROUND
+                                    if(currentSC.getColor().equals("WHITE")) //WHITE
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.WHITE);
+                                    }
+                                    else if(currentSC.getColor().equals("RED")) //RED
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.RED);
+                                    }
+                                    else if(currentSC.getColor().equals("BLUE")) //BLUE
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.BLUE);
+                                    }
+                                    else if(currentSC.getColor().equals("GREEN")) //GREEN
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.GREEN);
+                                    }
+                                    else if(currentSC.getColor().equals("YELLOW")) //YELLOW
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.YELLOW);
+                                    }
+                                    else if(currentSC.getColor().equals("ORANGE")) //ORANGE
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.parseColor("ORANGE"));
+                                    }
+                                    else if(currentSC.getColor().equals("PURPLE")) //PURPLE
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.parseColor("#990099"));
+                                    }
+                                    else if(currentSC.getColor().equals("PINK")) //PINK
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.parseColor("#ff99cc"));
+                                    }
+                                    else if(currentSC.getColor().equals("GRAY")) //GRAY
+                                    {
+                                        currFrag.getView().setBackgroundColor(Color.GRAY);
+                                    }
+
+                                    //SET NEXT COLOR BACKGROUND
+                                    if(cn.getColor().equals("WHITE")) //WHITE
+                                    {
+                                        nextFrag.getView().setBackgroundColor(Color.WHITE);
+                                    }
+                                    else if(cn.getColor().equals("RED")) //RED
+                                    {
+                                        nextFrag.getView().setBackgroundColor(Color.RED);
+                                    }
+                                    else if(cn.getColor().equals("BLUE")) //BLUE
+                                    {
+                                        nextFrag.getView().setBackgroundColor(Color.BLUE);
+                                    }
+                                    else if(cn.getColor().equals("GREEN")) //GREEN
+                                    {
+                                        nextFrag.getView().setBackgroundColor(Color.GREEN);
+                                    }
+                                    else if(cn.getColor().equals("YELLOW")) //YELLOW
+                                    {
+                                        nextFrag.getView().setBackgroundColor(Color.YELLOW);
+                                    }
+                                    else if(cn.getColor().equals("ORANGE")) //ORANGE
+                                    {
+                                        nextFrag.getView().setBackgroundColor(Color.parseColor("ORANGE"));
+                                    }
+                                    else if(cn.getColor().equals("PURPLE")) //PURPLE
+                                    {
+                                        nextFrag.getView().setBackgroundColor(Color.parseColor("#990099"));
+                                    }
+                                    else if(cn.getColor().equals("PINK")) //PINK
+                                    {
+                                        nextFrag.getView().setBackgroundColor(Color.parseColor("#ff99cc"));
+                                    }
+                                    else if(cn.getColor().equals("GRAY")) //GRAY
+                                    {
+                                        nextFrag.getView().setBackgroundColor(Color.GRAY);
+                                    }
 
                                     saveMultiCounterList();
 
