@@ -474,60 +474,45 @@ public class SingleCounterCondensedFragment extends Fragment {
                                 lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View viewIn, int position, long id) {
+                                        alertInside.dismiss();
                                         if(position == 0) //WHITE
                                         {
-                                            alertInside.dismiss();
-                                            SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.WHITE);
                                             currentSC.setColor("WHITE");
                                         }
                                         else if(position == 1) //RED
                                         {
-                                            alertInside.dismiss();
-                                            SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.RED);
                                             currentSC.setColor("RED");
                                         }
                                         else if(position==2) //BLUE
                                         {
-                                            alertInside.dismiss();
-                                            SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.BLUE);
                                             currentSC.setColor("BLUE");
                                         }
                                         else if(position==3) //GREEN
                                         {
-                                            alertInside.dismiss();
-                                            SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.GREEN);
                                             currentSC.setColor("GREEN");
                                         }
                                         else if(position==4) //YELLOW
                                         {
-                                            alertInside.dismiss();
-                                            SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.YELLOW);
                                             currentSC.setColor("YELLOW");
                                         }
                                         else if(position==5) //ORANGE
                                         {
-                                            alertInside.dismiss();
-                                            SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
                                             currentSC.setColor("ORANGE");
                                         }
                                         else if(position==6) //PURPLE
                                         {
-                                            alertInside.dismiss();
-                                            SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
                                             currentSC.setColor("PURPLE");
                                         }
                                         else if(position==7) //PINK
                                         {
-                                            alertInside.dismiss();
-                                            SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
                                             currentSC.setColor("PINK");
                                         }
                                         else if(position==8) //GRAY
                                         {
-                                            alertInside.dismiss();
-                                            SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.GRAY);
                                             currentSC.setColor("GRAY");
                                         }
+
+                                        changeFragmentColor(SingleCounterCondensedFragment.this, currentSC, currentSC.getColor());
 
                                         saveMultiCounterList();
                                     }
@@ -767,81 +752,10 @@ public class SingleCounterCondensedFragment extends Fragment {
                                             prevFrag.setCount(currCount);
 
                                             //SET CURRENT COLOR BACKGROUND
-                                            if(currentSC.getColor().equals("WHITE")) //WHITE
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.WHITE);
-                                            }
-                                            else if(currentSC.getColor().equals("RED")) //RED
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.RED);
-                                            }
-                                            else if(currentSC.getColor().equals("BLUE")) //BLUE
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.BLUE);
-                                            }
-                                            else if(currentSC.getColor().equals("GREEN")) //GREEN
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.GREEN);
-                                            }
-                                            else if(currentSC.getColor().equals("YELLOW")) //YELLOW
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.YELLOW);
-                                            }
-                                            else if(currentSC.getColor().equals("ORANGE")) //ORANGE
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
-                                            }
-                                            else if(currentSC.getColor().equals("PURPLE")) //PURPLE
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
-                                            }
-                                            else if(currentSC.getColor().equals("PINK")) //PINK
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
-                                            }
-                                            else if(currentSC.getColor().equals("GRAY")) //GRAY
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.GRAY);
-                                            }
-
+                                            changeFragmentColor(currFrag, currentSC, currentSC.getColor());
 
                                             //SET PREV COLOR BACKGROUND
-                                            if(cn.getColor().equals("WHITE")) //WHITE
-                                            {
-                                                prevFrag.getView().setBackgroundColor(Color.WHITE);
-                                            }
-                                            else if(cn.getColor().equals("RED")) //RED
-                                            {
-                                                prevFrag.getView().setBackgroundColor(Color.RED);
-                                            }
-                                            else if(cn.getColor().equals("BLUE")) //BLUE
-                                            {
-                                                prevFrag.getView().setBackgroundColor(Color.BLUE);
-                                            }
-                                            else if(cn.getColor().equals("GREEN")) //GREEN
-                                            {
-                                                prevFrag.getView().setBackgroundColor(Color.GREEN);
-                                            }
-                                            else if(cn.getColor().equals("YELLOW")) //YELLOW
-                                            {
-                                                prevFrag.getView().setBackgroundColor(Color.YELLOW);
-                                            }
-                                            else if(cn.getColor().equals("ORANGE")) //ORANGE
-                                            {
-                                                prevFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
-                                            }
-                                            else if(cn.getColor().equals("PURPLE")) //PURPLE
-                                            {
-                                                prevFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
-                                            }
-                                            else if(cn.getColor().equals("PINK")) //PINK
-                                            {
-                                                prevFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
-                                            }
-                                            else if(cn.getColor().equals("GRAY")) //GRAY
-                                            {
-                                                prevFrag.getView().setBackgroundColor(Color.GRAY);
-                                            }
+                                            changeFragmentColor(prevFrag, cn, cn.getColor());
 
                                             saveMultiCounterList();
 
@@ -905,80 +819,11 @@ public class SingleCounterCondensedFragment extends Fragment {
                                             nextFrag.setCount(currCount);
 
                                             //SET CURRENT COLOR BACKGROUND
-                                            if(currentSC.getColor().equals("WHITE")) //WHITE
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.WHITE);
-                                            }
-                                            else if(currentSC.getColor().equals("RED")) //RED
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.RED);
-                                            }
-                                            else if(currentSC.getColor().equals("BLUE")) //BLUE
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.BLUE);
-                                            }
-                                            else if(currentSC.getColor().equals("GREEN")) //GREEN
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.GREEN);
-                                            }
-                                            else if(currentSC.getColor().equals("YELLOW")) //YELLOW
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.YELLOW);
-                                            }
-                                            else if(currentSC.getColor().equals("ORANGE")) //ORANGE
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
-                                            }
-                                            else if(currentSC.getColor().equals("PURPLE")) //PURPLE
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
-                                            }
-                                            else if(currentSC.getColor().equals("PINK")) //PINK
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
-                                            }
-                                            else if(currentSC.getColor().equals("GRAY")) //GRAY
-                                            {
-                                                currFrag.getView().setBackgroundColor(Color.GRAY);
-                                            }
+                                            changeFragmentColor(currFrag, currentSC, currentSC.getColor());
 
                                             //SET NEXT COLOR BACKGROUND
-                                            if(cn.getColor().equals("WHITE")) //WHITE
-                                            {
-                                                nextFrag.getView().setBackgroundColor(Color.WHITE);
-                                            }
-                                            else if(cn.getColor().equals("RED")) //RED
-                                            {
-                                                nextFrag.getView().setBackgroundColor(Color.RED);
-                                            }
-                                            else if(cn.getColor().equals("BLUE")) //BLUE
-                                            {
-                                                nextFrag.getView().setBackgroundColor(Color.BLUE);
-                                            }
-                                            else if(cn.getColor().equals("GREEN")) //GREEN
-                                            {
-                                                nextFrag.getView().setBackgroundColor(Color.GREEN);
-                                            }
-                                            else if(cn.getColor().equals("YELLOW")) //YELLOW
-                                            {
-                                                nextFrag.getView().setBackgroundColor(Color.YELLOW);
-                                            }
-                                            else if(cn.getColor().equals("ORANGE")) //ORANGE
-                                            {
-                                                nextFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
-                                            }
-                                            else if(cn.getColor().equals("PURPLE")) //PURPLE
-                                            {
-                                                nextFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
-                                            }
-                                            else if(cn.getColor().equals("PINK")) //PINK
-                                            {
-                                                nextFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
-                                            }
-                                            else if(cn.getColor().equals("GRAY")) //GRAY
-                                            {
-                                                nextFrag.getView().setBackgroundColor(Color.GRAY);
-                                            }
+                                            changeFragmentColor(nextFrag, cn, cn.getColor());
+
 
                                             saveMultiCounterList();
 
@@ -1041,42 +886,8 @@ public class SingleCounterCondensedFragment extends Fragment {
                 }
             }
             //SET COLOR BACKGROUND
-            if(currentSC.getColor().equals("WHITE")) //WHITE
-            {
-                SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.WHITE);
-            }
-            else if(currentSC.getColor().equals("RED")) //RED
-            {
-                SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.RED);
-            }
-            else if(currentSC.getColor().equals("BLUE")) //BLUE
-            {
-                SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.BLUE);
-            }
-            else if(currentSC.getColor().equals("GREEN")) //GREEN
-            {
-                SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.GREEN);
-            }
-            else if(currentSC.getColor().equals("YELLOW")) //YELLOW
-            {
-                SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.YELLOW);
-            }
-            else if(currentSC.getColor().equals("ORANGE")) //ORANGE
-            {
-                SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
-            }
-            else if(currentSC.getColor().equals("PURPLE")) //PURPLE
-            {
-                SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
-            }
-            else if(currentSC.getColor().equals("PINK")) //PINK
-            {
-                SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
-            }
-            else if(currentSC.getColor().equals("GRAY")) //GRAY
-            {
-                SingleCounterCondensedFragment.this.getView().setBackgroundColor(Color.GRAY);
-            }
+
+            changeFragmentColor(SingleCounterCondensedFragment.this, currentSC, currentSC.getColor());
         }
         catch (Exception e)
         {
@@ -1226,5 +1037,46 @@ public class SingleCounterCondensedFragment extends Fragment {
     {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+    }
+
+    public void changeFragmentColor(SingleCounterCondensedFragment myFragment, Counter counter, String color)
+    {
+        counter.setColor(color);
+        if(color.equals("WHITE")) //WHITE
+        {
+            myFragment.getView().setBackgroundColor(Color.WHITE);
+        }
+        else if(color.equals("RED")) //RED
+        {
+            myFragment.getView().setBackgroundColor(Color.RED);
+        }
+        else if(color.equals("BLUE")) //BLUE
+        {
+            myFragment.getView().setBackgroundColor(Color.BLUE);
+        }
+        else if(color.equals("GREEN")) //GREEN
+        {
+            myFragment.getView().setBackgroundColor(Color.GREEN);
+        }
+        else if(color.equals("YELLOW")) //YELLOW
+        {
+            myFragment.getView().setBackgroundColor(Color.YELLOW);
+        }
+        else if(color.equals("ORANGE")) //ORANGE
+        {
+            myFragment.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
+        }
+        else if(color.equals("PURPLE")) //PURPLE
+        {
+            myFragment.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
+        }
+        else if(color.equals("PINK")) //PINK
+        {
+            myFragment.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
+        }
+        else if(color.equals("GRAY")) //GRAY
+        {
+            myFragment.getView().setBackgroundColor(Color.GRAY);
+        }
     }
 }
