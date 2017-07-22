@@ -112,6 +112,7 @@
 
     <!-- COLORS ARRAY -->
     <string name="colors_title">Colors</string>
+    <string name="colors_sub">Color: </string>
     <string-array name="colors_array">
         <item>White</item>
         <item>Red</item>

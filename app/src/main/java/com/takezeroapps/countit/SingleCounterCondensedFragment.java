@@ -1042,39 +1042,39 @@ public class SingleCounterCondensedFragment extends Fragment {
     public void changeFragmentColor(SingleCounterCondensedFragment myFragment, Counter counter, String color)
     {
         counter.setColor(color);
-        if(color.equals("WHITE")) //WHITE
+        if(color.equalsIgnoreCase("WHITE")) //WHITE
         {
             myFragment.getView().setBackgroundColor(Color.WHITE);
         }
-        else if(color.equals("RED")) //RED
+        else if(color.equalsIgnoreCase("RED")) //RED
         {
             myFragment.getView().setBackgroundColor(Color.RED);
         }
-        else if(color.equals("BLUE")) //BLUE
+        else if(color.equalsIgnoreCase("BLUE")) //BLUE
         {
             myFragment.getView().setBackgroundColor(Color.BLUE);
         }
-        else if(color.equals("GREEN")) //GREEN
+        else if(color.equalsIgnoreCase("GREEN")) //GREEN
         {
             myFragment.getView().setBackgroundColor(Color.GREEN);
         }
-        else if(color.equals("YELLOW")) //YELLOW
+        else if(color.equalsIgnoreCase("YELLOW")) //YELLOW
         {
             myFragment.getView().setBackgroundColor(Color.YELLOW);
         }
-        else if(color.equals("ORANGE")) //ORANGE
+        else if(color.equalsIgnoreCase("ORANGE")) //ORANGE
         {
             myFragment.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
         }
-        else if(color.equals("PURPLE")) //PURPLE
+        else if(color.equalsIgnoreCase("PURPLE")) //PURPLE
         {
             myFragment.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
         }
-        else if(color.equals("PINK")) //PINK
+        else if(color.equalsIgnoreCase("PINK")) //PINK
         {
             myFragment.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
         }
-        else if(color.equals("GRAY")) //GRAY
+        else if(color.equalsIgnoreCase("GRAY")) //GRAY
         {
             myFragment.getView().setBackgroundColor(Color.GRAY);
         }

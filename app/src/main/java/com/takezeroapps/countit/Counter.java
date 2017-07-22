@@ -15,14 +15,14 @@ public class Counter {
     String counterId; //id of counter for when there is two counters from different multicounters that have the same label name. The ID will consist of the Multicounter Name + the counter label
     int index;
 
-    public Counter(String multicounterName, String label, int count, int index)
+    public Counter(String multicounterName, String label, int count, int index, String color)
     {
         this.multicounterName=multicounterName;
         this.label=label;
         this.count=count;
         counterId = this.multicounterName+this.label;
         this.index=index;
-        color="WHITE";
+        this.color=color;
     }
 
     public void setLabel(String label)

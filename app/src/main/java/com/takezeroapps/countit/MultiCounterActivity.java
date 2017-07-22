@@ -209,8 +209,6 @@ public class MultiCounterActivity extends AppCompatActivity {
                             layout.setOrientation(LinearLayout.VERTICAL);
 
                             final CharSequence[] negOptions = {MultiCounterActivity.this.getResources().getString(R.string.make_count_negative_num)}; //choices to select from, only one choice so it only has one element
-                            final ArrayList selectedItems=new ArrayList();
-
                             builder.setMultiChoiceItems(negOptions, null, new DialogInterface.OnMultiChoiceClickListener() { //checkbox for negative number
                                 @Override
                                 public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
@@ -226,7 +224,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                             //textview telling user to enter counter name
                             final TextView name = new TextView(context);
                             name.setText(R.string.set_counter_name);
-                            name.setTextSize(16);
+                            name.setTextSize(14);
                             name.setTextColor(BLACK);
                             layout.addView(name);
 
@@ -234,6 +232,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                             final EditText cName = new EditText(context);
                             cName.setHint(R.string.name_hint);
                             cName.setFilters(new InputFilter[] {new InputFilter.LengthFilter(20)});
+                            cName.setTextSize(14);
                             layout.addView(cName);
 
                             //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
@@ -256,13 +255,13 @@ public class MultiCounterActivity extends AppCompatActivity {
                             //textview to create a space in between fields
                             final TextView space = new TextView(context);
                             space.setText("");
-                            space.setTextSize(16);
-                            layout.addView(space);
+                            space.setTextSize(14);
+                            //layout.addView(space);
 
                             //textview telling user to enter counter starting count
                             final TextView sCount = new TextView(context);
                             sCount.setText(R.string.set_starting_count);
-                            sCount.setTextSize(16);
+                            sCount.setTextSize(14);
                             sCount.setTextColor(BLACK);
                             layout.addView(sCount);
 
@@ -270,12 +269,34 @@ public class MultiCounterActivity extends AppCompatActivity {
                             final EditText cCount = new EditText(context);
                             cCount.setHint(R.string.count_hint);
                             cCount.setFilters(new InputFilter[] {new InputFilter.LengthFilter(10)});
+                            cCount.setTextSize(14);
                             layout.addView(cCount);
+
+                            //textview to create a space in between fields
+                            final TextView spaceA = new TextView(context);
+                            spaceA.setText("");
+                            spaceA.setTextSize(14);
+                            //layout.addView(spaceA);
+
+                            //textview for color dropdown
+                            final TextView colorTv = new TextView(context);
+                            colorTv.setText(R.string.colors_sub);
+                            colorTv.setTextSize(14);
+                            colorTv.setTextColor(BLACK);
+                            layout.addView(colorTv);
+
+                            //dropdown for initial number of counters
+                            final ArrayAdapter<String> adp = new ArrayAdapter<String>(MultiCounterActivity.this,
+                                    R.layout.spinner_item_custom_smaller, getResources().getStringArray(R.array.colors_array));
+                            final Spinner sp = new Spinner(MultiCounterActivity.this);
+                            sp.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                            sp.setAdapter(adp);
+                            layout.addView(sp);
 
                             //bring up number pad
                             cCount.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
 
-                            layout.setPadding(60, 50, 60, 10);
+                            layout.setPadding(60, 0, 60, 0);
 
                             builder.setView(layout);
 
@@ -286,6 +307,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     try {
                                         String counterName = cName.getText().toString(); //input text - the user defined counter name
+                                        String selectedColor = sp.getSelectedItem().toString();
 
                                         if(cCount.getText().toString().equals("") || cCount.getText().toString().isEmpty() || cCount.getText().toString().length() == 0  || TextUtils.isEmpty(cCount.getText().toString())) throw new IllegalArgumentException();
 
@@ -307,7 +329,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                                             dialog.cancel();
                                         } else {
                                             //create new counter and add to multicounter
-                                            Counter newCounter = new Counter(current.getName(), counterName, startCount, current.counters.size());
+                                            Counter newCounter = new Counter(current.getName(), counterName, startCount, current.counters.size(), selectedColor);
                                             current.counters.add(newCounter);
 
                                             //set modified times
@@ -718,5 +740,54 @@ public class MultiCounterActivity extends AppCompatActivity {
     {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
+    }
+
+    public String getColorString(String color)
+    {
+        if(color.equalsIgnoreCase("White"))
+        {
+            return "WHITE";
+        }
+        else if(color.equalsIgnoreCase("Red"))
+        {
+            return "RED";
+        }
+
+        else if(color.equalsIgnoreCase("Blue"))
+        {
+            return "BLUE";
+        }
+
+        else if(color.equalsIgnoreCase("Green"))
+        {
+            return "GREEN";
+        }
+
+        else if(color.equalsIgnoreCase("Yellow"))
+        {
+            return "YELLOW";
+        }
+
+        else if(color.equalsIgnoreCase("Orange"))
+        {
+            return "ORANGE";
+        }
+
+        else if(color.equalsIgnoreCase("Purple"))
+        {
+            return "PURPLE";
+        }
+
+        else if(color.equalsIgnoreCase("Pink"))
+        {
+            return "PINK";
+        }
+
+        else if(color.equalsIgnoreCase("Gray"))
+        {
+            return "GRAY";
+        }
+
+        return "WHITE";
     }
 }

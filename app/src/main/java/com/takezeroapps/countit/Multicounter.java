@@ -26,7 +26,7 @@ public class Multicounter {
         //initialize number of counters to start with using numOfCounters variable. Use a loop?
         for(int i=0; i<count;i++)
         {
-            counters.add(new Counter(this.name, "counter"+i, 0, counters.size()));
+            counters.add(new Counter(this.name, "counter"+i, 0, counters.size(), "WHITE"));
         }
         createdDateTime = DateFormat.getDateTimeInstance().format(new Date());
         createdTimeStamp = System.currentTimeMillis();
