@@ -10,6 +10,7 @@ public class Counter {
     int count; //where the count is at
     String label; //name of count
     String multicounterName; //name of the multicounter it belongs to
+    String color; //background color of the counter
     //public Fragment fragment;
     String counterId; //id of counter for when there is two counters from different multicounters that have the same label name. The ID will consist of the Multicounter Name + the counter label
     int index;
@@ -21,6 +22,7 @@ public class Counter {
         this.count=count;
         counterId = this.multicounterName+this.label;
         this.index=index;
+        color="WHITE";
     }
 
     public void setLabel(String label)
@@ -103,6 +105,16 @@ public class Counter {
     public int getIndex()
     {
         return index;
+    }
+
+    public void setColor(String color)
+    {
+        this.color = color;
+    }
+
+    public String getColor()
+    {
+        return color;
     }
 
 }

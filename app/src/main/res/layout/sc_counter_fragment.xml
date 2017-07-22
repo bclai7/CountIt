@@ -2,8 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/sc_full_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/scounter_name"
@@ -34,50 +36,50 @@
         android:id="@+id/horizontal_separator"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        app:srcCompat="@android:color/black"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        app:srcCompat="@android:color/black" />
 
 
     <ImageButton
         android:id="@+id/scounter_reset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:duplicateParentState="false"
-        app:srcCompat="@drawable/ic_reset"
+        android:layout_alignBottom="@+id/scounter_minus"
         android:layout_below="@+id/scounter_count"
         android:layout_centerHorizontal="true"
-        android:layout_alignBottom="@+id/scounter_minus" />
+        android:background="?android:attr/selectableItemBackground"
+        android:duplicateParentState="false"
+        app:srcCompat="@drawable/ic_reset" />
 
     <Button
         android:id="@+id/scounter_minus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="-"
-        android:textSize="40sp"
-        android:gravity="center"
-        android:background="?android:attr/selectableItemBackground"
         android:layout_below="@+id/scounter_count"
+        android:layout_marginEnd="11dp"
+        android:layout_marginRight="11dp"
         android:layout_toLeftOf="@+id/scounter_reset"
         android:layout_toStartOf="@+id/scounter_reset"
-        android:layout_marginRight="11dp"
-        android:layout_marginEnd="11dp" />
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center"
+        android:text="-"
+        android:textSize="40sp" />
 
     <Button
         android:id="@+id/scounter_plus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="+"
-        android:textSize="40sp"
-        android:gravity="center"
-        android:background="?android:attr/selectableItemBackground"
         android:layout_below="@+id/scounter_count"
-        android:layout_toRightOf="@+id/scounter_reset"
-        android:layout_toEndOf="@+id/scounter_reset"
         android:layout_marginLeft="11dp"
-        android:layout_marginStart="11dp" />
+        android:layout_marginStart="11dp"
+        android:layout_toEndOf="@+id/scounter_reset"
+        android:layout_toRightOf="@+id/scounter_reset"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center"
+        android:text="+"
+        android:textSize="40sp" />
 
     <ImageButton
         android:id="@+id/delete_counter"
@@ -105,20 +107,20 @@
         android:id="@+id/arrow_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        app:srcCompat="@drawable/ic_arrow_up"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="?android:attr/selectableItemBackground"
+        app:srcCompat="@drawable/ic_arrow_up" />
 
     <ImageButton
         android:id="@+id/arrow_down"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        app:srcCompat="@drawable/ic_arrow_down"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentTop="true"
+        android:background="?android:attr/selectableItemBackground"
+        app:srcCompat="@drawable/ic_arrow_down" />
 
 </RelativeLayout>

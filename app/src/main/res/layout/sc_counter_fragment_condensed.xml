@@ -2,8 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/sc_condensed_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/scounter_name"
@@ -13,50 +15,51 @@
         android:text="Counter Name"
         android:textColor="@android:color/black"
         android:textSize="15sp" />
+
     <TextView
         android:id="@+id/scounter_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/scounter_name"
         android:gravity="center"
+        android:paddingBottom="3.25dp"
         android:text="0"
         android:textColor="@android:color/black"
-        android:textSize="35sp"
-        android:paddingBottom="3.25dp"
-        android:layout_below="@+id/scounter_name"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:textSize="35sp" />
 
     <ImageView
         android:id="@+id/horizontal_separator"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        app:srcCompat="@android:color/black"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        app:srcCompat="@android:color/black" />
 
     <Button
         android:id="@+id/scounter_minus"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:text="-"
-        android:textSize="50sp"
-        android:gravity="center"
-        android:background="?android:attr/selectableItemBackground"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center"
+        android:text="-"
+        android:textSize="50sp" />
 
     <Button
         android:id="@+id/scounter_plus"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:text="+"
-        android:textSize="50sp"
-        android:gravity="center"
-        android:background="?android:attr/selectableItemBackground"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentTop="true"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center"
+        android:text="+"
+        android:textSize="50sp" />
 
 </RelativeLayout>

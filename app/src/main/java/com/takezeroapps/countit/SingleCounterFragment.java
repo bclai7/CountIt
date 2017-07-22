@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -31,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -101,6 +103,44 @@ public class SingleCounterFragment extends Fragment{
                         }
                     }
                 }
+            }
+
+            //SET COLOR BACKGROUND
+            if(currentSC.getColor().equals("WHITE")) //WHITE
+            {
+                SingleCounterFragment.this.getView().setBackgroundColor(Color.WHITE);
+            }
+            else if(currentSC.getColor().equals("RED")) //RED
+            {
+                SingleCounterFragment.this.getView().setBackgroundColor(Color.RED);
+            }
+            else if(currentSC.getColor().equals("BLUE")) //BLUE
+            {
+                SingleCounterFragment.this.getView().setBackgroundColor(Color.BLUE);
+            }
+            else if(currentSC.getColor().equals("GREEN")) //GREEN
+            {
+                SingleCounterFragment.this.getView().setBackgroundColor(Color.GREEN);
+            }
+            else if(currentSC.getColor().equals("YELLOW")) //YELLOW
+            {
+                SingleCounterFragment.this.getView().setBackgroundColor(Color.YELLOW);
+            }
+            else if(currentSC.getColor().equals("ORANGE")) //ORANGE
+            {
+                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor("ORANGE"));
+            }
+            else if(currentSC.getColor().equals("PURPLE")) //PURPLE
+            {
+                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor("#990099"));
+            }
+            else if(currentSC.getColor().equals("PINK")) //PINK
+            {
+                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor("#ff99cc"));
+            }
+            else if(currentSC.getColor().equals("GRAY")) //GRAY
+            {
+                SingleCounterFragment.this.getView().setBackgroundColor(Color.GRAY);
             }
         }
         catch (Exception e)
@@ -531,6 +571,82 @@ public class SingleCounterFragment extends Fragment{
                                 else if(position==2) //color
                                 {
                                     alert.dismiss();
+                                    //SingleCounterFragment.this.getView().setBackgroundColor(Color.RED);
+                                    final String item = (String) ((TextView) view).getText();
+                                    //create counterlist_dropdown_menu dialog
+                                    final AlertDialog.Builder alertDialogB = new AlertDialog.Builder(getActivity());
+                                    LayoutInflater inflater = getActivity().getLayoutInflater();
+                                    View convertView = (View) inflater.inflate(R.layout.options_popup_list, null);
+                                    alertDialogB.setView(convertView);
+                                    alertDialogB.setTitle(getResources().getString(R.string.colors_title));
+                                    ListView lv = (ListView) convertView.findViewById(R.id.listView1);
+                                    ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.colors_array));
+                                    lv.setAdapter(adapter1);
+                                    final AlertDialog alertInside = alertDialogB.create();
+                                    alertInside.show();
+
+                                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView<?> parent, View viewIn, int position, long id) {
+                                            if(position == 0) //WHITE
+                                            {
+                                                alertInside.dismiss();
+                                                SingleCounterFragment.this.getView().setBackgroundColor(Color.WHITE);
+                                                currentSC.setColor("WHITE");
+                                            }
+                                            else if(position == 1) //RED
+                                            {
+                                                alertInside.dismiss();
+                                                SingleCounterFragment.this.getView().setBackgroundColor(Color.RED);
+                                                currentSC.setColor("RED");
+                                            }
+                                            else if(position==2) //BLUE
+                                            {
+                                                alertInside.dismiss();
+                                                SingleCounterFragment.this.getView().setBackgroundColor(Color.BLUE);
+                                                currentSC.setColor("BLUE");
+                                            }
+                                            else if(position==3) //GREEN
+                                            {
+                                                alertInside.dismiss();
+                                                SingleCounterFragment.this.getView().setBackgroundColor(Color.GREEN);
+                                                currentSC.setColor("GREEN");
+                                            }
+                                            else if(position==4) //YELLOW
+                                            {
+                                                alertInside.dismiss();
+                                                SingleCounterFragment.this.getView().setBackgroundColor(Color.YELLOW);
+                                                currentSC.setColor("YELLOW");
+                                            }
+                                            else if(position==5) //ORANGE
+                                            {
+                                                alertInside.dismiss();
+                                                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor("#ff9900"));
+                                                currentSC.setColor("ORANGE");
+                                            }
+                                            else if(position==6) //PURPLE
+                                            {
+                                                alertInside.dismiss();
+                                                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor("#990099"));
+                                                currentSC.setColor("PURPLE");
+                                            }
+                                            else if(position==7) //PINK
+                                            {
+                                                alertInside.dismiss();
+                                                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor("#ff99cc"));
+                                                currentSC.setColor("PINK");
+                                            }
+                                            else if(position==8) //GRAY
+                                            {
+                                                alertInside.dismiss();
+                                                SingleCounterFragment.this.getView().setBackgroundColor(Color.GRAY);
+                                                currentSC.setColor("GRAY");
+                                            }
+
+                                            saveMultiCounterList();
+                                        }
+                                    });
+
                                 }
                                 else if(position==3) //rename
                                 {
@@ -715,6 +831,7 @@ public class SingleCounterFragment extends Fragment{
                                     int prevIndex = cn.getIndex();
                                     String prevName = cn.getLabel();
                                     int prevCount = cn.getCount();
+                                    String prevColor = cn.getColor();
                                     String prevFragId = MultiCounterActivity.fragTagList.get(prevIndex);
                                     prevFrag = (SingleCounterFragment) getFragmentManager().findFragmentByTag(prevFragId);
 
@@ -722,6 +839,7 @@ public class SingleCounterFragment extends Fragment{
                                     int currIndex = currentSC.getIndex();
                                     String currName = currentSC.getLabel();
                                     int currCount = currentSC.getCount();
+                                    String currColor=currentSC.getColor();
                                     String currFragId = MultiCounterActivity.fragTagList.get(currIndex);
                                     currFrag = (SingleCounterFragment) getFragmentManager().findFragmentByTag(currFragId);
 
@@ -731,6 +849,7 @@ public class SingleCounterFragment extends Fragment{
                                     currentSC.setLabel(prevName);
                                     currentSC.setCount(prevCount);
                                     currentSC.setIndex(currIndex);
+                                    
                                     //set curr fragment
                                     currFrag.setCount(prevCount);
                                     currFrag.setNewCounterName(prevName);

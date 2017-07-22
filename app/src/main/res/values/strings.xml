@@ -110,6 +110,21 @@
     <string name="contact">Contact Us</string>
     <string name="title_activity_settings">Settings</string>
 
+    <!-- COLORS ARRAY -->
+    <string name="colors_title">Colors</string>
+    <string-array name="colors_array">
+        <item>White</item>
+        <item>Red</item>
+        <item>Blue</item>
+        <item>Green</item>
+        <item>Yellow</item>
+        <item>Orange</item>
+        <item>Purple</item>
+        <item>Pink</item>
+        <item>Gray</item>
+    </string-array>
+
+
     <!-- Strings related to Settings -->
 
     <!-- SETTINGS -->
