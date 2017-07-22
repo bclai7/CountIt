@@ -128,15 +128,15 @@ public class SingleCounterFragment extends Fragment{
             }
             else if(currentSC.getColor().equals("ORANGE")) //ORANGE
             {
-                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor("ORANGE"));
+                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
             }
             else if(currentSC.getColor().equals("PURPLE")) //PURPLE
             {
-                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor("#990099"));
+                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
             }
             else if(currentSC.getColor().equals("PINK")) //PINK
             {
-                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor("#ff99cc"));
+                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
             }
             else if(currentSC.getColor().equals("GRAY")) //GRAY
             {
@@ -621,19 +621,19 @@ public class SingleCounterFragment extends Fragment{
                                             else if(position==5) //ORANGE
                                             {
                                                 alertInside.dismiss();
-                                                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor("#ff9900"));
+                                                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
                                                 currentSC.setColor("ORANGE");
                                             }
                                             else if(position==6) //PURPLE
                                             {
                                                 alertInside.dismiss();
-                                                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor("#990099"));
+                                                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
                                                 currentSC.setColor("PURPLE");
                                             }
                                             else if(position==7) //PINK
                                             {
                                                 alertInside.dismiss();
-                                                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor("#ff99cc"));
+                                                SingleCounterFragment.this.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
                                                 currentSC.setColor("PINK");
                                             }
                                             else if(position==8) //GRAY
@@ -886,15 +886,15 @@ public class SingleCounterFragment extends Fragment{
                                     }
                                     else if(currentSC.getColor().equals("ORANGE")) //ORANGE
                                     {
-                                        currFrag.getView().setBackgroundColor(Color.parseColor("ORANGE"));
+                                        currFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
                                     }
                                     else if(currentSC.getColor().equals("PURPLE")) //PURPLE
                                     {
-                                        currFrag.getView().setBackgroundColor(Color.parseColor("#990099"));
+                                        currFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
                                     }
                                     else if(currentSC.getColor().equals("PINK")) //PINK
                                     {
-                                        currFrag.getView().setBackgroundColor(Color.parseColor("#ff99cc"));
+                                        currFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
                                     }
                                     else if(currentSC.getColor().equals("GRAY")) //GRAY
                                     {
@@ -925,15 +925,15 @@ public class SingleCounterFragment extends Fragment{
                                     }
                                     else if(cn.getColor().equals("ORANGE")) //ORANGE
                                     {
-                                        prevFrag.getView().setBackgroundColor(Color.parseColor("ORANGE"));
+                                        prevFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
                                     }
                                     else if(cn.getColor().equals("PURPLE")) //PURPLE
                                     {
-                                        prevFrag.getView().setBackgroundColor(Color.parseColor("#990099"));
+                                        prevFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
                                     }
                                     else if(cn.getColor().equals("PINK")) //PINK
                                     {
-                                        prevFrag.getView().setBackgroundColor(Color.parseColor("#ff99cc"));
+                                        prevFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
                                     }
                                     else if(cn.getColor().equals("GRAY")) //GRAY
                                     {
@@ -1027,15 +1027,15 @@ public class SingleCounterFragment extends Fragment{
                                     }
                                     else if(currentSC.getColor().equals("ORANGE")) //ORANGE
                                     {
-                                        currFrag.getView().setBackgroundColor(Color.parseColor("ORANGE"));
+                                        currFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
                                     }
                                     else if(currentSC.getColor().equals("PURPLE")) //PURPLE
                                     {
-                                        currFrag.getView().setBackgroundColor(Color.parseColor("#990099"));
+                                        currFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
                                     }
                                     else if(currentSC.getColor().equals("PINK")) //PINK
                                     {
-                                        currFrag.getView().setBackgroundColor(Color.parseColor("#ff99cc"));
+                                        currFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
                                     }
                                     else if(currentSC.getColor().equals("GRAY")) //GRAY
                                     {
@@ -1065,15 +1065,15 @@ public class SingleCounterFragment extends Fragment{
                                     }
                                     else if(cn.getColor().equals("ORANGE")) //ORANGE
                                     {
-                                        nextFrag.getView().setBackgroundColor(Color.parseColor("ORANGE"));
+                                        nextFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
                                     }
                                     else if(cn.getColor().equals("PURPLE")) //PURPLE
                                     {
-                                        nextFrag.getView().setBackgroundColor(Color.parseColor("#990099"));
+                                        nextFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
                                     }
                                     else if(cn.getColor().equals("PINK")) //PINK
                                     {
-                                        nextFrag.getView().setBackgroundColor(Color.parseColor("#ff99cc"));
+                                        nextFrag.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
                                     }
                                     else if(cn.getColor().equals("GRAY")) //GRAY
                                     {
