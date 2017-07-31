@@ -87,6 +87,7 @@ public class CounterListActivity extends AppCompatActivity {
     Vibrator vib;
     long[] pattern = new long[4];
     int sortOrder;
+    int selectedO; //selected order
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -282,6 +283,29 @@ public class CounterListActivity extends AppCompatActivity {
                                             loadSortOrder();
                                             sortCounterList();
                                             removeKeyboard();//remove keyboard from screen
+
+                                            int currentOne=0;
+
+                                            for(int h=0; h<multicounterList.size(); h++)
+                                            {
+                                                if(listView.getItemAtPosition(h).equals(counterName))
+                                                {
+                                                    currentOne=h;
+                                                    break;
+                                                }
+                                            }
+
+                                            //scroll to new item
+                                            //listView.setSelection(currentOne);
+                                            final int scrollLocation = currentOne;
+                                            listView.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    //listView.smoothScrollToPosition(scrollLocation);
+                                                    listView.smoothScrollToPositionFromTop(scrollLocation,0);
+                                                }
+                                            });
                                         }
 
                                     }
@@ -684,6 +708,30 @@ public class CounterListActivity extends AppCompatActivity {
                                         listView.setAdapter(adapter);
 
                                         sortCounterList();
+
+                                        int currentOne=0;
+
+                                        for(int h=0; h<multicounterList.size(); h++)
+                                        {
+                                            if(listView.getItemAtPosition(h).equals(mcName))
+                                            {
+                                                currentOne=h;
+                                                break;
+                                            }
+                                        }
+
+                                        //scroll to new item
+                                        //listView.setSelection(currentOne);
+                                        final int scrollLocation = currentOne;
+                                        listView.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+
+                                                //listView.smoothScrollToPosition(scrollLocation);
+                                                listView.smoothScrollToPositionFromTop(scrollLocation,0);
+                                            }
+                                        });
+
                                     }
 
                                 }
@@ -700,13 +748,30 @@ public class CounterListActivity extends AppCompatActivity {
 
                     }
                     if (item.getItemId() == R.id.sort_mc) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(CounterListActivity.this);
-                        builder.setTitle(R.string.sort_by)
-                                .setItems(R.array.sort_menu_options_array, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // The 'which' argument contains the index position
-                                        // of the selected item
 
+                        loadSortOrder();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(CounterListActivity.this);
+
+                        // Set the dialog title
+                        builder.setTitle(R.string.sort_by)
+                                // Specify the list array, the items to be selected by default (null for none),
+                                // and the listener through which to receive callbacks when items are selected
+                                .setSingleChoiceItems(R.array.sort_menu_options_array, sortOrder,
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                //Log.d("test", "selection "+which+" was clicked");
+                                                selectedO=which;
+                                            }
+
+                                        })
+                                // Set the action buttons
+                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // User clicked OK, so save the mSelectedItems results somewhere
+                                        // or return them to the component that opened the dialog
+                                        //Log.d("test", "selection "+viewOption+" was accepted");
                                         //convert HashMap to ArrayList
                                         //Getting Collection of values from HashMap
                                         Collection<Multicounter> values = multicounterList.values();
@@ -715,7 +780,7 @@ public class CounterListActivity extends AppCompatActivity {
 
                                         ArrayList<String> newOrder = new ArrayList<String>(); //temp arraylist to hold new order of strings
 
-                                        if(which == 0) //Name (Ascending)
+                                        if(selectedO == 0) //Name (Ascending)
                                         {
                                             Collections.sort(mcArrayList, decending(getComparator(NAME_SORT, CREATED_SORT, MODIFIED_SORT)));
                                             Collections.reverse(mcArrayList);
@@ -733,7 +798,7 @@ public class CounterListActivity extends AppCompatActivity {
                                             listView.setAdapter(adapter);
                                             saveSortOrder(0);
                                         }
-                                        else if(which == 1) //Name (Descending)
+                                        else if(selectedO == 1) //Name (Descending)
                                         {
                                             Collections.sort(mcArrayList, decending(getComparator(NAME_SORT, CREATED_SORT, MODIFIED_SORT)));
                                             for(Multicounter m: mcArrayList)
@@ -750,7 +815,7 @@ public class CounterListActivity extends AppCompatActivity {
                                             listView.setAdapter(adapter);
                                             saveSortOrder(1);
                                         }
-                                        else if(which == 2) //Date Created (Recent First)
+                                        else if(selectedO == 2) //Date Created (Recent First)
                                         {
                                             Collections.sort(mcArrayList, decending(getComparator(CREATED_SORT, NAME_SORT, MODIFIED_SORT)));
                                             for(Multicounter m: mcArrayList)
@@ -767,7 +832,7 @@ public class CounterListActivity extends AppCompatActivity {
                                             listView.setAdapter(adapter);
                                             saveSortOrder(2);
                                         }
-                                        else if(which == 3) //Date Created (Oldest First)
+                                        else if(selectedO == 3) //Date Created (Oldest First)
                                         {
                                             Collections.sort(mcArrayList, decending(getComparator(CREATED_SORT, NAME_SORT, MODIFIED_SORT)));
                                             Collections.reverse(mcArrayList);
@@ -785,7 +850,7 @@ public class CounterListActivity extends AppCompatActivity {
                                             listView.setAdapter(adapter);
                                             saveSortOrder(3);
                                         }
-                                        else if(which == 4) //Date Modified (Recent First)
+                                        else if(selectedO == 4) //Date Modified (Recent First)
                                         {
                                             Collections.sort(mcArrayList, decending(getComparator(MODIFIED_SORT, CREATED_SORT, NAME_SORT)));
                                             for(Multicounter m: mcArrayList)
@@ -802,7 +867,7 @@ public class CounterListActivity extends AppCompatActivity {
                                             listView.setAdapter(adapter);
                                             saveSortOrder(4);
                                         }
-                                        else if(which == 5) //Date Modified (Oldest First)
+                                        else if(selectedO == 5) //Date Modified (Oldest First)
                                         {
                                             Collections.sort(mcArrayList, decending(getComparator(MODIFIED_SORT, CREATED_SORT, NAME_SORT)));
                                             Collections.reverse(mcArrayList);
@@ -822,7 +887,13 @@ public class CounterListActivity extends AppCompatActivity {
                                         }
 
                                     }
+                                })
+                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int id) {
+                                    }
                                 });
+
                         builder.create().show();
                     }
                     if(item.getItemId() == R.id.multiselect_mc)

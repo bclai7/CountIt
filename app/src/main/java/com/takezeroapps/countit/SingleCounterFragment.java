@@ -86,7 +86,6 @@ public class SingleCounterFragment extends Fragment{
             cName = getArguments().getString("cName");
             cCount = getArguments().getInt("cCount");
             counterName.setText(cName);
-            Log.d("test", cName+"after: "+cCount);
             counterCount.setText(Integer.toString(cCount));
 
             currentMC = CounterListActivity.multicounterList.get(mcName);
