@@ -88,6 +88,7 @@ public class CounterListActivity extends AppCompatActivity {
     long[] pattern = new long[4];
     int sortOrder;
     int selectedO; //selected order
+    EditText inputName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -626,20 +627,20 @@ public class CounterListActivity extends AppCompatActivity {
                             layout.addView(name);
 
                             //Text input for multicounter name
-                            final EditText input = new EditText(context);
-                            input.setHint(R.string.name_hint);
-                            input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(40)});
-                            layout.addView(input);
+                            inputName = new EditText(context);
+                            inputName.setHint(R.string.name_hint);
+                            inputName.setFilters(new InputFilter[] {new InputFilter.LengthFilter(40)});
+                            layout.addView(inputName);
                             //code below sets it so user cannot enter more than 1 line (the "return" button on the keyboard now turns into the "done" button)
-                            input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                            inputName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
                                 @Override
                                 public void onFocusChange(View v, boolean hasFocus) {
                                     // TODO Auto-generated method stub
                                     if (hasFocus) {
-                                        input.setSingleLine(true);
-                                        input.setMaxLines(1);
-                                        input.setLines(1);
+                                        inputName.setSingleLine(true);
+                                        inputName.setMaxLines(1);
+                                        inputName.setLines(1);
                                     }
                                 }
                             });
@@ -674,7 +675,7 @@ public class CounterListActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 
-                                    String mcName = input.getText().toString(); //input text - the user defined multi-counter name
+                                    String mcName = inputName.getText().toString(); //input text - the user defined multi-counter name
                                     int initCount = Integer.parseInt(sp.getSelectedItem().toString()); // initial count entered by user
 
                                     if (mcName.isEmpty() || mcName.length() == 0 || mcName.equals("") || TextUtils.isEmpty(mcName)) {
@@ -732,6 +733,9 @@ public class CounterListActivity extends AppCompatActivity {
                                             }
                                         });
 
+                                        //cancel keyboard
+                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.hideSoftInputFromWindow(inputName.getWindowToken(), 0);
                                     }
 
                                 }
@@ -740,10 +744,28 @@ public class CounterListActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.cancel();
+                                    //cancel keyboard
+                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(inputName.getWindowToken(), 0);
+                                }
+                            });
+                            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
+                                    InputMethodManager inputmm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    inputmm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                                    inputmm.hideSoftInputFromWindow(inputName.getWindowToken(), 0);
+
                                 }
                             });
 
                             builder.show();
+
+                            inputName.requestFocus();
+                            InputMethodManager inputmm = (InputMethodManager) CounterListActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                            inputmm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                         }
 
                     }
@@ -1214,6 +1236,9 @@ public class CounterListActivity extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if(counterEdit != null)
             imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
+        InputMethodManager inputmm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(inputName != null)
+            inputmm.hideSoftInputFromWindow(inputName.getWindowToken(), 0);
     }
 
     public void removeKeyboard()
