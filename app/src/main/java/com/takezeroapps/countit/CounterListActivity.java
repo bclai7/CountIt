@@ -279,10 +279,8 @@ public class CounterListActivity extends AppCompatActivity {
                                             saveMultiCounterList();
 
                                             ((TextView)view).setText(counterName);
-                                            multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
-                                            mcList= Arrays.asList(multicounterNamesArray);
-                                            adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
-                                            listView.setAdapter(adapter);
+                                            loadSortOrder();
+                                            sortCounterList();
                                             removeKeyboard();//remove keyboard from screen
                                         }
 
@@ -1030,13 +1028,19 @@ public class CounterListActivity extends AppCompatActivity {
                                                 //save multicounter list
                                                 saveMultiCounterList();
 
+                                                //set new name list to key values (AKA names of each MC)
+                                                multicounterNameList = new ArrayList<String>(multicounterList.keySet());
+                                                saveCounterList(multicounterNameList);
+
+                                                for(int p=0; p<multicounterNameList.size(); p++)
+                                                {
+                                                    Log.d("test", multicounterNameList.get(p));
+                                                }
+
                                                 ((TextView)view).setText(counterName);
-                                                multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
-                                                mcList= Arrays.asList(multicounterNamesArray);
-                                                adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
-                                                listView.setAdapter(adapter);
-                                                removeKeyboard();//remove keyboard from screen
+                                                loadSortOrder();
                                                 sortCounterList();
+                                                removeKeyboard();//remove keyboard from screen
                                             }
 
                                         }
@@ -1485,6 +1489,7 @@ public class CounterListActivity extends AppCompatActivity {
 
     public void saveSortOrder(int sortNumber) //saves order of list in sharedpref
     {
+        sortOrder=sortNumber;
         SharedPreferences sharedPref = CounterListActivity.this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt("SortOrder", sortNumber);
