@@ -870,21 +870,16 @@ public class SingleCounterCondensedFragment extends Fragment {
             counterName.setText(cName);
             counterCount.setText(Integer.toString(cCount));
 
-            for(Multicounter m: CounterListActivity.multicounterList)
+            currentMC = CounterListActivity.multicounterList.get(mcName);
+            for(Counter c: currentMC.counters)
             {
-                if(m.getName().equals(mcName))
+                if(c.getLabel().equals(cName))
                 {
-                    currentMC=m;
-                    for(Counter c: m.counters)
-                    {
-                        if(c.getLabel().equals(cName))
-                        {
-                            currentSC=c;
-                            break;
-                        }
-                    }
+                    currentSC=c;
+                    break;
                 }
             }
+
             //SET COLOR BACKGROUND
 
             changeFragmentColor(SingleCounterCondensedFragment.this, currentSC, currentSC.getColor());

@@ -89,19 +89,13 @@ public class SingleCounterFragment extends Fragment{
             Log.d("test", cName+"after: "+cCount);
             counterCount.setText(Integer.toString(cCount));
 
-            for(Multicounter m: CounterListActivity.multicounterList)
+            currentMC = CounterListActivity.multicounterList.get(mcName);
+            for(Counter c: currentMC.counters)
             {
-                if(m.getName().equals(mcName))
+                if(c.getLabel().equals(cName))
                 {
-                    currentMC=m;
-                    for(Counter c: m.counters)
-                    {
-                        if(c.getLabel().equals(cName))
-                        {
-                            currentSC=c;
-                            break;
-                        }
-                    }
+                    currentSC=c;
+                    break;
                 }
             }
 

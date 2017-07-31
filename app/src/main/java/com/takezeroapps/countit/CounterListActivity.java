@@ -48,9 +48,12 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import static android.graphics.Color.BLACK;
 import static android.widget.AbsListView.CHOICE_MODE_NONE;
@@ -65,7 +68,7 @@ public class CounterListActivity extends AppCompatActivity {
     private ListView listView;
     private String[] multicounterNamesArray;
     public static ArrayList<String> multicounterNameList = new ArrayList<String>();
-    public static ArrayList<Multicounter> multicounterList = new ArrayList<Multicounter>();
+    public static HashMap<String, Multicounter> multicounterList = new HashMap<String, Multicounter>();
     TextView tx;
     String[] c = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"};
     public static final String MULTICOUNTER_NAME_KEY = "multicounter_name";
@@ -83,6 +86,7 @@ public class CounterListActivity extends AppCompatActivity {
     long[] checkedItems;
     Vibrator vib;
     long[] pattern = new long[4];
+    int sortOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -260,16 +264,16 @@ public class CounterListActivity extends AppCompatActivity {
                                             saveCounterList(multicounterNameList);
 
                                             //set the new name in the actual counter object
-                                            for(Multicounter m: multicounterList)
-                                            {
-                                                if(m.getName().equals(item))
-                                                {
-                                                    m.setName(counterName);
-                                                    m.setModifiedDateTime();
-                                                    m.setModifiedTimeStamp();
-                                                    break;
-                                                }
-                                            }
+                                            //find reference to multicounter
+                                            Multicounter tempM = multicounterList.get(item);
+                                            //set data
+                                            tempM.setName(counterName);
+                                            tempM.setModifiedDateTime();
+                                            tempM.setModifiedTimeStamp();
+                                            //remove old MC from hashmap
+                                            multicounterList.remove(item);
+                                            //add updated MC to hashmap
+                                            multicounterList.put(tempM.getName(), tempM);
 
                                             //save multicounter list
                                             saveMultiCounterList();
@@ -327,15 +331,8 @@ public class CounterListActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int id) {
                                     //find multicounter and delete from list
                                     //first find multicounter in multicounterList and remove it
-                                    Iterator<Multicounter> a = multicounterList.iterator();
-                                    while (a.hasNext()) {
-                                        Multicounter m = a.next();
-                                        if(m.getName().equals(item))
-                                        {
-                                            a.remove();
-                                            break;
-                                        }
-                                    }
+                                    multicounterList.remove(item);
+
                                     //save multiCounterList
                                     saveMultiCounterList();
                                     //remove name from multicounterNameList (list of strings)
@@ -375,16 +372,11 @@ public class CounterListActivity extends AppCompatActivity {
                             int numOfCounters=0;
                             String dateCreated="";
                             String dateModified="";
-                            for(Multicounter mco: multicounterList)
-                            {
-                                if(mco.getName().equals(item))
-                                {
-                                    numOfCounters=mco.getCount();
-                                    dateCreated=mco.getCreatedDateTime();
-                                    dateModified=mco.getModifiedDateTime();
-                                    break;
-                                }
-                            }
+
+                            Multicounter tempM = multicounterList.get(item);
+                            numOfCounters=tempM.getCount();
+                            dateCreated=tempM.getCreatedDateTime();
+                            dateModified=tempM.getModifiedDateTime();
 
                             //create dialog
                             AlertDialog.Builder builder = new AlertDialog.Builder(CounterListActivity.this);
@@ -498,14 +490,14 @@ public class CounterListActivity extends AppCompatActivity {
             SharedPreferences.Editor e = pref.edit();
             String jsonMC = pref.getString("MultiCounterList", null);
             Gson gson = new Gson();
-            Type type = new TypeToken<ArrayList<Multicounter>>(){}.getType();
+            Type type = new TypeToken<HashMap<String, Multicounter>>(){}.getType();
             multicounterList = gson.fromJson(jsonMC, type);
         }
 
         //TEST BEGIN
         if(multicounterList.isEmpty()) {
             for (int i = 1; i < 50; i++) {
-                multicounterList.add(new Multicounter("mc" + i, 20));
+                multicounterList.put(("mc"+i), new Multicounter("mc" + i, 20));
                 multicounterNameList.add(0, "mc" + i);
             }
 
@@ -515,6 +507,10 @@ public class CounterListActivity extends AppCompatActivity {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         vibrateSetting = prefs.getBoolean("switch_preference_vibrate", true);
+
+        //sort list
+        loadSortOrder();
+        sortCounterList();
 
     }
 
@@ -677,7 +673,7 @@ public class CounterListActivity extends AppCompatActivity {
                                     } else {
 
                                         //create new multicounter and add to list
-                                        multicounterList.add(new Multicounter(mcName, initCount));
+                                        multicounterList.put(mcName, new Multicounter(mcName, initCount));
 
                                         saveMultiCounterList();
 
@@ -688,6 +684,8 @@ public class CounterListActivity extends AppCompatActivity {
                                         mcList= Arrays.asList(multicounterNamesArray);
                                         adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                         listView.setAdapter(adapter);
+
+                                        sortCounterList();
                                     }
 
                                 }
@@ -711,13 +709,19 @@ public class CounterListActivity extends AppCompatActivity {
                                         // The 'which' argument contains the index position
                                         // of the selected item
 
+                                        //convert HashMap to ArrayList
+                                        //Getting Collection of values from HashMap
+                                        Collection<Multicounter> values = multicounterList.values();
+                                        //Creating an ArrayList of values
+                                        ArrayList<Multicounter> mcArrayList = new ArrayList<Multicounter>(values);
+
                                         ArrayList<String> newOrder = new ArrayList<String>(); //temp arraylist to hold new order of strings
 
                                         if(which == 0) //Name (Ascending)
                                         {
-                                            Collections.sort(multicounterList, decending(getComparator(NAME_SORT, CREATED_SORT, MODIFIED_SORT)));
-                                            Collections.reverse(multicounterList);
-                                            for(Multicounter m: multicounterList)
+                                            Collections.sort(mcArrayList, decending(getComparator(NAME_SORT, CREATED_SORT, MODIFIED_SORT)));
+                                            Collections.reverse(mcArrayList);
+                                            for(Multicounter m: mcArrayList)
                                             {
                                                 newOrder.add(m.getName());
                                             }
@@ -729,11 +733,12 @@ public class CounterListActivity extends AppCompatActivity {
                                             mcList= Arrays.asList(multicounterNamesArray);
                                             adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                             listView.setAdapter(adapter);
+                                            saveSortOrder(0);
                                         }
                                         else if(which == 1) //Name (Descending)
                                         {
-                                            Collections.sort(multicounterList, decending(getComparator(NAME_SORT, CREATED_SORT, MODIFIED_SORT)));
-                                            for(Multicounter m: multicounterList)
+                                            Collections.sort(mcArrayList, decending(getComparator(NAME_SORT, CREATED_SORT, MODIFIED_SORT)));
+                                            for(Multicounter m: mcArrayList)
                                             {
                                                 newOrder.add(m.getName());
                                             }
@@ -745,11 +750,12 @@ public class CounterListActivity extends AppCompatActivity {
                                             mcList= Arrays.asList(multicounterNamesArray);
                                             adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                             listView.setAdapter(adapter);
+                                            saveSortOrder(1);
                                         }
                                         else if(which == 2) //Date Created (Recent First)
                                         {
-                                            Collections.sort(multicounterList, decending(getComparator(CREATED_SORT, NAME_SORT, MODIFIED_SORT)));
-                                            for(Multicounter m: multicounterList)
+                                            Collections.sort(mcArrayList, decending(getComparator(CREATED_SORT, NAME_SORT, MODIFIED_SORT)));
+                                            for(Multicounter m: mcArrayList)
                                             {
                                                 newOrder.add(m.getName());
                                             }
@@ -761,12 +767,13 @@ public class CounterListActivity extends AppCompatActivity {
                                             mcList= Arrays.asList(multicounterNamesArray);
                                             adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                             listView.setAdapter(adapter);
+                                            saveSortOrder(2);
                                         }
                                         else if(which == 3) //Date Created (Oldest First)
                                         {
-                                            Collections.sort(multicounterList, decending(getComparator(CREATED_SORT, NAME_SORT, MODIFIED_SORT)));
-                                            Collections.reverse(multicounterList);
-                                            for(Multicounter m: multicounterList)
+                                            Collections.sort(mcArrayList, decending(getComparator(CREATED_SORT, NAME_SORT, MODIFIED_SORT)));
+                                            Collections.reverse(mcArrayList);
+                                            for(Multicounter m: mcArrayList)
                                             {
                                                 newOrder.add(m.getName());
                                             }
@@ -778,11 +785,12 @@ public class CounterListActivity extends AppCompatActivity {
                                             mcList= Arrays.asList(multicounterNamesArray);
                                             adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                             listView.setAdapter(adapter);
+                                            saveSortOrder(3);
                                         }
                                         else if(which == 4) //Date Modified (Recent First)
                                         {
-                                            Collections.sort(multicounterList, decending(getComparator(MODIFIED_SORT, CREATED_SORT, NAME_SORT)));
-                                            for(Multicounter m: multicounterList)
+                                            Collections.sort(mcArrayList, decending(getComparator(MODIFIED_SORT, CREATED_SORT, NAME_SORT)));
+                                            for(Multicounter m: mcArrayList)
                                             {
                                                 newOrder.add(m.getName());
                                             }
@@ -794,12 +802,13 @@ public class CounterListActivity extends AppCompatActivity {
                                             mcList= Arrays.asList(multicounterNamesArray);
                                             adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                             listView.setAdapter(adapter);
+                                            saveSortOrder(4);
                                         }
                                         else if(which == 5) //Date Modified (Oldest First)
                                         {
-                                            Collections.sort(multicounterList, decending(getComparator(MODIFIED_SORT, CREATED_SORT, NAME_SORT)));
-                                            Collections.reverse(multicounterList);
-                                            for(Multicounter m: multicounterList)
+                                            Collections.sort(mcArrayList, decending(getComparator(MODIFIED_SORT, CREATED_SORT, NAME_SORT)));
+                                            Collections.reverse(mcArrayList);
+                                            for(Multicounter m: mcArrayList)
                                             {
                                                 newOrder.add(m.getName());
                                             }
@@ -811,6 +820,7 @@ public class CounterListActivity extends AppCompatActivity {
                                             mcList= Arrays.asList(multicounterNamesArray);
                                             adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                             listView.setAdapter(adapter);
+                                            saveSortOrder(5);
                                         }
 
                                     }
@@ -1007,16 +1017,15 @@ public class CounterListActivity extends AppCompatActivity {
                                                 saveCounterList(multicounterNameList);
 
                                                 //set the new name in the actual counter object
-                                                for(Multicounter m: multicounterList)
-                                                {
-                                                    if(m.getName().equals(item))
-                                                    {
-                                                        m.setName(counterName);
-                                                        m.setModifiedDateTime();
-                                                        m.setModifiedTimeStamp();
-                                                        break;
-                                                    }
-                                                }
+                                                Multicounter tempM = multicounterList.get(item);
+                                                tempM.setName(counterName);
+                                                tempM.setModifiedDateTime();
+                                                tempM.setModifiedTimeStamp();
+
+                                                //remove old MC from hashmap
+                                                multicounterList.remove(item);
+                                                //add updated MC to hashmap
+                                                multicounterList.put(tempM.getName(), tempM);
 
                                                 //save multicounter list
                                                 saveMultiCounterList();
@@ -1027,6 +1036,7 @@ public class CounterListActivity extends AppCompatActivity {
                                                 adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
                                                 listView.setAdapter(adapter);
                                                 removeKeyboard();//remove keyboard from screen
+                                                sortCounterList();
                                             }
 
                                         }
@@ -1074,15 +1084,7 @@ public class CounterListActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int id) {
                                         //find multicounter and delete from list
                                         //first find multicounter in multicounterList and remove it
-                                        Iterator<Multicounter> a = multicounterList.iterator();
-                                        while (a.hasNext()) {
-                                            Multicounter m = a.next();
-                                            if(m.getName().equals(item))
-                                            {
-                                                a.remove();
-                                                break;
-                                            }
-                                        }
+                                        multicounterList.remove(item);
                                         //save multiCounterList
                                         saveMultiCounterList();
                                         //remove name from multicounterNameList (list of strings)
@@ -1122,16 +1124,11 @@ public class CounterListActivity extends AppCompatActivity {
                                 int numOfCounters=0;
                                 String dateCreated="";
                                 String dateModified="";
-                                for(Multicounter mco: multicounterList)
-                                {
-                                    if(mco.getName().equals(item))
-                                    {
-                                        numOfCounters=mco.getCount();
-                                        dateCreated=mco.getCreatedDateTime();
-                                        dateModified=mco.getModifiedDateTime();
-                                        break;
-                                    }
-                                }
+
+                                Multicounter tempM = multicounterList.get(item);
+                                numOfCounters=tempM.getCount();
+                                dateCreated=tempM.getCreatedDateTime();
+                                dateModified=tempM.getModifiedDateTime();
 
                                 //create dialog
                                 AlertDialog.Builder builder = new AlertDialog.Builder(CounterListActivity.this);
@@ -1344,14 +1341,9 @@ public class CounterListActivity extends AppCompatActivity {
                                 for (int i = (checkedItemPositions.size() - 1); i >= 0; i--) {
                                     if (checkedItemPositions.valueAt(i)) {
                                         String selecteditem = adapter.getItem(checkedItemPositions.keyAt(i));
-                                        Iterator<Multicounter> a = multicounterList.iterator();
-                                        while (a.hasNext()) {
-                                            Multicounter m = a.next();
-                                            if (m.getName().equals(selecteditem)) {
-                                                a.remove();
-                                                break;
-                                            }
-                                        }
+
+                                        multicounterList.remove(selecteditem);
+
                                         //save multiCounterList
                                         saveMultiCounterList();
                                         //remove name from multicounterNameList (list of strings)
@@ -1489,6 +1481,137 @@ public class CounterListActivity extends AppCompatActivity {
     {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(counterEdit.getWindowToken(), 0);
+    }
+
+    public void saveSortOrder(int sortNumber) //saves order of list in sharedpref
+    {
+        SharedPreferences sharedPref = CounterListActivity.this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("SortOrder", sortNumber);
+        editor.commit();
+    }
+
+    public void loadSortOrder()
+    {
+        SharedPreferences sharedPref = CounterListActivity.this.getPreferences(Context.MODE_PRIVATE);
+        sortOrder = sharedPref.getInt("SortOrder", 2);
+    }
+
+    public void sortCounterList()
+    {
+        //convert HashMap to ArrayList
+        //Getting Collection of values from HashMap
+        Collection<Multicounter> values = multicounterList.values();
+        //Creating an ArrayList of values
+        ArrayList<Multicounter> mcArrayList = new ArrayList<Multicounter>(values);
+
+        ArrayList<String> newOrder = new ArrayList<String>(); //temp arraylist to hold new order of strings
+
+        if(sortOrder == 0) //Name (Ascending)
+        {
+            Collections.sort(mcArrayList, decending(getComparator(NAME_SORT, CREATED_SORT, MODIFIED_SORT)));
+            Collections.reverse(mcArrayList);
+            for(Multicounter m: mcArrayList)
+            {
+                newOrder.add(m.getName());
+            }
+
+            multicounterNameList=newOrder; //set string list to new sorted order
+            saveCounterList(multicounterNameList); //save new ordered string list
+
+            multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+            mcList= Arrays.asList(multicounterNamesArray);
+            adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
+            listView.setAdapter(adapter);
+            saveSortOrder(0);
+        }
+        else if(sortOrder == 1) //Name (Descending)
+        {
+            Collections.sort(mcArrayList, decending(getComparator(NAME_SORT, CREATED_SORT, MODIFIED_SORT)));
+            for(Multicounter m: mcArrayList)
+            {
+                newOrder.add(m.getName());
+            }
+
+            multicounterNameList=newOrder; //set string list to new sorted order
+            saveCounterList(multicounterNameList); //save new ordered string list
+
+            multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+            mcList= Arrays.asList(multicounterNamesArray);
+            adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
+            listView.setAdapter(adapter);
+            saveSortOrder(1);
+        }
+        else if(sortOrder == 2) //Date Created (Recent First)
+        {
+            Collections.sort(mcArrayList, decending(getComparator(CREATED_SORT, NAME_SORT, MODIFIED_SORT)));
+            for(Multicounter m: mcArrayList)
+            {
+                newOrder.add(m.getName());
+            }
+
+            multicounterNameList=newOrder; //set string list to new sorted order
+            saveCounterList(multicounterNameList); //save new ordered string list
+
+            multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+            mcList= Arrays.asList(multicounterNamesArray);
+            adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
+            listView.setAdapter(adapter);
+            saveSortOrder(2);
+        }
+        else if(sortOrder == 3) //Date Created (Oldest First)
+        {
+            Collections.sort(mcArrayList, decending(getComparator(CREATED_SORT, NAME_SORT, MODIFIED_SORT)));
+            Collections.reverse(mcArrayList);
+            for(Multicounter m: mcArrayList)
+            {
+                newOrder.add(m.getName());
+            }
+
+            multicounterNameList=newOrder; //set string list to new sorted order
+            saveCounterList(multicounterNameList); //save new ordered string list
+
+            multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+            mcList= Arrays.asList(multicounterNamesArray);
+            adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
+            listView.setAdapter(adapter);
+            saveSortOrder(3);
+        }
+        else if(sortOrder == 4) //Date Modified (Recent First)
+        {
+            Collections.sort(mcArrayList, decending(getComparator(MODIFIED_SORT, CREATED_SORT, NAME_SORT)));
+            for(Multicounter m: mcArrayList)
+            {
+                newOrder.add(m.getName());
+            }
+
+            multicounterNameList=newOrder; //set string list to new sorted order
+            saveCounterList(multicounterNameList); //save new ordered string list
+
+            multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+            mcList= Arrays.asList(multicounterNamesArray);
+            adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
+            listView.setAdapter(adapter);
+            saveSortOrder(4);
+        }
+        else if(sortOrder == 5) //Date Modified (Oldest First)
+        {
+            Collections.sort(mcArrayList, decending(getComparator(MODIFIED_SORT, CREATED_SORT, NAME_SORT)));
+            Collections.reverse(mcArrayList);
+            for(Multicounter m: mcArrayList)
+            {
+                newOrder.add(m.getName());
+            }
+
+            multicounterNameList=newOrder; //set string list to new sorted order
+            saveCounterList(multicounterNameList); //save new ordered string list
+
+            multicounterNamesArray = multicounterNameList.toArray(new String[multicounterNameList.size()]);
+            mcList= Arrays.asList(multicounterNamesArray);
+            adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
+            listView.setAdapter(adapter);
+            saveSortOrder(5);
+        }
     }
 
 }

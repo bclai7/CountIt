@@ -46,6 +46,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import static android.graphics.Color.BLACK;
@@ -82,7 +83,7 @@ public class MultiCounterActivity extends AppCompatActivity {
             SharedPreferences.Editor e = pref.edit();
             String jsonMC = pref.getString("MultiCounterList", null);
             Gson gson = new Gson();
-            Type type = new TypeToken<ArrayList<Multicounter>>() {
+            Type type = new TypeToken<HashMap<String, Multicounter>>() {
             }.getType();
             CounterListActivity.multicounterList = gson.fromJson(jsonMC, type);
         }
@@ -90,14 +91,8 @@ public class MultiCounterActivity extends AppCompatActivity {
         //retrieve counter view option
         SharedPreferences sharedPref = MultiCounterActivity.this.getPreferences(Context.MODE_PRIVATE);
         viewOption = sharedPref.getInt("CounterView", 0);
-        for(Multicounter mc: CounterListActivity.multicounterList)
-        {
-            if(mc.getName().equals(counterName))
-            {
-                current=mc;
-                break;
-            }
-        }
+
+        current = CounterListActivity.multicounterList.get(counterName);
 
         ViewGroup linLay = (ViewGroup)findViewById(R.id.mc_linear_scroll_layout);
 
@@ -457,10 +452,16 @@ public class MultiCounterActivity extends AppCompatActivity {
                                         CounterListActivity.multicounterNameList.add(it, counterName);
                                         saveCounterList(CounterListActivity.multicounterNameList);
 
+                                        //remove current from MC List to remove old key
+                                        CounterListActivity.multicounterList.remove(current.getName());
+
                                         //set the new name in the actual counter object
                                         current.setName(counterName);
                                         current.setModifiedDateTime();
                                         current.setModifiedTimeStamp();
+
+                                        //update key value with new name
+                                        CounterListActivity.multicounterList.put(current.getName(), current);
 
                                         //save multicounter list
                                         saveMultiCounterList();
@@ -512,15 +513,8 @@ public class MultiCounterActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 //find multicounter and delete from list
                                 //first find multicounter in multicounterList and remove it
-                                Iterator<Multicounter> a = CounterListActivity.multicounterList.iterator();
-                                while (a.hasNext()) {
-                                    Multicounter m = a.next();
-                                    if(m.getName().equals(current.getName()))
-                                    {
-                                        a.remove();
-                                        break;
-                                    }
-                                }
+                                CounterListActivity.multicounterList.remove(current.getName());
+
                                 //save multiCounterList
                                 saveMultiCounterList();
 
