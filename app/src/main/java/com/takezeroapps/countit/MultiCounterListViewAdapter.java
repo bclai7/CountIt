@@ -147,13 +147,15 @@ public class  MultiCounterListViewAdapter extends ArrayAdapter<String> implement
                     orig = DataList;
                 if (constraint != null) {
                     if (orig != null && orig.size() > 0) {
-                        for (final String g : orig) {
+                        for (String g : orig) {
                             if (g.toLowerCase().contains(constraint.toString()))
+                                //Log.d("test", g);
                                 results.add(g);
                         }
                     }
                     oReturn.values = results;
                 }
+
                 return oReturn;
             }
 

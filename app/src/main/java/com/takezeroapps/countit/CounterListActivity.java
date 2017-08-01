@@ -36,6 +36,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -95,7 +96,6 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
     int selectedO; //selected order
     EditText inputName;
     Toolbar toolbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +109,7 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
         sure_delete_1 = getResources().getString(R.string.sure_delete_1);
         sure_delete_2 = getResources().getString(R.string.sure_delete_2);
         confirmationTitle = getResources().getString(R.string.confirmation_title);
+
 
          vib = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
          pattern[0]=0;
@@ -310,7 +311,7 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
                                                 public void run() {
 
                                                     //listView.smoothScrollToPosition(scrollLocation);
-                                                    listView.smoothScrollToPositionFromTop(scrollLocation-1,0);
+                                                    listView.smoothScrollToPositionFromTop(scrollLocation,0);
                                                 }
                                             });
                                         }
@@ -747,7 +748,7 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
                                             public void run() {
 
                                                 //listView.smoothScrollToPosition(scrollLocation);
-                                                listView.smoothScrollToPositionFromTop(scrollLocation-1,0);
+                                                listView.smoothScrollToPositionFromTop(scrollLocation,0);
                                             }
                                         });
 
@@ -986,7 +987,8 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
         public void  onDestroyActionMode(ActionMode mode) {
             // TODO  Auto-generated method stub
             mActionMode = null;
-            findViewById(R.id.action_mode_bar).setVisibility(View.GONE);
+            findViewById(R.id.action_mode_bar).setVisibility(View.GONE); //makes it so theres no animation when closing action bar, prevents it from looking weird
+            toolbar.setVisibility(View.VISIBLE);
 
             //LISTENER for each item in ListView (Each multicounter)
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -1015,8 +1017,6 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
             adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
             listView.setAdapter(adapter);
             listView.clearChoices();
-
-            toolbar.setVisibility(View.VISIBLE);
 
         }
 

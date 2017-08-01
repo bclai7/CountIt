@@ -7,20 +7,34 @@
     android:fitsSystemWindows="true"
     tools:context="com.takezeroapps.countit.CounterListActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/DefaultTheme.AppBarOverlay">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_counterlist"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/DefaultTheme.PopupOverlay" />
+            android:layout_height="wrap_content"
+            android:theme="@style/DefaultTheme.AppBarOverlay"
+            android:id="@+id/appBarLayout">
 
-    </android.support.design.widget.AppBarLayout>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_counterlist"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/DefaultTheme.PopupOverlay" />
 
-    <include layout="@layout/content_drawer_counterlist" />
+        </android.support.design.widget.AppBarLayout>
+
+        <include
+            android:id="@+id/include_drawer_counterlist"
+            layout="@layout/content_drawer_counterlist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/appBarLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+    </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>
