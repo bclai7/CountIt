@@ -8,13 +8,18 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -63,7 +68,7 @@ import static com.takezeroapps.countit.MulticounterComparator.NAME_SORT;
 import static com.takezeroapps.countit.MulticounterComparator.decending;
 import static com.takezeroapps.countit.MulticounterComparator.getComparator;
 
-public class CounterListActivity extends AppCompatActivity {
+public class CounterListActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private ListView listView;
     private String[] multicounterNamesArray;
@@ -89,6 +94,7 @@ public class CounterListActivity extends AppCompatActivity {
     int sortOrder;
     int selectedO; //selected order
     EditText inputName;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -304,7 +310,7 @@ public class CounterListActivity extends AppCompatActivity {
                                                 public void run() {
 
                                                     //listView.smoothScrollToPosition(scrollLocation);
-                                                    listView.smoothScrollToPositionFromTop(scrollLocation,0);
+                                                    listView.smoothScrollToPositionFromTop(scrollLocation-1,0);
                                                 }
                                             });
                                         }
@@ -500,6 +506,18 @@ public class CounterListActivity extends AppCompatActivity {
             }
         });
 
+        //Top appbar with options, do not remove
+        toolbar = (Toolbar) findViewById(R.id.toolbar_counterlist);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_counterlist);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_counterlist);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -729,7 +747,7 @@ public class CounterListActivity extends AppCompatActivity {
                                             public void run() {
 
                                                 //listView.smoothScrollToPosition(scrollLocation);
-                                                listView.smoothScrollToPositionFromTop(scrollLocation,0);
+                                                listView.smoothScrollToPositionFromTop(scrollLocation-1,0);
                                             }
                                         });
 
@@ -920,9 +938,10 @@ public class CounterListActivity extends AppCompatActivity {
                     }
                     if(item.getItemId() == R.id.multiselect_mc)
                     {
+                        toolbar.setVisibility(View.GONE);
                         mcList= Arrays.asList(multicounterNamesArray);
                         adapter = new MultiCounterListViewAdapter(CounterListActivity.this, android.R.layout.simple_list_item_multiple_choice, mcList);
-                        //listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
                         listView.setAdapter(adapter);
                         listView.setClickable(false);
                         listView.setLongClickable(false);
@@ -967,6 +986,7 @@ public class CounterListActivity extends AppCompatActivity {
         public void  onDestroyActionMode(ActionMode mode) {
             // TODO  Auto-generated method stub
             mActionMode = null;
+            findViewById(R.id.action_mode_bar).setVisibility(View.GONE);
 
             //LISTENER for each item in ListView (Each multicounter)
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -995,6 +1015,8 @@ public class CounterListActivity extends AppCompatActivity {
             adapter = new MultiCounterListViewAdapter(CounterListActivity.this, R.layout.mcounters_text_format, mcList);
             listView.setAdapter(adapter);
             listView.clearChoices();
+
+            toolbar.setVisibility(View.VISIBLE);
 
         }
 
@@ -1144,6 +1166,39 @@ public class CounterListActivity extends AppCompatActivity {
         }
 
     };
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_home) {
+            // Go to home/main activity
+            startActivity(new Intent(CounterListActivity.this, MainActivity.class));
+
+        } else if (id == R.id.nav_multicounter) {
+            //go to multicounter
+
+        } else if (id == R.id.nav_settings) {
+            //go to settings
+            startActivity(new Intent(CounterListActivity.this, SettingsActivity.class));
+
+        } else if (id == R.id.nav_share) {
+            //let users share app
+
+        } else if (id == R.id.nav_rate) {
+            //go to app page in google store
+
+        } else if (id == R.id.nav_contact) {
+            //let users contact through email
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_counterlist);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 
     private ArrayList<String> getCounterList() {
         ArrayList<String> counterList = null;

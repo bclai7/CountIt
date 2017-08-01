@@ -5,7 +5,7 @@ import java.util.Comparator;
 enum MulticounterComparator implements Comparator<Multicounter> {
     NAME_SORT {
         public int compare(Multicounter m1, Multicounter m2) {
-            return m1.getName().compareTo(m2.getName());
+            return m1.getName().compareToIgnoreCase(m2.getName());
         }},
     CREATED_SORT {
         public int compare(Multicounter m1, Multicounter m2) {
