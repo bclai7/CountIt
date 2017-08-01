@@ -149,7 +149,7 @@
 
     <!-- Volume Controls -->
     <string name="pref_title_volume">Volume Controls</string>
-    <string name="pref_description_volume">Use the volume buttons for Incremement/Decrement controls
+    <string name="pref_description_volume">Use the volume buttons for Incremement/Decrement controls (main counter only)
     </string>
 
     <!--DISPLAY-->

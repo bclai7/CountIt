@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity
                         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
                         input.setHint(R.string.enter_new_count);
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(10)});
+                        input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(9)});
                         counterChanger.setView(input);
 
                         // Set up the buttons
