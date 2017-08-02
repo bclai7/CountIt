@@ -538,7 +538,7 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
 
         //TEST BEGIN
         if(multicounterList.isEmpty()) {
-            for (int i = 1; i < 50; i++) {
+            for (int i = 1; i < 100; i++) {
                 multicounterList.put(("mc"+i), new Multicounter("mc" + i, 20));
                 multicounterNameList.add(0, "mc" + i);
             }

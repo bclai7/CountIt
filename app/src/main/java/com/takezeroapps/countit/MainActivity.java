@@ -220,7 +220,6 @@ public class MainActivity extends AppCompatActivity
                                 {
                                     if (vibrateSetting)
                                         vib.vibrate(pattern, -1);
-
                                     Snackbar.make(view, R.string.no_input_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
                                     newNum = opf.getCount(); //set new count back to old count (or else manually setting a real number > resetting count > entering blank input = count being the original real number instead of 0 after the reset)
                                     dialog.cancel();

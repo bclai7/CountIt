@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
@@ -66,6 +67,8 @@ public class MultiCounterActivity extends AppCompatActivity {
     LinearLayout lin;
     public static ArrayList<String> fragTagList;
     boolean countIsNegative=false;
+    Vibrator vib;
+    long[] pattern = new long[4];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +78,12 @@ public class MultiCounterActivity extends AppCompatActivity {
         final String counterName = bundle.getString(CounterListActivity.MULTICOUNTER_NAME_KEY);
         setTitle(counterName);
         fragTagList=new ArrayList<String>();
+
+        vib = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+        pattern[0]=0;
+        pattern[1]=20;
+        pattern[2]=150;
+        pattern[3]=20;
 
         //load data into multi counter list
         File f = new File("/data/data/com.takezeroapps.countit/shared_prefs/MultiCounterList.xml");
@@ -139,6 +148,7 @@ public class MultiCounterActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         screenSetting = prefs.getBoolean("switch_preference_screen", false);
         resetconfirmSetting = prefs.getBoolean("switch_preference_resetconfirm", true);
+        vibrateSetting = prefs.getBoolean("switch_preference_vibrate", true);
 
         if(screenSetting)
         {
@@ -192,6 +202,8 @@ public class MultiCounterActivity extends AppCompatActivity {
                     if (item.getItemId() == R.id.add_c) {
                         if(current.counters.size() + 1 > 20) //maximum number of counters set to 50
                         {
+                            if (vibrateSetting)
+                                vib.vibrate(pattern, -1);
                             Snackbar.make(getWindow().getDecorView().getRootView(), R.string.max_number_of_counters_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                         }
                         else {
@@ -310,15 +322,23 @@ public class MultiCounterActivity extends AppCompatActivity {
                                             startCount=startCount*-1;
 
                                         if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
+                                            if (vibrateSetting)
+                                                vib.vibrate(pattern, -1);
                                             Snackbar.make(getWindow().getDecorView().getRootView(), R.string.no_counter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                             dialog.cancel();
                                         } else if (inSingleCounterList(counterName)) {
+                                            if (vibrateSetting)
+                                                vib.vibrate(pattern, -1);
                                             Snackbar.make(getWindow().getDecorView().getRootView(), R.string.counter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                             dialog.cancel();
                                         } else if (counterName.length() > 20) {
+                                            if (vibrateSetting)
+                                                vib.vibrate(pattern, -1);
                                             Snackbar.make(getWindow().getDecorView().getRootView(), R.string.sc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                             dialog.cancel();
                                         } else if (numberInvalid(startCount)) {
+                                            if (vibrateSetting)
+                                                vib.vibrate(pattern, -1);
                                             Snackbar.make(getWindow().getDecorView().getRootView(), R.string.invalid_number_entered, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                             dialog.cancel();
                                         } else {
@@ -354,6 +374,8 @@ public class MultiCounterActivity extends AppCompatActivity {
                                     }
                                     catch (IllegalArgumentException e)
                                     {
+                                        if (vibrateSetting)
+                                            vib.vibrate(pattern, -1);
                                         Snackbar.make(getWindow().getDecorView().getRootView(), R.string.invalid_starting_count, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                         dialog.cancel();
                                     }
@@ -414,14 +436,20 @@ public class MultiCounterActivity extends AppCompatActivity {
                                     String counterName = counterEdit.getText().toString(); //input text - the user defined counter name
 
                                     if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
+                                        if (vibrateSetting)
+                                            vib.vibrate(pattern, -1);
                                         Snackbar.make(MultiCounterActivity.this.getWindow().getDecorView().getRootView(), R.string.no_mcounter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                         dialog.cancel();
                                         removeKeyboard();
                                     } else if (inCounterList(counterName)) {
+                                        if (vibrateSetting)
+                                            vib.vibrate(pattern, -1);
                                         Snackbar.make(MultiCounterActivity.this.getWindow().getDecorView().getRootView(), R.string.mcounter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                         dialog.cancel();
                                         removeKeyboard();
                                     } else if (counterName.length() > 40) {
+                                        if (vibrateSetting)
+                                            vib.vibrate(pattern, -1);
                                         Snackbar.make(MultiCounterActivity.this.getWindow().getDecorView().getRootView(), R.string.mc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                         dialog.cancel();
                                         removeKeyboard();
