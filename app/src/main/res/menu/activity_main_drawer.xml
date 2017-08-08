@@ -30,6 +30,10 @@
                 android:id="@+id/nav_contact"
                 android:icon="@drawable/ic_contact_tab"
                 android:title="@string/contact" />
+            <item
+                android:id="@+id/nav_more"
+                android:icon="@drawable/ic_more"
+                android:title="@string/more" />
         </menu>
     </item>
 

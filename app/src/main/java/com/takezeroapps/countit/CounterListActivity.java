@@ -1194,6 +1194,10 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
             //let users contact through email
 
         }
+        else if (id == R.id.nav_more) {
+            //open link to developer page with the rest of my apps
+
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_counterlist);
         drawer.closeDrawer(GravityCompat.START);

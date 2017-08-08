@@ -140,6 +140,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setTitle("");
+
         //fixes issue where loading into landscape uses the wrong font size
         Configuration newConfig = getResources().getConfiguration();
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -474,6 +476,10 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_contact) {
             //let users contact through email
+
+        }
+        else if (id == R.id.nav_more) {
+            //open link to developer page with the rest of my apps
 
         }
 
