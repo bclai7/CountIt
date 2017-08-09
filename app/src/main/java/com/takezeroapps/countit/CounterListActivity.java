@@ -516,6 +516,8 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_counterlist);
         navigationView.setNavigationItemSelectedListener(this);
+
+        navigationView.setCheckedItem(R.id.nav_multicounter);
     }
 
     @Override
