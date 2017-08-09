@@ -62,8 +62,6 @@ public class MainActivity extends AppCompatActivity
         screenSetting = sharedPref.getBoolean(SettingsActivity.screenKey, false);
         volumeSetting = sharedPref.getBoolean(SettingsActivity.volumeKey, false);
 
-        Log.d("test", "Main vibrate setting: "+vibrateSetting);
-
         if(screenSetting)
         {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

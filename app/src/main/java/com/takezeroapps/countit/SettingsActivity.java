@@ -189,11 +189,6 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPref.edit();
 
-        Log.d("test", "bool:"+vibrateOn);
-        Log.d("test", "bool:"+resetOn);
-        Log.d("test", "bool:"+screenOn);
-        Log.d("test", "bool:"+volumeOn);
-
         editor.putBoolean(vibrateKey, vibrateOn);
         editor.putBoolean(resetKey, resetOn);
         editor.putBoolean(screenKey, screenOn);
