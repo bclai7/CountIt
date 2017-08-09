@@ -2,11 +2,8 @@ package com.takezeroapps.countit;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -14,10 +11,8 @@ import android.support.annotation.Nullable;
 import android.app.Fragment;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.text.Html;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,8 +35,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 
 import Exceptions.NoCountEnteredException;
 
@@ -916,12 +909,11 @@ public class SingleCounterCondensedFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        //get saved settings from stored preferences
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        vibrateSetting = prefs.getBoolean("switch_preference_vibrate", true);
-        resetconfirmSetting = prefs.getBoolean("switch_preference_resetconfirm", true);
-        screenSetting = prefs.getBoolean("switch_preference_screen", false);
+        //get settings from stored preferences
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        vibrateSetting = sharedPref.getBoolean(SettingsActivityA.vibrateKey, true);
+        resetconfirmSetting = sharedPref.getBoolean(SettingsActivityA.resetKey, true);
+        screenSetting = sharedPref.getBoolean(SettingsActivityA.screenKey, false);
 
         if(screenSetting)
         {
@@ -1059,15 +1051,15 @@ public class SingleCounterCondensedFragment extends Fragment {
         }
         else if(color.equalsIgnoreCase("ORANGE")) //ORANGE
         {
-            myFragment.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
+            myFragment.getView().setBackgroundColor(Color.parseColor(ColorHex.COLOR_ORANGE));
         }
         else if(color.equalsIgnoreCase("PURPLE")) //PURPLE
         {
-            myFragment.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
+            myFragment.getView().setBackgroundColor(Color.parseColor(ColorHex.COLOR_PURPLE));
         }
         else if(color.equalsIgnoreCase("PINK")) //PINK
         {
-            myFragment.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
+            myFragment.getView().setBackgroundColor(Color.parseColor(ColorHex.COLOR_PINK));
         }
         else if(color.equalsIgnoreCase("GRAY")) //GRAY
         {

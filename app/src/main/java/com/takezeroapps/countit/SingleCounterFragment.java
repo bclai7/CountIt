@@ -1,7 +1,5 @@
 package com.takezeroapps.countit;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -17,7 +15,6 @@ import android.support.v7.app.AlertDialog;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,16 +29,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 import Exceptions.NoCountEnteredException;
 
@@ -923,12 +916,11 @@ public class SingleCounterFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
-        //get saved settings from stored preferences
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        vibrateSetting = prefs.getBoolean("switch_preference_vibrate", true);
-        resetconfirmSetting = prefs.getBoolean("switch_preference_resetconfirm", true);
-        screenSetting = prefs.getBoolean("switch_preference_screen", false);
+        //get settings from stored preferences
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        vibrateSetting = sharedPref.getBoolean(SettingsActivityA.vibrateKey, true);
+        resetconfirmSetting = sharedPref.getBoolean(SettingsActivityA.resetKey, true);
+        screenSetting = sharedPref.getBoolean(SettingsActivityA.screenKey, false);
 
         if(screenSetting)
         {
@@ -1066,15 +1058,15 @@ public class SingleCounterFragment extends Fragment{
         }
         else if(color.equalsIgnoreCase("ORANGE")) //ORANGE
         {
-            myFragment.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_ORANGE));
+            myFragment.getView().setBackgroundColor(Color.parseColor(ColorHex.COLOR_ORANGE));
         }
         else if(color.equalsIgnoreCase("PURPLE")) //PURPLE
         {
-            myFragment.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PURPLE));
+            myFragment.getView().setBackgroundColor(Color.parseColor(ColorHex.COLOR_PURPLE));
         }
         else if(color.equalsIgnoreCase("PINK")) //PINK
         {
-            myFragment.getView().setBackgroundColor(Color.parseColor(ColorParse.COLOR_PINK));
+            myFragment.getView().setBackgroundColor(Color.parseColor(ColorHex.COLOR_PINK));
         }
         else if(color.equalsIgnoreCase("GRAY")) //GRAY
         {

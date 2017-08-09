@@ -547,8 +547,9 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
             saveCounterList(multicounterNameList);
         }
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        vibrateSetting = prefs.getBoolean("switch_preference_vibrate", true);
+        //get settings
+        SharedPreferences sharedPref = CounterListActivity.this.getPreferences(Context.MODE_PRIVATE);
+        vibrateSetting = sharedPref.getBoolean(SettingsActivityA.vibrateKey, true);
 
         //sort list
         loadSortOrder();

@@ -144,11 +144,11 @@ public class MultiCounterActivity extends AppCompatActivity {
     public void onResume()
     {
         super.onResume();
-        //get saved "keep screen on" setting from shared preferences
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        screenSetting = prefs.getBoolean("switch_preference_screen", false);
-        resetconfirmSetting = prefs.getBoolean("switch_preference_resetconfirm", true);
-        vibrateSetting = prefs.getBoolean("switch_preference_vibrate", true);
+        //get settings
+        SharedPreferences sharedPref = MultiCounterActivity.this.getPreferences(Context.MODE_PRIVATE);
+        vibrateSetting = sharedPref.getBoolean(SettingsActivityA.vibrateKey, true);
+        resetconfirmSetting = sharedPref.getBoolean(SettingsActivityA.resetKey, true);
+        screenSetting = sharedPref.getBoolean(SettingsActivityA.screenKey, false);
 
         if(screenSetting)
         {
@@ -156,8 +156,8 @@ public class MultiCounterActivity extends AppCompatActivity {
         }
 
         //retrieve counter view option
-        SharedPreferences sharedPref = MultiCounterActivity.this.getPreferences(Context.MODE_PRIVATE);
-        viewOption = sharedPref.getInt("CounterView", 0);
+        SharedPreferences sharedPrefA = MultiCounterActivity.this.getPreferences(Context.MODE_PRIVATE);
+        viewOption = sharedPrefA.getInt("CounterView", 0);
     }
 
     @Override

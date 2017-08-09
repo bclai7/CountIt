@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -54,13 +55,14 @@ public class MainActivity extends AppCompatActivity
         //get saved settings from stored preferences
         super.onResume();
 
-        //remove keyboard so its not stuck on screen when activity is resumed
+        //get settings
+        SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
+        vibrateSetting = sharedPref.getBoolean(SettingsActivityA.vibrateKey, true);
+        resetconfirmSetting = sharedPref.getBoolean(SettingsActivityA.resetKey, true);
+        screenSetting = sharedPref.getBoolean(SettingsActivityA.screenKey, false);
+        volumeSetting = sharedPref.getBoolean(SettingsActivityA.volumeKey, false);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        vibrateSetting = prefs.getBoolean("switch_preference_vibrate", true);
-        resetconfirmSetting = prefs.getBoolean("switch_preference_resetconfirm", true);
-        screenSetting = prefs.getBoolean("switch_preference_screen", false);
-        volumeSetting = prefs.getBoolean("switch_preference_volume", false);
+        Log.d("test", "Main vibrate setting: "+vibrateSetting);
 
         if(screenSetting)
         {
@@ -466,7 +468,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_settings) {
             //go to settings
-            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+            startActivity(new Intent(MainActivity.this, SettingsActivityA.class));
 
         } else if (id == R.id.nav_share) {
             //let users share app
