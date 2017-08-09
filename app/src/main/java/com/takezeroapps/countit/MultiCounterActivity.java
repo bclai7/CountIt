@@ -1,6 +1,5 @@
 package com.takezeroapps.countit;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -8,21 +7,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
-import android.text.Html;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,23 +33,15 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import static android.graphics.Color.BLACK;
-import static com.takezeroapps.countit.MulticounterComparator.CREATED_SORT;
-import static com.takezeroapps.countit.MulticounterComparator.MODIFIED_SORT;
-import static com.takezeroapps.countit.MulticounterComparator.NAME_SORT;
-import static com.takezeroapps.countit.MulticounterComparator.decending;
-import static com.takezeroapps.countit.MulticounterComparator.getComparator;
 
 public class MultiCounterActivity extends AppCompatActivity {
     //private ArrayList<Multicounter> multicounterList = new ArrayList<Multicounter>();
@@ -145,10 +131,10 @@ public class MultiCounterActivity extends AppCompatActivity {
     {
         super.onResume();
         //get settings
-        SharedPreferences sharedPref = MultiCounterActivity.this.getPreferences(Context.MODE_PRIVATE);
-        vibrateSetting = sharedPref.getBoolean(SettingsActivityA.vibrateKey, true);
-        resetconfirmSetting = sharedPref.getBoolean(SettingsActivityA.resetKey, true);
-        screenSetting = sharedPref.getBoolean(SettingsActivityA.screenKey, false);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        vibrateSetting = sharedPref.getBoolean(SettingsActivity.vibrateKey, true);
+        resetconfirmSetting = sharedPref.getBoolean(SettingsActivity.resetKey, true);
+        screenSetting = sharedPref.getBoolean(SettingsActivity.screenKey, false);
 
         if(screenSetting)
         {

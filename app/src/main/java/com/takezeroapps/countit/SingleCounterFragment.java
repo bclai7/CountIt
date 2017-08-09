@@ -917,10 +917,10 @@ public class SingleCounterFragment extends Fragment{
     public void onResume() {
         super.onResume();
         //get settings from stored preferences
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        vibrateSetting = sharedPref.getBoolean(SettingsActivityA.vibrateKey, true);
-        resetconfirmSetting = sharedPref.getBoolean(SettingsActivityA.resetKey, true);
-        screenSetting = sharedPref.getBoolean(SettingsActivityA.screenKey, false);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        vibrateSetting = sharedPref.getBoolean(SettingsActivity.vibrateKey, true);
+        resetconfirmSetting = sharedPref.getBoolean(SettingsActivity.resetKey, true);
+        screenSetting = sharedPref.getBoolean(SettingsActivity.screenKey, false);
 
         if(screenSetting)
         {

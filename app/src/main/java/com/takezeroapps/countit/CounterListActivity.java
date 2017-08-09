@@ -32,11 +32,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -59,7 +57,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import static android.graphics.Color.BLACK;
 import static android.widget.AbsListView.CHOICE_MODE_NONE;
@@ -548,8 +545,8 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
         }
 
         //get settings
-        SharedPreferences sharedPref = CounterListActivity.this.getPreferences(Context.MODE_PRIVATE);
-        vibrateSetting = sharedPref.getBoolean(SettingsActivityA.vibrateKey, true);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        vibrateSetting = sharedPref.getBoolean(SettingsActivity.vibrateKey, true);
 
         //sort list
         loadSortOrder();

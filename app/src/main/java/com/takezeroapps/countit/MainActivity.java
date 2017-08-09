@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
 
         //get settings
-        SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
-        vibrateSetting = sharedPref.getBoolean(SettingsActivityA.vibrateKey, true);
-        resetconfirmSetting = sharedPref.getBoolean(SettingsActivityA.resetKey, true);
-        screenSetting = sharedPref.getBoolean(SettingsActivityA.screenKey, false);
-        volumeSetting = sharedPref.getBoolean(SettingsActivityA.volumeKey, false);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        vibrateSetting = sharedPref.getBoolean(SettingsActivity.vibrateKey, true);
+        resetconfirmSetting = sharedPref.getBoolean(SettingsActivity.resetKey, true);
+        screenSetting = sharedPref.getBoolean(SettingsActivity.screenKey, false);
+        volumeSetting = sharedPref.getBoolean(SettingsActivity.volumeKey, false);
 
         Log.d("test", "Main vibrate setting: "+vibrateSetting);
 
@@ -468,7 +468,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_settings) {
             //go to settings
-            startActivity(new Intent(MainActivity.this, SettingsActivityA.class));
+            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
 
         } else if (id == R.id.nav_share) {
             //let users share app
