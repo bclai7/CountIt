@@ -53,4 +53,22 @@
         <item name="android:textColor">@android:color/darker_gray</item>
     </style>
 
+    <!-- SHOWCASE VIEW THEMES -->
+    <style name="CustomShowcaseTheme" parent="ShowcaseView.Light">
+        <item name="sv_backgroundColor">#50000000</item> <!-- the first two digits is the alpha code (in this case the alpha code makes it transparent), the rest are the actual color hex code digits. The higher the alpha number (first 2 digits), the darker the shade-->
+        <item name="sv_showcaseColor">#000000</item>
+        <item name="sv_buttonText">Ok</item>
+        <item name="sv_tintButtonColor">false</item>
+        <item name="sv_titleTextAppearance">@style/CustomTitle</item>
+        <item name="sv_detailTextAppearance">@style/CustomText</item>
+    </style>
+
+    <style name="CustomTitle" parent="TextAppearance.ShowcaseView.Title">
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="CustomText" parent="TextAppearance.ShowcaseView.Detail.Light">
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
 </resources>

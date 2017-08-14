@@ -208,6 +208,6 @@
     <string name="tutorial_reset_text">Click the circular arrow to reset the count to zero</string>
 
     <string name="tutorial_count_title">Manual Count</string>
-    <string name="tutorial_count_text">Long press the count number to enter a manual count</string>
+    <string name="tutorial_count_text">Long press the count number to manually enter a count</string>
 
 </resources>

@@ -384,8 +384,6 @@ public class MainActivity extends AppCompatActivity
                 }
         );
 
-        showcaseDialogTutorial();
-
         //Top appbar with options, do not remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -400,6 +398,9 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         navigationView.setCheckedItem(R.id.nav_home);
+
+        //Display Tutorial
+        showcaseDialogTutorial();
 
     }
 
@@ -508,7 +509,7 @@ public class MainActivity extends AppCompatActivity
 
         run = tutorialShowcases.getBoolean("run?", true);
 
-        if(run){//If the buyer already went through the showcases it won't do it again.
+        if(run){//If the user already went through the showcases it won't do it again.
             final ViewTarget plus = new ViewTarget(R.id.plusButton , this);//Variable holds the item that the showcase will focus on.
             final ViewTarget minus = new ViewTarget(R.id.minusButton , this);
             final ViewTarget reset = new ViewTarget(R.id.resetButton , this);
@@ -527,7 +528,8 @@ public class MainActivity extends AppCompatActivity
             ShowcaseView.Builder res = new ShowcaseView.Builder(this, true)
                     .setTarget(plus)
                     .setContentTitle(getString(R.string.tutorial_plus_title))
-                    .setContentText(getString(R.string.tutorial_plus_text));
+                    .setContentText(getString(R.string.tutorial_plus_text))
+                    .setStyle(R.style.CustomShowcaseTheme);
             tut = res.build();
             tut.setButtonText(getString(R.string.next));
 
