@@ -194,4 +194,20 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- TUTORIAL TEXTS -->
+    <string name="next">Next</string>
+    <string name="done">Done</string>
+
+    <string name="tutorial_plus_title">Add</string>
+    <string name="tutorial_plus_text">Tap the plus button to add to the count</string>
+
+    <string name="tutorial_minus_title">Subtract</string>
+    <string name="tutorial_minus_text">Tap the minus button to subtract from the count</string>
+
+    <string name="tutorial_reset_title">Reset</string>
+    <string name="tutorial_reset_text">Click the circular arrow to reset the count to zero</string>
+
+    <string name="tutorial_count_title">Manual Count</string>
+    <string name="tutorial_count_text">Long press the count number to enter a manual count</string>
+
 </resources>

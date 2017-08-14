@@ -24,11 +24,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
+
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,6 +55,7 @@ public class MainActivity extends AppCompatActivity
     boolean inputDialogCreated;
     View counterChangeView;
     EditText input;
+    ShowcaseView tut;
 
     @Override
     public void onResume()
@@ -376,6 +384,8 @@ public class MainActivity extends AppCompatActivity
                 }
         );
 
+        showcaseDialogTutorial();
+
         //Top appbar with options, do not remove
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -489,5 +499,74 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showcaseDialogTutorial(){
+        final SharedPreferences tutorialShowcases = getSharedPreferences("showcaseTutorial", MODE_PRIVATE);
+
+        boolean run;
+
+        run = tutorialShowcases.getBoolean("run?", true);
+
+        if(run){//If the buyer already went through the showcases it won't do it again.
+            final ViewTarget plus = new ViewTarget(R.id.plusButton , this);//Variable holds the item that the showcase will focus on.
+            final ViewTarget minus = new ViewTarget(R.id.minusButton , this);
+            final ViewTarget reset = new ViewTarget(R.id.resetButton , this);
+            final ViewTarget count = new ViewTarget(R.id.count , this);
+
+            //This code creates a new layout parameter so the button in the showcase can move to a new spot.
+            final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            // This aligns button to the bottom left side of screen
+            lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            lps.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            // Set margins to the button, we add 16dp margins here
+            int margin = ((Number) (getResources().getDisplayMetrics().density * 16)).intValue();
+            lps.setMargins(margin, margin, margin, margin);
+
+            //This creates the first showcase.
+            ShowcaseView.Builder res = new ShowcaseView.Builder(this, true)
+                    .setTarget(plus)
+                    .setContentTitle(getString(R.string.tutorial_plus_title))
+                    .setContentText(getString(R.string.tutorial_plus_text));
+            tut = res.build();
+            tut.setButtonText(getString(R.string.next));
+
+            //When the button is clicked then the switch statement will check the counter and make the new showcase.
+            tut.overrideButtonClick(new View.OnClickListener() {
+                int index = 0;
+
+                @Override
+                public void onClick(View v) {
+                    index++;
+                    switch (index) {
+                        case 1:
+                            tut.setTarget(minus);
+                            tut.setContentTitle(getString(R.string.tutorial_minus_title));
+                            tut.setContentText(getString(R.string.tutorial_minus_text));
+                            tut.setButtonText(getString(R.string.next));
+                            break;
+
+                        case 2:
+                            tut.setTarget(reset);
+                            tut.setContentTitle(getString(R.string.tutorial_reset_title));
+                            tut.setContentText(getString(R.string.tutorial_reset_text));
+                            tut.setButtonText(getString(R.string.next));
+                            break;
+
+                        case 3:
+                            tut.setTarget(count);
+                            tut.setContentTitle(getString(R.string.tutorial_count_title));
+                            tut.setContentText(getString(R.string.tutorial_count_text));
+                            tut.setButtonText(getString(R.string.done));
+                            break;
+
+                        case 4:
+                            tut.hide();
+                            break;
+
+                    }
+                }
+            });
+        }
     }
 }
