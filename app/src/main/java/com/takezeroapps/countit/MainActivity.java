@@ -224,6 +224,7 @@ public class MainActivity extends AppCompatActivity
                         String names[] ={
                                 getResources().getString(R.string.change_count),
                                 getResources().getString(R.string.inc_dec_by),
+                                getResources().getString(R.string.reset_title),
                         };
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
                         LayoutInflater inflater = MainActivity.this.getLayoutInflater();
@@ -529,7 +530,11 @@ public class MainActivity extends AppCompatActivity
                                     }
 
                                 }
-
+                                else if(position==2) //reset
+                                {
+                                    alert.dismiss();
+                                    resetButton.performClick();
+                                }
                             }
                         });
 
