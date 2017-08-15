@@ -42,8 +42,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
-import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.io.File;
@@ -61,9 +59,7 @@ public class MainActivity extends AppCompatActivity
     Button addButton, subButton;
     ImageButton resetButton, counterButton;
     public static boolean portraitMode=true;
-    Bundle in;
     int count;
-    boolean inputDialogCreated;
     View counterChangeView;
     EditText input, incdecInput;
     ShowcaseView tut;
@@ -223,7 +219,6 @@ public class MainActivity extends AppCompatActivity
                                 {
                                     alert.dismiss();
                                     counterChangeView =view;
-                                    inputDialogCreated=true;
                                     final int currcount = opf.getCount();
 
                                     final CharSequence[] negOptions = {MainActivity.this.getResources().getString(R.string.make_negative_num)}; //choices to select from, only one choice so it only has one element

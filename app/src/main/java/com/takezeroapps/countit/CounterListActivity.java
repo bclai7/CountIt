@@ -74,21 +74,15 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
     private String[] multicounterNamesArray;
     public static ArrayList<String> multicounterNameList = new ArrayList<String>();
     public static HashMap<String, Multicounter> multicounterList = new HashMap<String, Multicounter>();
-    TextView tx;
     String[] c = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"};
     public static final String MULTICOUNTER_NAME_KEY = "multicounter_name";
     MultiCounterListViewAdapter adapter;
-    int searchListStartPos;
     EditText counterEdit;
     boolean vibrateSetting;
-    boolean editMode=false;
-    MenuItem searchIcon, optionsIcon;
     List<String> mcList;
-    ArrayAdapter<String> adapterA;
     ActionMode mActionMode;
     MenuItem itm;
     String yesText, noText, selectCheck, deselectCheck, selectedTitle, sure_delete_1, sure_delete_2, confirmationTitle;
-    long[] checkedItems;
     Vibrator vib;
     long[] pattern = new long[4];
     int sortOrder;
@@ -1108,8 +1102,6 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
                             listView.setItemChecked(i, true);
                             //  listviewadapter.toggleSelection(i);
                         }
-
-                        checkedItems = listView.getCheckedItemIds();
 
                         // Count no.  of selected item and print it
                         mode.setTitle(checkedCount + " "+selectedTitle);

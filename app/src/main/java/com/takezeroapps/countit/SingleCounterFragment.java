@@ -54,8 +54,6 @@ public class SingleCounterFragment extends Fragment{
     Counter currentSC;
     Multicounter currentMC;
     EditText counterEdit, input, incdecInput;
-    LinearLayout lin;
-    Counter tempCounter;
     SingleCounterFragment prevFrag, currFrag, nextFrag;
     String incdecQ; //string that stores whether the selected option is "increase" or "decrease" when selecting the corresponding option in the longClick menu of a counter
 

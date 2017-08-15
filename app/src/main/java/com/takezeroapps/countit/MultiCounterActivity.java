@@ -48,11 +48,9 @@ import static android.graphics.Color.BLACK;
 public class MultiCounterActivity extends AppCompatActivity {
     //private ArrayList<Multicounter> multicounterList = new ArrayList<Multicounter>();
     private Multicounter current;
-    SingleCounterFragment testFragment = new SingleCounterFragment();
     boolean vibrateSetting, resetconfirmSetting, screenSetting;
     EditText counterEdit;
     int viewOption=0;
-    LinearLayout lin;
     public static ArrayList<String> fragTagList;
     boolean countIsNegative=false;
     Vibrator vib;
