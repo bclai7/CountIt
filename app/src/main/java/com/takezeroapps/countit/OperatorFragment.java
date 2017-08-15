@@ -62,6 +62,28 @@ public class OperatorFragment extends Fragment{
         String countstring = Integer.toString(num);
         cnt.setText(countstring);
     }
+
+    public void increaseCount(boolean portraitMode, int amount)
+    {
+        int num = Integer.valueOf(cnt.getText().toString());
+        num+=amount;
+        Operations op = new Operations(); //create object from Operations.java class
+        int size = op.getSize(num, portraitMode); //use method to get size of text
+        cnt.setTextSize(TypedValue.COMPLEX_UNIT_SP, size); //sets the text size in sp units depending on the size of the number
+        String countstring = Integer.toString(num);
+        cnt.setText(countstring);
+    }
+    public void decreaseCount(boolean portraitMode, int amount)
+    {
+        int num = Integer.valueOf(cnt.getText().toString());
+        num-=amount;
+        Operations op = new Operations(); //create object from Operations.java class
+        int size = op.getSize(num, portraitMode); //use method to get size of text
+        cnt.setTextSize(TypedValue.COMPLEX_UNIT_SP, size); //sets the text size in sp units depending on the size of the number
+        String countstring = Integer.toString(num);
+        cnt.setText(countstring);
+    }
+
     public void resetCount(boolean portraitMode)
     {
         changeCount(0, portraitMode);

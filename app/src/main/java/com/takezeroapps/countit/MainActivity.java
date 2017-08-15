@@ -65,9 +65,10 @@ public class MainActivity extends AppCompatActivity
     int count;
     boolean inputDialogCreated;
     View counterChangeView;
-    EditText input;
+    EditText input, incdecInput;
     ShowcaseView tut;
     boolean tutorialComplete; //boolean storing whether or not user has completed the tutorial/tip for this particular activity
+    String incdecQ;
 
     @Override
     public void onResume()
@@ -161,6 +162,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         setTitle("");
+
+        final String incdecOptions[] = {MainActivity.this.getResources().getString(R.string.increase), MainActivity.this.getResources().getString(R.string.decrease)};
 
         //get tutorial sharedpref
         SharedPreferences sharedPrefA = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
@@ -335,14 +338,14 @@ public class MainActivity extends AppCompatActivity
                                 }
                                 else if(position==1) //increase/decrease by
                                 {
-                                    /*
+
                                     try {
                                         alert.dismiss();
-                                        incdecQ = getActivity().getResources().getString(R.string.increase_by);
+                                        incdecQ = MainActivity.this.getResources().getString(R.string.increase_by);
                                         //create dialog
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                                         builder.setTitle(R.string.inc_dec_by);
-                                        Context context = getActivity(); //store context in a variable
+                                        Context context = MainActivity.this; //store context in a variable
                                         LinearLayout layout = new LinearLayout(context);
                                         layout.setOrientation(LinearLayout.VERTICAL);
 
@@ -355,11 +358,11 @@ public class MainActivity extends AppCompatActivity
 
                                         //dropdown menu with increase/decrease
                                         //dropdown for initial number of counters
-                                        final RadioGroup rg = new RadioGroup(getActivity());
+                                        final RadioGroup rg = new RadioGroup(MainActivity.this);
                                         rg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                                         for(int p=0; p<2; p++)
                                         {
-                                            RadioButton rb = new RadioButton(getActivity());
+                                            RadioButton rb = new RadioButton(MainActivity.this);
                                             rb.setText(incdecOptions[p]);
                                             rb.setTextSize(16);
                                             rb.setId(p);
@@ -403,11 +406,11 @@ public class MainActivity extends AppCompatActivity
 
                                                 if(rg.getCheckedRadioButtonId() == 0)
                                                 {
-                                                    incdecQ = getActivity().getResources().getString(R.string.increase_by);
+                                                    incdecQ = MainActivity.this.getResources().getString(R.string.increase_by);
                                                 }
                                                 else if(rg.getCheckedRadioButtonId() == 1)
                                                 {
-                                                    incdecQ = getActivity().getResources().getString(R.string.decrease_by);
+                                                    incdecQ = MainActivity.this.getResources().getString(R.string.decrease_by);
                                                 }
                                                 amount.setText(incdecQ);
                                             }
@@ -433,30 +436,24 @@ public class MainActivity extends AppCompatActivity
                                                     if (rg.getCheckedRadioButtonId() == 0) //increase
                                                     {
                                                         //INCREASE by
-                                                        int currCount=getCount();
+                                                        int currCount=opf.getCount();
                                                         if(vibrateSetting)
                                                             vib.vibrate(10);
-                                                        increaseCount(incdecAmount);
-                                                        //Set modified times
-                                                        currentMC.setModifiedDateTime();
-                                                        currentMC.setModifiedTimeStamp();
+                                                        opf.increaseCount(portraitMode, incdecAmount);
 
                                                     }
                                                     else if (rg.getCheckedRadioButtonId() == 1) //decrease
                                                     {
                                                         //DECREASE by
-                                                        int currCount=getCount();
+                                                        int currCount=opf.getCount();
                                                         if(vibrateSetting)
                                                             vib.vibrate(10);
-                                                        decreaseCount(incdecAmount);
-                                                        //Set modified times
-                                                        currentMC.setModifiedDateTime();
-                                                        currentMC.setModifiedTimeStamp();
+                                                        opf.decreaseCount(portraitMode, incdecAmount);
 
                                                     }
 
                                                     //remove keyboard
-                                                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                    InputMethodManager imm = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                                                     imm.hideSoftInputFromWindow(incdecInput.getWindowToken(), 0);
                                                 }
                                                 catch (NoCountEnteredException e1)
@@ -474,7 +471,7 @@ public class MainActivity extends AppCompatActivity
                                                     dialog.cancel();
 
                                                     //remove keyboard
-                                                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                    InputMethodManager imm = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                                                     imm.hideSoftInputFromWindow(incdecInput.getWindowToken(), 0);
                                                 }
 
@@ -493,7 +490,7 @@ public class MainActivity extends AppCompatActivity
                                             @Override
                                             public void onCancel(DialogInterface dialog) {
                                                 //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
-                                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                InputMethodManager imm = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                                                 imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
                                                 imm.hideSoftInputFromWindow(incdecInput.getWindowToken(), 0);
 
@@ -503,7 +500,7 @@ public class MainActivity extends AppCompatActivity
                                         builder.show();
                                         rg.check(rg.getChildAt(0).getId());
                                         incdecInput.requestFocus();
-                                        InputMethodManager imm2 = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        InputMethodManager imm2 = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                                         imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
                                     }
@@ -511,7 +508,7 @@ public class MainActivity extends AppCompatActivity
                                     {
                                         e.printStackTrace();
                                     }
-                                    */
+
                                 }
 
                             }
@@ -655,6 +652,9 @@ public class MainActivity extends AppCompatActivity
 
         if(counterChangeView != null)
             imm.hideSoftInputFromWindow(counterChangeView.getWindowToken(), 0);
+
+        if(incdecInput != null)
+            imm.hideSoftInputFromWindow(incdecInput.getWindowToken(), 0);
     }
 
     @Override
