@@ -96,6 +96,7 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
     EditText inputName;
     Toolbar toolbar;
     boolean tutorialComplete; //boolean storing whether or not user has completed the tutorial/tip for this particular activity
+    boolean counterListVisited; //boolean tells whether or not its their first time visiting this activity (so if the multicounterlist is empty, it creates a default multicounter)
 
 
     @Override
@@ -537,6 +538,7 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
                     .setStyle(R.style.CustomShowcaseTheme);
             res.build().setButtonText(getString(R.string.ok));
 
+            //set sharedpref for showing tutorial completed
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPref.edit();
             tutorialComplete=true;
@@ -560,15 +562,22 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
             multicounterList = gson.fromJson(jsonMC, type);
         }
 
+        SharedPreferences sharedPrefA = PreferenceManager.getDefaultSharedPreferences(this);
+        counterListVisited=sharedPrefA.getBoolean("CounterListVisited", false);
+
         //TEST BEGIN
-        if(multicounterList.isEmpty()) {
-            for (int i = 1; i < 100; i++) {
-                multicounterList.put(("mc"+i), new Multicounter("mc" + i, 20));
-                multicounterNameList.add(0, "mc" + i);
-            }
+        if(multicounterList.isEmpty() && !counterListVisited) {
+            multicounterList.put("Sample Multicounter", new Multicounter("Sample Multicounter", 4));
+            multicounterNameList.add(0, "Sample Multicounter");
 
             saveMultiCounterList();
             saveCounterList(multicounterNameList);
+
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            counterListVisited=true;
+            editor.putBoolean("CounterListVisited", counterListVisited);
+            editor.commit();
         }
 
         //get settings

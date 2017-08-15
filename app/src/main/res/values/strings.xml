@@ -69,8 +69,8 @@
     <string name="multicounter_activity_title">Counter Name</string>
     <string name="mc_title_length_error">Please enter a title name with 40 characters or less</string>
     <string name="sc_title_length_error">Please enter a title name with 20 characters or less</string>
-    <string name="max_number_of_multicounters_error">You have reached the maximum number of multicounters</string>
-    <string name="max_number_of_counters_error">You have reached the maximum number of counters</string>
+    <string name="max_number_of_multicounters_error">You have reached the maximum number of multicounters (100)</string>
+    <string name="max_number_of_counters_error">You have reached the maximum number of counters (20)</string>
     <string name="count_hint">Starting Count</string>
     <string name="invalid_number_entered">Number entered is invalid</string>
     <string name="rename_single_counter">Rename Counter</string>
