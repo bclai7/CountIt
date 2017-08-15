@@ -29,6 +29,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.Target;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -55,6 +57,7 @@ public class MultiCounterActivity extends AppCompatActivity {
     boolean countIsNegative=false;
     Vibrator vib;
     long[] pattern = new long[4];
+    boolean tutorialComplete; //boolean storing whether or not user has completed the tutorial/tip for this particular activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,10 @@ public class MultiCounterActivity extends AppCompatActivity {
         final String counterName = bundle.getString(CounterListActivity.MULTICOUNTER_NAME_KEY);
         setTitle(counterName);
         fragTagList=new ArrayList<String>();
+
+        //get tutorial sharedpref
+        SharedPreferences sharedPrefB = PreferenceManager.getDefaultSharedPreferences(this);
+        tutorialComplete=sharedPrefB.getBoolean("MulticounterTutorial", false);
 
         vib = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
         pattern[0]=0;
@@ -92,36 +99,42 @@ public class MultiCounterActivity extends AppCompatActivity {
         ViewGroup linLay = (ViewGroup)findViewById(R.id.mc_linear_scroll_layout);
 
         //load counter fragments
-        try
-        {
-            for (Counter c : current.counters) {
-                if(viewOption==0) {
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(current.getName(), c.getLabel(), c.getCount());
-                    fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, c.getCounterId());
-                    fragmentTransaction.commit();
-                    fragmentManager.executePendingTransactions();
-                }
-                else if(viewOption==1) {
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    SingleCounterCondensedFragment sc_condensed_fragment = SingleCounterCondensedFragment.newInstance(current.getName(), c.getLabel(), c.getCount());
-                    fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_condensed_fragment, c.getCounterId());
-                    fragmentTransaction.commit();
-                    fragmentManager.executePendingTransactions();
-                }
-
-                fragTagList.add(c.getCounterId()); //add to list of fragment tags
-
+        for (Counter c : current.counters) {
+            if(viewOption==0) {
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                SingleCounterFragment sc_fragment = SingleCounterFragment.newInstance(current.getName(), c.getLabel(), c.getCount());
+                fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_fragment, c.getCounterId());
+                fragmentTransaction.commit();
+                fragmentManager.executePendingTransactions();
+            }
+            else if(viewOption==1) {
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                SingleCounterCondensedFragment sc_condensed_fragment = SingleCounterCondensedFragment.newInstance(current.getName(), c.getLabel(), c.getCount());
+                fragmentTransaction.add(R.id.mc_linear_scroll_layout, sc_condensed_fragment, c.getCounterId());
+                fragmentTransaction.commit();
+                fragmentManager.executePendingTransactions();
             }
 
-            //Log.d("test", "Child Count: "+((ViewGroup)findViewById(R.id.mc_linear_scroll_layout)).getChildCount());
+            fragTagList.add(c.getCounterId()); //add to list of fragment tags
 
         }
-        catch(Exception e)
-        {
-            e.printStackTrace();
+
+        if(!tutorialComplete) {
+            //tutorial for long pressing counter
+            ShowcaseView.Builder res = new ShowcaseView.Builder(this, true)
+                    .setTarget(Target.NONE)
+                    .setContentTitle(getString(R.string.tutorial_multicounter_title))
+                    .setContentText(getString(R.string.tutorial_multicounter_text))
+                    .setStyle(R.style.CustomShowcaseTheme);
+            res.build().setButtonText(getString(R.string.ok));
+
+            SharedPreferences sharedPrefA = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editorA = sharedPrefA.edit();
+            tutorialComplete=true;
+            editorA.putBoolean("MulticounterTutorial", tutorialComplete);
+            editorA.commit();
         }
 
     }

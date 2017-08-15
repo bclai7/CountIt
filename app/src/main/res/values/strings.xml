@@ -205,9 +205,15 @@
     <string name="tutorial_minus_text">Tap the minus button to subtract from the count</string>
 
     <string name="tutorial_reset_title">Reset</string>
-    <string name="tutorial_reset_text">Click the circular arrow to reset the count to zero</string>
+    <string name="tutorial_reset_text">Tap the circular arrow to reset the count to zero</string>
 
     <string name="tutorial_count_title">Manual Count</string>
     <string name="tutorial_count_text">Long press the count number to manually enter a count</string>
+
+    <string name="tutorial_multicounter_title">Counter Menu</string>
+    <string name="tutorial_multicounter_text">Long pressing a counter will open a menu with additional options for it</string>
+
+    <string name="tutorial_counterlist_title">Multicounter Menu</string>
+    <string name="tutorial_counterlist_text">You can long press a multicounter to rename, delete, or view more details about it</string>
 
 </resources>

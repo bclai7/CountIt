@@ -40,6 +40,8 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.Target;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -93,10 +95,17 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
     int selectedO; //selected order
     EditText inputName;
     Toolbar toolbar;
+    boolean tutorialComplete; //boolean storing whether or not user has completed the tutorial/tip for this particular activity
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_counter_list);
+
+        //get tutorial sharedpref
+        SharedPreferences sharedPrefA = PreferenceManager.getDefaultSharedPreferences(this);
+        tutorialComplete=sharedPrefA.getBoolean("CounterlistTutorial", false);
 
         yesText = getResources().getString(R.string.yes);
         noText = getResources().getString(R.string.no);
@@ -518,6 +527,22 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
         navigationView.setNavigationItemSelectedListener(this);
 
         navigationView.setCheckedItem(R.id.nav_multicounter);
+
+        if(!tutorialComplete) {
+            //tutorial for long pressing multicounter
+            ShowcaseView.Builder res = new ShowcaseView.Builder(this, true)
+                    .setTarget(Target.NONE)
+                    .setContentTitle(getString(R.string.tutorial_counterlist_title))
+                    .setContentText(getString(R.string.tutorial_counterlist_text))
+                    .setStyle(R.style.CustomShowcaseTheme);
+            res.build().setButtonText(getString(R.string.ok));
+
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            tutorialComplete=true;
+            editor.putBoolean("CounterlistTutorial", tutorialComplete);
+            editor.commit();
+        }
     }
 
     @Override

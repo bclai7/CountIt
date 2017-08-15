@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity
     View counterChangeView;
     EditText input;
     ShowcaseView tut;
+    boolean tutorialComplete; //boolean storing whether or not user has completed the tutorial/tip for this particular activity
 
     @Override
     public void onResume()
@@ -149,6 +151,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         setTitle("");
+
+        //get tutorial sharedpref
+        SharedPreferences sharedPrefA = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        tutorialComplete=sharedPrefA.getBoolean("MainTutorial", false);
+        Log.d("test", "OnCreate bool: "+tutorialComplete);
 
         //fixes issue where loading into landscape uses the wrong font size
         Configuration newConfig = getResources().getConfiguration();
@@ -400,7 +407,10 @@ public class MainActivity extends AppCompatActivity
         navigationView.setCheckedItem(R.id.nav_home);
 
         //Display Tutorial
-        showcaseDialogTutorial();
+        if(!tutorialComplete) {
+            showcaseDialogTutorial();
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED); //lock orientation so tutorial doesn't restart on orientation change
+        }
 
     }
 
@@ -564,6 +574,12 @@ public class MainActivity extends AppCompatActivity
 
                         case 4:
                             tut.hide();
+                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR); //unlock orientation
+                            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putBoolean("MainTutorial", true);
+                            editor.commit();
+
                             break;
 
                     }
