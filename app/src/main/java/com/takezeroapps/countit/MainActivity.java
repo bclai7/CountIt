@@ -40,6 +40,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity
     ShowcaseView tut;
     boolean tutorialComplete; //boolean storing whether or not user has completed the tutorial/tip for this particular activity
     String incdecQ;
+    int sizeNum; //0 = small, 1 = normal, 2 = large, 3 = xlarge
 
     @Override
     public void onResume()
@@ -110,7 +112,7 @@ public class MainActivity extends AppCompatActivity
         // Check for the rotation
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             portraitMode=false;
-            opf.changeCount(count, portraitMode);
+            opf.changeCount(count, portraitMode, sizeNum);
 
             SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -121,7 +123,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(getIntent());
         } else if (config.orientation == Configuration.ORIENTATION_PORTRAIT){
             portraitMode=true;
-            opf.changeCount(count, portraitMode);
+            opf.changeCount(count, portraitMode, sizeNum);
 
             SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -159,12 +161,34 @@ public class MainActivity extends AppCompatActivity
 
         setTitle("");
 
+        //-----screen size test
+        int screenSize = getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
+
+        String toastMsg;
+        switch(screenSize) {
+            case Configuration.SCREENLAYOUT_SIZE_XLARGE:
+                sizeNum=3;
+                break;
+            case Configuration.SCREENLAYOUT_SIZE_LARGE:
+                sizeNum=2;
+                break;
+            case Configuration.SCREENLAYOUT_SIZE_NORMAL:
+                sizeNum=1;
+                break;
+            case Configuration.SCREENLAYOUT_SIZE_SMALL:
+                sizeNum=0;
+                break;
+            default:
+                sizeNum=1;
+        }
+
+        //-----
+
         final String incdecOptions[] = {MainActivity.this.getResources().getString(R.string.increase), MainActivity.this.getResources().getString(R.string.decrease)};
 
         //get tutorial sharedpref
         SharedPreferences sharedPrefA = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         tutorialComplete=sharedPrefA.getBoolean("MainTutorial", false);
-        Log.d("test", "OnCreate bool: "+tutorialComplete);
 
         //fixes issue where loading into landscape uses the wrong font size
         Configuration newConfig = getResources().getConfiguration();
@@ -180,7 +204,7 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         count = sharedPref.getInt("count_key", 0);
 
-        opf.changeCount(count, portraitMode);
+        opf.changeCount(count, portraitMode, sizeNum);
 
         final Vibrator vib = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
         final long[] pattern = {0, 20, 150, 20}; //double vibration pattern for errors
@@ -252,10 +276,10 @@ public class MainActivity extends AppCompatActivity
 
                                                 {
                                                     if (isNegative) {
-                                                        opf.changeCount(-1 * newNum, portraitMode); //if isNegative checkbox is checked, make the number negative
+                                                        opf.changeCount(-1 * newNum, portraitMode, sizeNum); //if isNegative checkbox is checked, make the number negative
                                                         count = newNum * -1;
                                                     } else {
-                                                        opf.changeCount(newNum, portraitMode); //if checkbox is not checked, keep number the same
+                                                        opf.changeCount(newNum, portraitMode, sizeNum); //if checkbox is not checked, keep number the same
                                                         count = newNum;
                                                     }
                                                 }
@@ -434,7 +458,7 @@ public class MainActivity extends AppCompatActivity
                                                         int currCount=opf.getCount();
                                                         if(vibrateSetting)
                                                             vib.vibrate(10);
-                                                        opf.increaseCount(portraitMode, incdecAmount);
+                                                        opf.increaseCount(portraitMode, incdecAmount, sizeNum);
 
                                                     }
                                                     else if (rg.getCheckedRadioButtonId() == 1) //decrease
@@ -443,7 +467,7 @@ public class MainActivity extends AppCompatActivity
                                                         int currCount=opf.getCount();
                                                         if(vibrateSetting)
                                                             vib.vibrate(10);
-                                                        opf.decreaseCount(portraitMode, incdecAmount);
+                                                        opf.decreaseCount(portraitMode, incdecAmount, sizeNum);
 
                                                     }
 
@@ -530,7 +554,7 @@ public class MainActivity extends AppCompatActivity
                             if(vibrateSetting)
                                 vib.vibrate(10);
                             count++;
-                            opf.addCount(portraitMode);
+                            opf.addCount(portraitMode, sizeNum);
                         }
                     }
                 }
@@ -551,7 +575,7 @@ public class MainActivity extends AppCompatActivity
                         {
                             if(vibrateSetting)
                                 vib.vibrate(10);
-                            opf.subCount(portraitMode);
+                            opf.subCount(portraitMode, sizeNum);
                             count--;
                         }
                     }
@@ -575,7 +599,7 @@ public class MainActivity extends AppCompatActivity
                             resetDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     // reset count if "yes" is clicked
-                                    opf.resetCount(portraitMode);
+                                    opf.resetCount(portraitMode, sizeNum);
                                     count=0;
                                 }
                             });
@@ -593,7 +617,7 @@ public class MainActivity extends AppCompatActivity
                             resetDialog.show();
                         }
                         else{
-                            opf.resetCount(portraitMode);
+                            opf.resetCount(portraitMode, sizeNum);
                             count=0;
                         }
                     }
@@ -622,7 +646,7 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
-
+    
     @Override
     public void onPause()
     {
