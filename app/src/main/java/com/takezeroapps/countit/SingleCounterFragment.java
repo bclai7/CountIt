@@ -219,7 +219,6 @@ public class SingleCounterFragment extends Fragment{
                 new ImageButton.OnLongClickListener(){
                     @Override
                     public boolean onLongClick(final View view) {
-                        final String item = (String) ((TextView) view).getText();
                         //create counterlist_dropdown_menu dialog
                         String names[] ={
                                 getResources().getString(R.string.change_count),

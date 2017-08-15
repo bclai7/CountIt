@@ -16,6 +16,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -28,10 +29,17 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
@@ -42,6 +50,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 import Exceptions.NoCountEnteredException;
+
+import static android.graphics.Color.BLACK;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -186,119 +196,326 @@ public class MainActivity extends AppCompatActivity
                 new ImageButton.OnLongClickListener(){
                     @Override
                     public boolean onLongClick(final View view) {
-                        counterChangeView =view;
-                        inputDialogCreated=true;
-                        final int currcount = opf.getCount();
 
-                        final CharSequence[] negOptions = {MainActivity.this.getResources().getString(R.string.make_negative_num)}; //choices to select from, only one choice so it only has one element
-                        final ArrayList selectedItems=new ArrayList();
+                        //create counterlist_dropdown_menu dialog
+                        String names[] ={
+                                getResources().getString(R.string.change_count),
+                                getResources().getString(R.string.inc_dec_by),
+                        };
+                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+                        LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+                        View convertView = (View) inflater.inflate(R.layout.options_popup_list, null);
+                        alertDialog.setView(convertView);
+                        alertDialog.setTitle(R.string.counter_options_title);
+                        ListView lv = (ListView) convertView.findViewById(R.id.listView1);
+                        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,names);
+                        lv.setAdapter(adapter1);
+                        final AlertDialog alert = alertDialog.create();
+                        alert.show();
 
-                        final AlertDialog.Builder counterChanger = new AlertDialog.Builder(MainActivity.this);
-                        counterChanger.setTitle(R.string.change_count); //set title
-
-                        // Set up the input
-                        input = new EditText(MainActivity.this);
-
-                        // Specify the type of input expected; this, for example, sets the input as a number, and will use the numpad
-                        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
-                        input.setHint(R.string.enter_new_count);
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(9)});
-                        counterChanger.setView(input);
-
-                        // Set up the buttons
-                        counterChanger.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                try {
-                                    String input_string = input.getText().toString().trim();
+                            public void onItemClick(AdapterView<?> parent, View viewIn, int position, long id) {
+                                if(position == 0) //change count
+                                {
+                                    alert.dismiss();
+                                    counterChangeView =view;
+                                    inputDialogCreated=true;
+                                    final int currcount = opf.getCount();
 
-                                    if (input_string.isEmpty() || input_string.length() == 0 || input_string.equals("") || TextUtils.isEmpty(input_string)) //check if input is empty
-                                    {
-                                        throw new NoCountEnteredException();
-                                    } else //if string is not empty, convert to int
-                                        newNum = Integer.valueOf(input.getText().toString());//get integer value of new number
+                                    final CharSequence[] negOptions = {MainActivity.this.getResources().getString(R.string.make_negative_num)}; //choices to select from, only one choice so it only has one element
+                                    final ArrayList selectedItems=new ArrayList();
 
-                                    {
-                                        if (isNegative) {
-                                            opf.changeCount(-1 * newNum, portraitMode); //if isNegative checkbox is checked, make the number negative
-                                            count = newNum * -1;
-                                        } else {
-                                            opf.changeCount(newNum, portraitMode); //if checkbox is not checked, keep number the same
-                                            count = newNum;
+                                    final AlertDialog.Builder counterChanger = new AlertDialog.Builder(MainActivity.this);
+                                    counterChanger.setTitle(R.string.change_count); //set title
+
+                                    // Set up the input
+                                    input = new EditText(MainActivity.this);
+
+                                    // Specify the type of input expected; this, for example, sets the input as a number, and will use the numpad
+                                    input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                                    input.setHint(R.string.enter_new_count);
+                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(9)});
+                                    counterChanger.setView(input);
+
+                                    // Set up the buttons
+                                    counterChanger.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            try {
+                                                String input_string = input.getText().toString().trim();
+
+                                                if (input_string.isEmpty() || input_string.length() == 0 || input_string.equals("") || TextUtils.isEmpty(input_string)) //check if input is empty
+                                                {
+                                                    throw new NoCountEnteredException();
+                                                } else //if string is not empty, convert to int
+                                                    newNum = Integer.valueOf(input.getText().toString());//get integer value of new number
+
+                                                {
+                                                    if (isNegative) {
+                                                        opf.changeCount(-1 * newNum, portraitMode); //if isNegative checkbox is checked, make the number negative
+                                                        count = newNum * -1;
+                                                    } else {
+                                                        opf.changeCount(newNum, portraitMode); //if checkbox is not checked, keep number the same
+                                                        count = newNum;
+                                                    }
+                                                }
+
+                                                //removes keyboard from screen when user clicks ok so it is not stuck on the screen
+                                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                                            }
+                                            catch (NoCountEnteredException e1)
+                                            {
+                                                if (vibrateSetting)
+                                                    vib.vibrate(pattern, -1);
+                                                Snackbar.make(view, R.string.no_input_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                                newNum = opf.getCount(); //set new count back to old count (or else manually setting a real number > resetting count > entering blank input = count being the original real number instead of 0 after the reset)
+                                                dialog.cancel();
+
+                                                //removes keyboard from screen when user clicks ok so it is not stuck on the screen
+                                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                                            }
+                                            catch(Exception e2)
+                                            {
+                                                //checking if the number is higher than maximum is no longer needed because the program will throw an exception if its too high anyway, this is where it is caught
+                                                if (vibrateSetting)
+                                                    vib.vibrate(pattern, -1);
+                                                Snackbar.make(view, R.string.invalid_number_entered, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                                dialog.cancel();
+
+                                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+
+                                            }
                                         }
+                                    });
+                                    counterChanger.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel(); //cancel dialog and do not save changes when "cancel" button is clicked
+
+                                            //removes keyboard from screen when user clicks cancel so it is not stuck on the screen
+                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                                        }
+                                    });
+                                    counterChanger.setMultiChoiceItems(negOptions, null, new DialogInterface.OnMultiChoiceClickListener() { //checkbox for negative number
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                                            if (isChecked) {
+                                                isNegative=true; //if checkbox is checked, set the boolean value for negative number as true
+                                            }
+                                            else
+                                                isNegative=false; //otherwise if checkbox is not checked, then keep value positive
+                                        }
+                                    });
+
+                                    counterChanger.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                                        @Override
+                                        public void onCancel(DialogInterface dialog) {
+                                            //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
+                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                                            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+
+                                        }
+                                    });
+
+
+                                    counterChanger.show(); //show dialog
+                                    input.requestFocus();
+                                    InputMethodManager imm2 = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
+                                    isNegative=false; //sets negative flag back to false after dialog is closed. This is so the input doesn't stay negative on each new change by the user
+                                }
+                                else if(position==1) //increase/decrease by
+                                {
+                                    /*
+                                    try {
+                                        alert.dismiss();
+                                        incdecQ = getActivity().getResources().getString(R.string.increase_by);
+                                        //create dialog
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                        builder.setTitle(R.string.inc_dec_by);
+                                        Context context = getActivity(); //store context in a variable
+                                        LinearLayout layout = new LinearLayout(context);
+                                        layout.setOrientation(LinearLayout.VERTICAL);
+
+                                        //textview telling user to select "increase or decrease"
+                                        final TextView incdecText = new TextView(context);
+                                        incdecText.setText(R.string.select);
+                                        incdecText.setTextSize(16);
+                                        incdecText.setTextColor(BLACK);
+                                        layout.addView(incdecText);
+
+                                        //dropdown menu with increase/decrease
+                                        //dropdown for initial number of counters
+                                        final RadioGroup rg = new RadioGroup(getActivity());
+                                        rg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                                        for(int p=0; p<2; p++)
+                                        {
+                                            RadioButton rb = new RadioButton(getActivity());
+                                            rb.setText(incdecOptions[p]);
+                                            rb.setTextSize(16);
+                                            rb.setId(p);
+                                            rg.addView(rb);
+                                        }
+
+                                        layout.addView(rg);
+
+                                        //textview to create a space in between fields
+                                        final TextView space = new TextView(context);
+                                        space.setText("");
+                                        space.setTextSize(16);
+                                        layout.addView(space);
+
+                                        //textview telling user to enter amount
+                                        final TextView amount = new TextView(context);
+                                        amount.setText(incdecQ);
+                                        amount.setTextSize(16);
+                                        amount.setTextColor(BLACK);
+                                        layout.addView(amount);
+
+                                        //Text input for inc/dec amount
+                                        incdecInput = new EditText(context);
+                                        incdecInput.setHint(R.string.amount);
+                                        incdecInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+                                        incdecInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                                        layout.addView(incdecInput);
+
+                                        layout.setPadding(60, 50, 60, 30);
+                                        builder.setView(layout);
+
+                                        builder.create();
+
+                                        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+                                        {
+                                            @Override
+                                            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                                                // checkedId is the RadioButton selected
+                                                View radioButton = rg.findViewById(checkedId);
+                                                int index = rg.indexOfChild(radioButton);
+
+                                                if(rg.getCheckedRadioButtonId() == 0)
+                                                {
+                                                    incdecQ = getActivity().getResources().getString(R.string.increase_by);
+                                                }
+                                                else if(rg.getCheckedRadioButtonId() == 1)
+                                                {
+                                                    incdecQ = getActivity().getResources().getString(R.string.decrease_by);
+                                                }
+                                                amount.setText(incdecQ);
+                                            }
+                                        });
+
+                                        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                int incdecAmount = 0;
+                                                try {
+                                                    //increase/decrease by required amount
+                                                    String input_string = incdecText.getText().toString().trim();
+
+                                                    if (input_string.isEmpty() || input_string.length() == 0 || input_string.equals("") || TextUtils.isEmpty(input_string)) //check if input is empty
+                                                    {
+                                                        throw new NoCountEnteredException();
+                                                    }
+                                                    else //if string is not empty, convert to int
+                                                    {
+                                                        incdecAmount = Integer.parseInt(incdecInput.getText().toString()); //the amount to be decrement/incremented by
+                                                    }
+
+                                                    if (rg.getCheckedRadioButtonId() == 0) //increase
+                                                    {
+                                                        //INCREASE by
+                                                        int currCount=getCount();
+                                                        if(vibrateSetting)
+                                                            vib.vibrate(10);
+                                                        increaseCount(incdecAmount);
+                                                        //Set modified times
+                                                        currentMC.setModifiedDateTime();
+                                                        currentMC.setModifiedTimeStamp();
+
+                                                    }
+                                                    else if (rg.getCheckedRadioButtonId() == 1) //decrease
+                                                    {
+                                                        //DECREASE by
+                                                        int currCount=getCount();
+                                                        if(vibrateSetting)
+                                                            vib.vibrate(10);
+                                                        decreaseCount(incdecAmount);
+                                                        //Set modified times
+                                                        currentMC.setModifiedDateTime();
+                                                        currentMC.setModifiedTimeStamp();
+
+                                                    }
+
+                                                    //remove keyboard
+                                                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                    imm.hideSoftInputFromWindow(incdecInput.getWindowToken(), 0);
+                                                }
+                                                catch (NoCountEnteredException e1)
+                                                {
+                                                    if(vibrateSetting)
+                                                        vib.vibrate(pattern, -1);
+                                                    Snackbar.make(view, R.string.no_input_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                                    dialog.cancel();
+                                                }
+                                                catch (Exception e2)
+                                                {
+                                                    if (vibrateSetting)
+                                                        vib.vibrate(pattern, -1);
+                                                    Snackbar.make(view, R.string.invalid_number_entered, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                                                    dialog.cancel();
+
+                                                    //remove keyboard
+                                                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                    imm.hideSoftInputFromWindow(incdecInput.getWindowToken(), 0);
+                                                }
+
+
+                                            }
+                                        });
+                                        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.cancel();
+                                            }
+                                        });
+
+                                        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                                            @Override
+                                            public void onCancel(DialogInterface dialog) {
+                                                //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
+                                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                                                imm.hideSoftInputFromWindow(incdecInput.getWindowToken(), 0);
+
+                                            }
+                                        });
+
+                                        builder.show();
+                                        rg.check(rg.getChildAt(0).getId());
+                                        incdecInput.requestFocus();
+                                        InputMethodManager imm2 = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
                                     }
-
-                                    //removes keyboard from screen when user clicks ok so it is not stuck on the screen
-                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                    imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                                    catch (Exception e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                    */
                                 }
-                                catch (NoCountEnteredException e1)
-                                {
-                                    if (vibrateSetting)
-                                        vib.vibrate(pattern, -1);
-                                    Snackbar.make(view, R.string.no_input_message, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
-                                    newNum = opf.getCount(); //set new count back to old count (or else manually setting a real number > resetting count > entering blank input = count being the original real number instead of 0 after the reset)
-                                    dialog.cancel();
-
-                                    //removes keyboard from screen when user clicks ok so it is not stuck on the screen
-                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                    imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-                                }
-                                catch(Exception e2)
-                                {
-                                    //checking if the number is higher than maximum is no longer needed because the program will throw an exception if its too high anyway, this is where it is caught
-                                    if (vibrateSetting)
-                                        vib.vibrate(pattern, -1);
-                                    Snackbar.make(view, R.string.invalid_number_entered, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
-                                    dialog.cancel();
-
-                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                    imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-
-                                }
-                            }
-                        });
-                        counterChanger.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel(); //cancel dialog and do not save changes when "cancel" button is clicked
-
-                                //removes keyboard from screen when user clicks cancel so it is not stuck on the screen
-                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-                            }
-                        });
-                        counterChanger.setMultiChoiceItems(negOptions, null, new DialogInterface.OnMultiChoiceClickListener() { //checkbox for negative number
-                            @Override
-                            public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
-                                if (isChecked) {
-                                    isNegative=true; //if checkbox is checked, set the boolean value for negative number as true
-                                }
-                                else
-                                    isNegative=false; //otherwise if checkbox is not checked, then keep value positive
-                            }
-                        });
-
-                        counterChanger.setOnCancelListener(new DialogInterface.OnCancelListener() {
-
-                            @Override
-                            public void onCancel(DialogInterface dialog) {
-                                //removes keyboard from screen when user clicks outside of dialog box so it is not stuck on the screen
-                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-                                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
 
                             }
                         });
-
-
-                        counterChanger.show(); //show dialog
-                        input.requestFocus();
-                        InputMethodManager imm2 = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm2.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-
-                        isNegative=false; //sets negative flag back to false after dialog is closed. This is so the input doesn't stay negative on each new change by the user
 
                         return true;
                     }
