@@ -13,16 +13,12 @@
     <string name="change_count">Change Count</string>
     <string name="max_num">Maximum Number Reached</string>
     <string name="min_num">Minimum Number Reached</string>
-    <string name="too_high_message">Number entered is too high!</string>
-    <string name="too_low_message">Number entered is too low!</string>
     <string name="no_input_message">Nothing was entered!</string>
     <string name="make_negative_num">Make Negative</string>
     <string name="make_count_negative_num">Make Count Negative</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="title_activity_drawer">DrawerActivity</string>
     <string name="title_activity_counterlist">Multi-Counters</string>
-    <string name="action_add">Add Counter</string>
     <string name="set_counter_name">Counter Name:</string>
     <string name="name_hint">Name</string>
     <string name="init_num_counters">Initial number of counters:</string>
@@ -65,7 +61,6 @@
 
 
     <string name="invalid_starting_count">Invalid starting count</string>
-    <string name="counter_colon">Counter: </string>
     <string name="multicounter_activity_title">Counter Name</string>
     <string name="mc_title_length_error">Please enter a title name with 40 characters or less</string>
     <string name="sc_title_length_error">Please enter a title name with 20 characters or less</string>
@@ -94,13 +89,9 @@
     <string name="decrease">Decrease (-)</string>
     <string name="increase_by">Increase By</string>
     <string name="decrease_by">Decrease By</string>
-    <string name="exceed_max">Number would be too high</string>
-    <string name="exceed_min">Number would be too low</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_settings">Settings</string>
 
     <string name="home">Home</string>
     <string name="multi_counter">Multi-Counters</string>
@@ -108,7 +99,6 @@
     <string name="share">Share this app</string>
     <string name="rate">Rate this app</string>
     <string name="contact">Contact Us</string>
-    <string name="title_activity_settings">Settings</string>
     <string name="more">More from Developer</string>
 
 
@@ -155,16 +145,6 @@
     </string>
 
     <!--DISPLAY-->
-    <string name="pref_header_display">Display</string>
-
-    <string name="pref_title_theme">Theme</string>
-    <string name="pref_description_themes">Select an app theme
-    </string>
-    <string-array name="list_preference_themes">
-        <item>Default (Black and White)</item>
-        <item>Night Mode</item>
-        <item>Tropical</item>
-    </string-array>
 
     <!--INFO-->
     <string name="pref_header_info">Info</string>
@@ -188,11 +168,7 @@
     </string-array>
     <string name="sort_by">Sort By:</string>
 
-    <string name="search_multicounter">Search Multicounter</string>
-    <string name="search_empty">No match found</string>
-
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- TUTORIAL TEXTS -->
     <string name="next">Next</string>
