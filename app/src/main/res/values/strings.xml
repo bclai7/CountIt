@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Count It</string>
-    <string name="publisher_name">Deico Tech</string>
+    <string name="publisher_name">Deico Apps</string>
     <string name="email">support@deicotech.com</string>
     <string name="reset_title">Reset Counter</string>
     <string name="delete_title">Delete Counter</string>
@@ -183,13 +183,23 @@
     <string name="tutorial_reset_title">Reset</string>
     <string name="tutorial_reset_text">Tap the circular arrow to reset the count to zero</string>
 
-    <string name="tutorial_count_title">Manual Count</string>
-    <string name="tutorial_count_text">Long pressing the count number gives you the option of either adding/subtracting by a certain amount, or manually entering a new count </string>
+    <string name="tutorial_count_title">Additional Options</string>
+    <string name="tutorial_count_text">Long pressing the count number gives you a few additional options:\n-Change Count: Allows you to manually enter a new count\n-Increase/Decrease By: Allows you to enter a number to be added to or subtracted from the count</string>
 
     <string name="tutorial_multicounter_title">Counter Menu</string>
     <string name="tutorial_multicounter_text">Long pressing a counter will open a menu with additional options for it</string>
 
+    <string name="tutorial_multicounter2_title">Re-Organizing Counters</string>
+    <string name="tutorial_multicounter2_text">The arrows in the top corners of each counter allow you to re-arrange the order of the counters to your liking</string>
+
+    <string name="tutorial_multicounterview_title">Changing Views</string>
+    <string name="tutorial_multicounterview_text">You can choose between two viewing options in the multicounter:\n-Full View: Bigger, more detailed, but fits less counters onto the screen\n-Condensed View: Smaller, less detailed, but fits more counters onto the screen</string>
+
     <string name="tutorial_counterlist_title">Multicounter Menu</string>
     <string name="tutorial_counterlist_text">You can long press a multicounter to rename, delete, or view more details about it</string>
+
+    <string name="tutorial_search_title">Multicounter Search</string>
+    <string name="tutorial_search_text">Tapping the search icon at the top of the screen will allow you to quickly search for a multicounter</string>
+
 
 </resources>

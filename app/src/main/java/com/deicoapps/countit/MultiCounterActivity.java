@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -26,6 +27,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -56,6 +58,7 @@ public class MultiCounterActivity extends AppCompatActivity {
     Vibrator vib;
     long[] pattern = new long[4];
     boolean tutorialComplete; //boolean storing whether or not user has completed the tutorial/tip for this particular activity
+    ShowcaseView tut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,19 +123,8 @@ public class MultiCounterActivity extends AppCompatActivity {
         }
 
         if(!tutorialComplete) {
-            //tutorial for long pressing counter
-            ShowcaseView.Builder res = new ShowcaseView.Builder(this, true)
-                    .setTarget(Target.NONE)
-                    .setContentTitle(getString(R.string.tutorial_multicounter_title))
-                    .setContentText(getString(R.string.tutorial_multicounter_text))
-                    .setStyle(R.style.CustomShowcaseTheme);
-            res.build().setButtonText(getString(R.string.ok));
-
-            SharedPreferences sharedPrefA = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editorA = sharedPrefA.edit();
-            tutorialComplete=true;
-            editorA.putBoolean("MulticounterTutorial", tutorialComplete);
-            editorA.commit();
+            showcaseDialogTutorial();
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED); //lock orientation so tutorial glitch in landscape
         }
 
     }
@@ -807,5 +799,59 @@ public class MultiCounterActivity extends AppCompatActivity {
         }
 
         return "WHITE";
+    }
+
+    private void showcaseDialogTutorial(){
+
+        //This code creates a new layout parameter so the button in the showcase can move to a new spot.
+        final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        // This aligns button to the bottom left side of screen
+        lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lps.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        // Set margins to the button, we add 16dp margins here
+        int margin = ((Number) (getResources().getDisplayMetrics().density * 16)).intValue();
+        lps.setMargins(margin, margin, margin, margin);
+
+        //This creates the first showcase.
+        ShowcaseView.Builder res = new ShowcaseView.Builder(this, true)
+                .setTarget(Target.NONE)
+                .setContentTitle(getString(R.string.tutorial_multicounter_title))
+                .setContentText(getString(R.string.tutorial_multicounter_text))
+                .setStyle(R.style.CustomShowcaseTheme);
+        tut = res.build();
+        tut.setButtonText(getString(R.string.next));
+
+        //When the button is clicked then the switch statement will check the counter and make the new showcase.
+        tut.overrideButtonClick(new View.OnClickListener() {
+            int index = 0;
+
+            @Override
+            public void onClick(View v) {
+                index++;
+                switch (index) {
+                    case 1:
+                        tut.setTarget(Target.NONE);
+                        tut.setContentTitle(getString(R.string.tutorial_multicounter2_title));
+                        tut.setContentText(getString(R.string.tutorial_multicounter2_text));
+                        tut.setButtonText(getString(R.string.next));
+                        break;
+                    case 2:
+                        tut.setTarget(Target.NONE);
+                        tut.setContentTitle(getString(R.string.tutorial_multicounterview_title));
+                        tut.setContentText(getString(R.string.tutorial_multicounterview_text));
+                        tut.setButtonText(getString(R.string.done));
+                        break;
+                    case 3:
+                        tut.hide();
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR); //unlock orientation
+                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MultiCounterActivity.this);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putBoolean("MulticounterTutorial", true);
+                        editor.commit();
+                        break;
+
+                }
+            }
+            });
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Vibrator;
@@ -31,17 +32,21 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionItemTarget;
 import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -91,6 +96,7 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
     Toolbar toolbar;
     boolean tutorialComplete; //boolean storing whether or not user has completed the tutorial/tip for this particular activity
     boolean counterListVisited; //boolean tells whether or not its their first time visiting this activity (so if the multicounterlist is empty, it creates a default multicounter)
+    ShowcaseView tut;
 
 
     @Override
@@ -524,20 +530,8 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
         navigationView.setCheckedItem(R.id.nav_multicounter);
 
         if(!tutorialComplete) {
-            //tutorial for long pressing multicounter
-            ShowcaseView.Builder res = new ShowcaseView.Builder(this, true)
-                    .setTarget(Target.NONE)
-                    .setContentTitle(getString(R.string.tutorial_counterlist_title))
-                    .setContentText(getString(R.string.tutorial_counterlist_text))
-                    .setStyle(R.style.CustomShowcaseTheme);
-            res.build().setButtonText(getString(R.string.ok));
-
-            //set sharedpref for showing tutorial completed
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            tutorialComplete=true;
-            editor.putBoolean("CounterlistTutorial", tutorialComplete);
-            editor.commit();
+            showcaseDialogTutorial();
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED); //lock orientation so tutorial glitch in landscape
         }
     }
 
@@ -594,7 +588,6 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
                 return false;
             }
 
@@ -626,7 +619,6 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
                 return true;
             }
         });
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -992,6 +984,10 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
 
             });
             popupMenu.show();
+
+        }
+        if (id == R.id.multicounter_search)
+        {
 
         }
 
@@ -1462,6 +1458,53 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
             listView.setAdapter(adapter);
             saveSortOrder(5);
         }
+    }
+
+    private void showcaseDialogTutorial(){
+        //This code creates a new layout parameter so the button in the showcase can move to a new spot.
+        final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        // This aligns button to the bottom left side of screen
+        lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lps.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        // Set margins to the button, we add 16dp margins here
+        int margin = ((Number) (getResources().getDisplayMetrics().density * 16)).intValue();
+        lps.setMargins(margin, margin, margin, margin);
+
+        //This creates the first showcase.
+        ShowcaseView.Builder res = new ShowcaseView.Builder(this, true)
+                .setTarget(Target.NONE)
+                .setContentTitle(getString(R.string.tutorial_counterlist_title))
+                .setContentText(getString(R.string.tutorial_counterlist_text))
+                .setStyle(R.style.CustomShowcaseTheme);
+        tut = res.build();
+        tut.setButtonText(getString(R.string.next));
+
+        //When the button is clicked then the switch statement will check the counter and make the new showcase.
+        tut.overrideButtonClick(new View.OnClickListener() {
+            int index = 0;
+
+            @Override
+            public void onClick(View v) {
+                index++;
+                switch (index) {
+                    case 1:
+                        tut.setTarget(Target.NONE);
+                        tut.setContentTitle(getString(R.string.tutorial_search_title));
+                        tut.setContentText(getString(R.string.tutorial_search_text));
+                        tut.setButtonText(getString(R.string.done));
+                        break;
+                    case 2:
+                        tut.hide();
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR); //unlock orientation
+                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(CounterListActivity.this);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putBoolean("CounterlistTutorial", true);
+                        editor.commit();
+                        break;
+
+                }
+            }
+        });
     }
 
 }
