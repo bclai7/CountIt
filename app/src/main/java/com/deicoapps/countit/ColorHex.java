@@ -1,4 +1,4 @@
-package com.takezeroapps.countit;
+package com.deicoapps.countit;
 
 /**
  * Created by BDC on 7/22/2017.

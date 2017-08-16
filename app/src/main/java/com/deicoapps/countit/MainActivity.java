@@ -1,4 +1,4 @@
-package com.takezeroapps.countit;
+package com.deicoapps.countit;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,7 +14,6 @@ import android.support.v7.app.AlertDialog;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +39,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
@@ -94,7 +92,7 @@ public class MainActivity extends AppCompatActivity
         portraitMode=true;
 
         //create sharedpref for counter view if it doesn't already exist
-        File f = new File("/data/data/com.takezeroapps.countit/shared_prefs/CounterView.xml");
+        File f = new File("/data/data/com.deicoapps.countit/shared_prefs/CounterView.xml");
         if(!f.exists())
         {
             SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);

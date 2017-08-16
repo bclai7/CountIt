@@ -1,6 +1,4 @@
-package com.takezeroapps.countit;
-
-import android.widget.LinearLayout;
+package com.deicoapps.countit;
 
 /**
  * Created by Brandon on 1/7/2017.

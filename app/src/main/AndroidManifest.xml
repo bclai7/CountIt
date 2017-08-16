@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.takezeroapps.countit">
+    package="com.deicoapps.countit">
 
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/DefaultTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.deicoapps.countit.MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:theme="@style/DefaultTheme.NoActionBar">
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CounterListActivity"
+            android:name="com.deicoapps.countit.CounterListActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_counterlist"
             android:theme="@style/DefaultTheme.NoActionBar">
@@ -33,17 +33,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MultiCounterActivity"
+            android:name="com.deicoapps.countit.MultiCounterActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/multicounter_activity_title"
-            android:parentActivityName=".CounterListActivity">
+            android:parentActivityName="com.deicoapps.countit.CounterListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.takezeroapps.countit.MainActivity" />
+                android:value="com.deicoapps.countit.MainActivity" />
         </activity>
 
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.deicoapps.countit.SettingsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/settings"
             android:theme="@style/DefaultTheme.NoActionBar">

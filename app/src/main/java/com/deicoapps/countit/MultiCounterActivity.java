@@ -1,4 +1,4 @@
-package com.takezeroapps.countit;
+package com.deicoapps.countit;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -77,7 +77,7 @@ public class MultiCounterActivity extends AppCompatActivity {
         pattern[3]=20;
 
         //load data into multi counter list
-        File f = new File("/data/data/com.takezeroapps.countit/shared_prefs/MultiCounterList.xml");
+        File f = new File("/data/data/com.deicoapps.countit/shared_prefs/MultiCounterList.xml");
         if (f.exists()) {
             SharedPreferences pref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);
             SharedPreferences.Editor e = pref.edit();

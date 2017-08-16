@@ -1,4 +1,4 @@
-package com.takezeroapps.countit;
+package com.deicoapps.countit;
 
 import java.util.Comparator;
 

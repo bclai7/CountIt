@@ -1,4 +1,4 @@
-package com.takezeroapps.countit;
+package com.deicoapps.countit;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -62,11 +62,11 @@ import java.util.List;
 
 import static android.graphics.Color.BLACK;
 import static android.widget.AbsListView.CHOICE_MODE_NONE;
-import static com.takezeroapps.countit.MulticounterComparator.CREATED_SORT;
-import static com.takezeroapps.countit.MulticounterComparator.MODIFIED_SORT;
-import static com.takezeroapps.countit.MulticounterComparator.NAME_SORT;
-import static com.takezeroapps.countit.MulticounterComparator.decending;
-import static com.takezeroapps.countit.MulticounterComparator.getComparator;
+import static com.deicoapps.countit.MulticounterComparator.CREATED_SORT;
+import static com.deicoapps.countit.MulticounterComparator.MODIFIED_SORT;
+import static com.deicoapps.countit.MulticounterComparator.NAME_SORT;
+import static com.deicoapps.countit.MulticounterComparator.decending;
+import static com.deicoapps.countit.MulticounterComparator.getComparator;
 
 public class CounterListActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -545,7 +545,7 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
     public void onResume()
     {
         super.onResume();
-        File f = new File("/data/data/com.takezeroapps.countit/shared_prefs/MultiCounterList.xml");
+        File f = new File("/data/data/com.deicoapps.countit/shared_prefs/MultiCounterList.xml");
         if (f.exists())
         {
             SharedPreferences pref = getSharedPreferences("MultiCounterList", Context.MODE_PRIVATE);

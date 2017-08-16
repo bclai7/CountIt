@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.takezeroapps.countit.MainActivity"
+    tools:context="com.deicoapps.countit.MainActivity"
     tools:showIn="@layout/app_bar_drawer_main">
 
     <Button
@@ -44,7 +44,7 @@
     <fragment
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:name="com.takezeroapps.countit.OperatorFragment"
+        android:name="com.deicoapps.countit.OperatorFragment"
         android:id="@+id/fragment"
         tools:layout="@layout/counter_fragment"
         android:layout_alignParentTop="true"

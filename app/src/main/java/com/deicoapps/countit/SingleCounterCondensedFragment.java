@@ -1,4 +1,4 @@
-package com.takezeroapps.countit;
+package com.deicoapps.countit;
 
 import android.content.Context;
 import android.content.DialogInterface;

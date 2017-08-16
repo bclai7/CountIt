@@ -1,11 +1,10 @@
-package com.takezeroapps.countit;
+package com.deicoapps.countit;
 
 import java.util.ArrayList;
 import  java.util.List;
 
 import  android.content.Context;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import  android.util.SparseBooleanArray;
 import  android.view.LayoutInflater;
 import  android.view.View;
@@ -14,7 +13,6 @@ import  android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 import android.widget.Filter;
 import android.widget.Filterable;
-import  android.widget.ImageView;
 import  android.widget.TextView;
 
 public class  MultiCounterListViewAdapter extends ArrayAdapter<String> implements Filterable {

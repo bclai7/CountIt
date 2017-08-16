@@ -1,6 +1,4 @@
-package com.takezeroapps.countit;
-
-import android.app.Fragment;
+package com.deicoapps.countit;
 
 /**
  * Created by BDC on 5/27/2017.
