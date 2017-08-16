@@ -97,7 +97,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
 
         //Contact Text
         text1 = getString(R.string.pref_title_contact);
-        text2 = getString(R.string.pref_description_contact);
+        text2 = getString(R.string.email);
         span1 = new SpannableString(text1);
         span1.setSpan(new AbsoluteSizeSpan(textSize1), 0, text1.length(), SPAN_INCLUSIVE_INCLUSIVE);
         span1.setSpan(new ForegroundColorSpan(Color.BLACK), 0, span1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
