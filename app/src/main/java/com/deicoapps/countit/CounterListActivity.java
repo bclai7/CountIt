@@ -5,8 +5,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Parcelable;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -64,6 +67,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
 
 import static android.graphics.Color.BLACK;
 import static android.widget.AbsListView.CHOICE_MODE_NONE;
@@ -1214,7 +1218,13 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
 
         } else if (id == R.id.nav_contact) {
             //let users contact through email
-
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("*/*");
+            i.putExtra(Intent.EXTRA_EMAIL, new String[] {
+                    getString(R.string.email)
+            });
+            i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.countit_email_subject));
+            startActivity(createEmailOnlyChooserIntent(i, getString(R.string.send_via_email)));
         }
         else if (id == R.id.nav_more) {
             //open link to developer page with the rest of my apps
@@ -1224,6 +1234,32 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_counterlist);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public Intent createEmailOnlyChooserIntent(Intent source,
+                                               CharSequence chooserTitle) {
+        Stack<Intent> intents = new Stack<Intent>();
+        Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto",
+                "info@domain.com", null));
+        List<ResolveInfo> activities = getPackageManager()
+                .queryIntentActivities(i, 0);
+
+        for(ResolveInfo ri : activities) {
+            Intent target = new Intent(source);
+            target.setPackage(ri.activityInfo.packageName);
+            intents.add(target);
+        }
+
+        if(!intents.isEmpty()) {
+            Intent chooserIntent = Intent.createChooser(intents.remove(0),
+                    chooserTitle);
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS,
+                    intents.toArray(new Parcelable[intents.size()]));
+
+            return chooserIntent;
+        } else {
+            return Intent.createChooser(source, chooserTitle);
+        }
     }
 
     private ArrayList<String> getCounterList() {

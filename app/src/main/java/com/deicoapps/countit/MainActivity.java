@@ -5,8 +5,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
@@ -45,6 +48,8 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 import Exceptions.NoCountEnteredException;
 
@@ -739,6 +744,13 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_contact) {
             //let users contact through email
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("*/*");
+            i.putExtra(Intent.EXTRA_EMAIL, new String[] {
+                    getString(R.string.email)
+            });
+            i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.countit_email_subject));
+            startActivity(createEmailOnlyChooserIntent(i, getString(R.string.send_via_email)));
 
         }
         else if (id == R.id.nav_more) {
@@ -749,6 +761,32 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public Intent createEmailOnlyChooserIntent(Intent source,
+                                               CharSequence chooserTitle) {
+        Stack<Intent> intents = new Stack<Intent>();
+        Intent i = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto",
+                "info@domain.com", null));
+        List<ResolveInfo> activities = getPackageManager()
+                .queryIntentActivities(i, 0);
+
+        for(ResolveInfo ri : activities) {
+            Intent target = new Intent(source);
+            target.setPackage(ri.activityInfo.packageName);
+            intents.add(target);
+        }
+
+        if(!intents.isEmpty()) {
+            Intent chooserIntent = Intent.createChooser(intents.remove(0),
+                    chooserTitle);
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS,
+                    intents.toArray(new Parcelable[intents.size()]));
+
+            return chooserIntent;
+        } else {
+            return Intent.createChooser(source, chooserTitle);
+        }
     }
 
     private void showcaseDialogTutorial(){

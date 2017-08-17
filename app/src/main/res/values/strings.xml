@@ -101,6 +101,9 @@
     <string name="contact">Contact Us</string>
     <string name="more">More from Developer</string>
 
+    <string name="countit_email_subject">Count It - Support</string>
+    <string name="send_via_email">Send via email</string>
+
 
     <!-- COLORS ARRAY -->
     <string name="colors_title">Colors</string>
