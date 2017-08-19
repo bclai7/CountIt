@@ -1,5 +1,6 @@
 package com.deicoapps.countit;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -1214,6 +1215,43 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
 
         } else if (id == R.id.nav_rate) {
             //go to app page in google store
+            AlertDialog.Builder resetDialog = new AlertDialog.Builder(CounterListActivity.this);
+
+            // Set Dialog Title, message, and other properties
+            resetDialog.setMessage(R.string.rate_question)
+                    .setTitle(R.string.rate)
+            ; // semi-colon only goes after ALL of the properties
+
+            // Add the buttons
+            resetDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    //go to app page in google store
+                    Uri uri = Uri.parse("market://details?id=" + getApplicationContext().getPackageName());
+                    Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                    // To count with Play market backstack, After pressing back button,
+                    // to taken back to our application, we need to add following flags to intent.
+                    goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                            Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                            Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                    try {
+                        startActivity(goToMarket);
+                    } catch (ActivityNotFoundException e) {
+                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                Uri.parse("http://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName())));
+                    }
+                }
+            });
+            resetDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+
+            // Get the AlertDialog from create()
+            AlertDialog dialog = resetDialog.create();
+
+            //show dialog when reset button is clicked
+            resetDialog.show();
 
         } else if (id == R.id.nav_contact) {
             //let users contact through email

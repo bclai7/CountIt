@@ -101,6 +101,9 @@
     <string name="contact">Contact Us</string>
     <string name="more">More from Developer</string>
 
+    <string name="rate_question">Are you sure you want to go to the Count It app page in the Google Play Store?</string>
+    <string name="rate_title">Rate</string>
+
     <string name="countit_email_subject">Count It - Support</string>
     <string name="send_via_email">Send via email</string>
 

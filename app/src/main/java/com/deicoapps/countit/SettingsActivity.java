@@ -1,5 +1,7 @@
 package com.deicoapps.countit;
 
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
@@ -11,6 +13,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -238,6 +241,43 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
 
         } else if (id == R.id.nav_rate) {
             //go to app page in google store
+            AlertDialog.Builder resetDialog = new AlertDialog.Builder(SettingsActivity.this);
+
+            // Set Dialog Title, message, and other properties
+            resetDialog.setMessage(R.string.rate_question)
+                    .setTitle(R.string.rate)
+            ; // semi-colon only goes after ALL of the properties
+
+            // Add the buttons
+            resetDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    //go to app page in google store
+                    Uri uri = Uri.parse("market://details?id=" + getApplicationContext().getPackageName());
+                    Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                    // To count with Play market backstack, After pressing back button,
+                    // to taken back to our application, we need to add following flags to intent.
+                    goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                            Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                            Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                    try {
+                        startActivity(goToMarket);
+                    } catch (ActivityNotFoundException e) {
+                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                Uri.parse("http://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName())));
+                    }
+                }
+            });
+            resetDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+
+            // Get the AlertDialog from create()
+            AlertDialog dialog = resetDialog.create();
+
+            //show dialog when reset button is clicked
+            resetDialog.show();
 
         } else if (id == R.id.nav_contact) {
             //let users contact through email
