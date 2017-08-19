@@ -358,6 +358,9 @@ public class MultiCounterActivity extends AppCompatActivity {
                                             }
                                             fragTagList.add(newCounter.getCounterId());
 
+                                            finish();
+                                            startActivity(getIntent());
+
                                         }
 
                                     }
