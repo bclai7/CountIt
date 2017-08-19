@@ -755,6 +755,9 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_more) {
             //open link to developer page with the rest of my apps
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("https://play.google.com/store/apps/developer?id=Deico+Apps"));
+            startActivity(intent);
 
         }
 

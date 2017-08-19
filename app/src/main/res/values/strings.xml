@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Count It</string>
     <string name="publisher_name">Deico Apps</string>
-    <string name="email">support@deicoapps.com</string>
+    <string name="email">support@deicoapps.com</string> <!-- Do Not translate -->
     <string name="reset_title">Reset Counter</string>
     <string name="delete_title">Delete Counter</string>
     <string name="delete_mc_title">Delete Multicounter</string>
