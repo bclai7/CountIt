@@ -422,21 +422,21 @@ public class MultiCounterActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 try {
-                                    String counterName = counterEdit.getText().toString(); //input text - the user defined counter name
+                                    String newCounterName = counterEdit.getText().toString(); //input text - the user defined counter name
 
-                                    if (counterName.isEmpty() || counterName.length() == 0 || counterName.equals("") || TextUtils.isEmpty(counterName)) {
+                                    if (newCounterName.isEmpty() || newCounterName.length() == 0 || newCounterName.equals("") || TextUtils.isEmpty(newCounterName)) {
                                         if (vibrateSetting)
                                             vib.vibrate(pattern, -1);
                                         Snackbar.make(MultiCounterActivity.this.getWindow().getDecorView().getRootView(), R.string.no_mcounter_name, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                         dialog.cancel();
                                         removeKeyboard();
-                                    } else if (inCounterList(counterName)) {
+                                    } else if (inCounterList(newCounterName)) {
                                         if (vibrateSetting)
                                             vib.vibrate(pattern, -1);
                                         Snackbar.make(MultiCounterActivity.this.getWindow().getDecorView().getRootView(), R.string.mcounter_already_exists, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                         dialog.cancel();
                                         removeKeyboard();
-                                    } else if (counterName.length() > 40) {
+                                    } else if (newCounterName.length() > 40) {
                                         if (vibrateSetting)
                                             vib.vibrate(pattern, -1);
                                         Snackbar.make(MultiCounterActivity.this.getWindow().getDecorView().getRootView(), R.string.mc_title_length_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
@@ -465,14 +465,14 @@ public class MultiCounterActivity extends AppCompatActivity {
                                             }
                                         }
                                         //add new name to String list and save
-                                        CounterListActivity.multicounterNameList.add(it, counterName);
+                                        CounterListActivity.multicounterNameList.add(it, newCounterName);
                                         saveCounterList(CounterListActivity.multicounterNameList);
 
                                         //remove current from MC List to remove old key
                                         CounterListActivity.multicounterList.remove(current.getName());
 
                                         //set the new name in the actual counter object
-                                        current.setName(counterName);
+                                        current.setName(newCounterName);
                                         current.setModifiedDateTime();
                                         current.setModifiedTimeStamp();
 
@@ -482,7 +482,7 @@ public class MultiCounterActivity extends AppCompatActivity {
                                         //save multicounter list
                                         saveMultiCounterList();
 
-                                        setTitle(counterName);
+                                        setTitle(newCounterName);
 
                                         removeKeyboard();
                                     }
@@ -583,8 +583,12 @@ public class MultiCounterActivity extends AppCompatActivity {
                                     current.setModifiedTimeStamp();
 
                                     saveMultiCounterList();
-                                    finish();
-                                    startActivity(getIntent());
+
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString(CounterListActivity.MULTICOUNTER_NAME_KEY, current.getName());
+                                    Intent intent = new Intent(MultiCounterActivity.this, MultiCounterActivity.class);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
                                 }
                             });
                             resetDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -603,8 +607,12 @@ public class MultiCounterActivity extends AppCompatActivity {
                         else{
                             current.resetAllCounters();
                             saveMultiCounterList();
-                            finish();
-                            startActivity(getIntent());
+
+                            Bundle bundle = new Bundle();
+                            bundle.putString(CounterListActivity.MULTICOUNTER_NAME_KEY, current.getName());
+                            Intent intent = new Intent(MultiCounterActivity.this, MultiCounterActivity.class);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
                         }
                     }
 
@@ -641,8 +649,12 @@ public class MultiCounterActivity extends AppCompatActivity {
 
                                         //change the counter view
                                         saveMultiCounterList();
-                                        finish();
-                                        startActivity(getIntent());
+
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString(CounterListActivity.MULTICOUNTER_NAME_KEY, current.getName());
+                                        Intent intent = new Intent(MultiCounterActivity.this, MultiCounterActivity.class);
+                                        intent.putExtras(bundle);
+                                        startActivity(intent);
                                     }
                                 })
                                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

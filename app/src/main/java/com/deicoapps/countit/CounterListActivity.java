@@ -603,7 +603,6 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
                 }catch(Exception e)
                 {
                     e.printStackTrace();
-                    Log.d("test", Log.getStackTraceString(new Exception()));
                 }
                 return false;
             }
