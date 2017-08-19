@@ -104,8 +104,14 @@
     <string name="rate_question">Are you sure you want to go to the Count It app page in the Google Play Store?</string>
     <string name="rate_title">Rate</string>
 
+    <string name="share_title">Share via</string>
+    <string name="share_subject">Count It app</string>
+    <string name="share_body">Hey, check out this app called Count It!</string>
+
     <string name="countit_email_subject">Count It - Support</string>
     <string name="send_via_email">Send via email</string>
+
+    <string name="more_question">Are you sure you want to visit the publisher page in the Google Play Store?</string>
 
 
     <!-- COLORS ARRAY -->

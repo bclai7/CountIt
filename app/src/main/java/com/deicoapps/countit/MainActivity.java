@@ -739,6 +739,12 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {
             //let users share app
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            String link = "https://goo.gl/TKXVxf"; //app link
+            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_subject));
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.share_body) +"\n"+ link);
+            startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_title)));
 
         } else if (id == R.id.nav_rate) {
 
@@ -793,10 +799,34 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_more) {
             //open link to developer page with the rest of my apps
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("https://play.google.com/store/apps/developer?id=Deico+Apps"));
-            startActivity(intent);
 
+            AlertDialog.Builder resetDialog = new AlertDialog.Builder(MainActivity.this);
+
+            // Set Dialog Title, message, and other properties
+            resetDialog.setMessage(R.string.more_question)
+                    .setTitle(R.string.more)
+            ; // semi-colon only goes after ALL of the properties
+
+            // Add the buttons
+            resetDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    //go to publisher in google store
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("https://play.google.com/store/apps/developer?id=Deico+Apps"));
+                    startActivity(intent);
+                }
+            });
+            resetDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+
+            // Get the AlertDialog from create()
+            AlertDialog dialog = resetDialog.create();
+
+            //show dialog when reset button is clicked
+            resetDialog.show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);

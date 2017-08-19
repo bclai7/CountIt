@@ -1212,6 +1212,12 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
 
         } else if (id == R.id.nav_share) {
             //let users share app
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            String link = "https://goo.gl/TKXVxf"; //app link
+            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_subject));
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.share_body) +"\n"+ link);
+            startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_title)));
 
         } else if (id == R.id.nav_rate) {
             //go to app page in google store
