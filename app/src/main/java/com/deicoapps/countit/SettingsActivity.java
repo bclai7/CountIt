@@ -21,6 +21,8 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -169,6 +171,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
                                 getString(R.string.email)
                         });
                         i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.countit_email_subject));
+                        finish();
                         startActivity(createEmailOnlyChooserIntent(i, getString(R.string.send_via_email)));
                     }
                 }
@@ -183,11 +186,6 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_settings);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        navigationView.setCheckedItem(R.id.nav_settings);
     }
 
     @Override
@@ -203,6 +201,11 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
         resetSwitch.setChecked(resetOn);
         screenSwitch.setChecked(screenOn);
         volumeSwitch.setChecked(volumeOn);
+
+        //highlight settings button in drawer
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_settings);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.nav_settings);
 
     }
 
@@ -220,6 +223,26 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
 
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_settings);
+
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            } else {
+                finish();
+                startActivity(new Intent(SettingsActivity.this, MainActivity.class));
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+
+        //return true;
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -228,9 +251,11 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
 
         if (id == R.id.nav_home) {
             // Go to home/main activity
+            finish();
             startActivity(new Intent(SettingsActivity.this, MainActivity.class));
         } else if (id == R.id.nav_multicounter) {
             //go to multicounter
+            finish();
             startActivity(new Intent(SettingsActivity.this, CounterListActivity.class));
 
         } else if (id == R.id.nav_settings) {

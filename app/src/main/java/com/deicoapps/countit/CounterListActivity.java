@@ -32,6 +32,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -529,11 +530,6 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_counterlist);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        navigationView.setCheckedItem(R.id.nav_multicounter);
-
         if(!tutorialComplete) {
             showcaseDialogTutorial();
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED); //lock orientation so tutorial glitch in landscape
@@ -580,6 +576,11 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
         //sort list
         loadSortOrder();
         sortCounterList();
+
+        //highlight multicounter button in drawer
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_counterlist);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.nav_multicounter);
 
     }
 
@@ -629,6 +630,28 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_counterlist);
+
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                Log.d("test", "isOpen");
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            } else {
+                Log.d("test", "isClosed");
+                finish();
+                startActivity(new Intent(CounterListActivity.this, MainActivity.class));
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+
+        //return true;
     }
 
     // plus sign button (to add multi-counter)
@@ -1201,6 +1224,7 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
 
         if (id == R.id.nav_home) {
             // Go to home/main activity
+            finish();
             startActivity(new Intent(CounterListActivity.this, MainActivity.class));
 
         } else if (id == R.id.nav_multicounter) {
@@ -1208,6 +1232,7 @@ public class CounterListActivity extends AppCompatActivity implements Navigation
 
         } else if (id == R.id.nav_settings) {
             //go to settings
+            finish();
             startActivity(new Intent(CounterListActivity.this, SettingsActivity.class));
 
         } else if (id == R.id.nav_share) {

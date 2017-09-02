@@ -18,6 +18,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,6 +91,10 @@ public class MainActivity extends AppCompatActivity
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
+        //highlight home button in drawer
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_main);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.nav_home);
     }
 
     @Override
@@ -137,25 +142,6 @@ public class MainActivity extends AppCompatActivity
             finish();
             startActivity(getIntent());
         }
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
-            if(volumeSetting) {
-                addButton.performClick();
-                return true;
-            }
-            else return false;
-        } else if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
-            if(volumeSetting) {
-                subButton.performClick();
-                return true;
-            }
-            else return false;
-
-        }
-        return true;
     }
 
     @Override
@@ -643,11 +629,6 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_main);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        navigationView.setCheckedItem(R.id.nav_home);
-
         //Display Tutorial
         if(!tutorialComplete) {
             showcaseDialogTutorial();
@@ -686,13 +667,35 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
+            if(volumeSetting) {
+                addButton.performClick();
+                return true;
+            }
+            else return false;
+        } else if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+            if(volumeSetting) {
+                subButton.performClick();
+                return true;
+            }
+            else return false;
         }
+
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_main);
+
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            } else {
+                finish();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+
+        //return true;
     }
 
     @Override
@@ -731,10 +734,12 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_multicounter) {
             //go to multicounter
+            finish();
             startActivity(new Intent(MainActivity.this, CounterListActivity.class));
 
         } else if (id == R.id.nav_settings) {
             //go to settings
+            finish();
             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
 
         } else if (id == R.id.nav_share) {
